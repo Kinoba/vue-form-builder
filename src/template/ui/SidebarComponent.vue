@@ -1,14 +1,17 @@
 <template>
-    <div>
+    <div class="panel">
         <div class="controlSidebar list-group" v-show="!isConfig">
-            <a href="#" class="list-group-item active">
-                Supported Controls
-            </a>
-            <div id="sidebarControls">
-                <a href="javascript:void(0)" class="list-group-item list-group-item-action control-wrapper"
-                   v-for="(obj, value) in controls" :data-control-type="value">
-                    <font-awesome-icon :icon="obj.icon"></font-awesome-icon> {{obj.label}}
+            <div class="panel-heading">
+                <a href="#" class="list-group-item active">
+                    Supported Controls
                 </a>
+            </div>
+            
+            <div id="sidebarControls">
+                    <a href="javascript:void(0)" class="panel-block list-group-item list-group-item-action control-wrapper bd-notification"
+                   v-for="(obj, value) in controls" :data-control-type="value">
+                        <font-awesome-icon :icon="obj.icon"></font-awesome-icon> {{obj.label}}
+                    </a>
             </div>
         </div>
         <div class="settingSidebar card" v-if="isConfig">

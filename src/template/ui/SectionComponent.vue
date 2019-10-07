@@ -1,32 +1,34 @@
 <template>
     <div>
-        <div class="row">
+        <div class="columns">
 
-            <div class="col-md-2">
-                <select class="form-control" v-model="form.layout">
-                    <option value="" disabled selected>Select layout</option>
-                    <option v-for="(value, key) in layouts" :value="key">{{value}} layout</option>
-                </select>
+            <div class="column is-8">
+                <div class="select">
+                    <select class="form-control" v-model="form.layout">
+                        <option value="" disabled selected>Select layout</option>
+                        <option v-for="(value, key) in layouts" :value="key">{{value}} layout</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-md-10 text-right">
-                <button class="btn btn-default" @click="preview">
+            <div class="column is-4 text-right">
+                <button @click="preview">
                     <font-awesome-icon icon="image"/>
                     Preview
                 </button>
 
-                <button class="btn btn-default" @click="addSection">Add Section</button>
+                <button @click="addSection">Add Section</button>
             </div>
         </div>
 
-        <div id="sectionWrapper">
-            <div class="col-xs-12 mt-2 accordion sectionItem" v-for="(section, index) in form.sections" :id="section.name" :key="section.name">
+        <div id="sectionWrapper" class="columns is-vcentered">
+            <div class="column accordion sectionItem" v-for="(section, index) in form.sections" :id="section.name" :key="section.name">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" placeholder="Section Label" v-model="section.label">
+                    <div class="card-content">
+                        <div class="content">
+                            <div class="column">
+                                <input type="text" class="input" placeholder="Section Label" v-model="section.label">
                             </div>
-                            <div class="col-md-8 text-right">
+                            <div class="column text-right">
                                 <p style="margin-top: 5px;">
                                     <span class="pr-2 clickable" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add Row</span>
                                     <span class="pr-2 clickable" @click="delSection(index)"><font-awesome-icon icon="times"/> Remove Section</span>
