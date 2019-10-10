@@ -1,3 +1,7 @@
+# Fork of vue-form-build with Bulma
+
+~~Bootstrap~~ has been replaced by **Bulma** in this fork
+
 # vue-form-builder
 [![npm version](https://badge.fury.io/js/v-form-builder.svg)](https://www.npmjs.com/package/v-form-builder)
 [![GitHub license](https://img.shields.io/github/license/sethsandaru/vue-form-builder.svg?style=flat-square)](https://github.com/sethsandaru/vue-form-builder/blob/master/LICENSE) ![img](https://img.shields.io/npm/dm/v-form-builder.svg)
@@ -21,7 +25,7 @@ Give this repo a ⭐ (star) if you actually like this and will use it for your d
 
 The library is built & ready for production but if you meet any bugs or issues, feel free to open!
 
-Demo Online: http://vue-form-builder.sethphat.com    
+Demo Online: http://vue-form-builder.sethphat.com
 Demo Project: https://github.com/sethsandaru/demo-vue-form-builder
 
 ## Current version
@@ -60,7 +64,7 @@ npm i v-form-builder --save
 
 NPMJS: [https://www.npmjs.com/package/v-form-builder](https://www.npmjs.com/package/v-form-builder)
 
-**Notes:** 
+**Notes:**
 - For the best experience, please install the latest version!
 - Please don't install the old version below **v1.1.1**. Thank you!
 
@@ -91,7 +95,7 @@ export default {
     <div>
         // form builder template
         <form-builder type="template"></form-builder>
-        
+
         // form builder gui
         <form-builder type="gui" :form="yourConfigFormObject"></form-builder>
     </div>
@@ -168,7 +172,7 @@ Please visit this Repo's Wiki.
         - Select: Ajax data source (URL)
         - Date Picker: date format
         - Time Picker: time format
-    - Update control: 
+    - Update control:
         - Number Control to work properly with the decimal places.
         - Time Picker: change to another time picker with a better APIs + options.
     - Fix a problem that make the Date Picker icon didn't show.
