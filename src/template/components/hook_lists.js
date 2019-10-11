@@ -2,7 +2,7 @@ import {HookListFactory} from 'sethFormBuilder/base/hook_list_factory';
 
 var Hooks = {};
 
-Hooks.Section = {
+Hooks.InputGroup = {
     beforeAdd: HookListFactory.create(),
     afterAdd: HookListFactory.create(),
 

@@ -16,24 +16,24 @@
                     Preview
                 </button>
 
-                <button @click="addSection">Add Section</button>
+                <button @click="addInputGroup">Add Input Group</button>
             </div>
         </div>
 
-        <div id="sectionWrapper" class="columns is-vcentered">
-            <div class="column accordion sectionItem" v-for="(section, index) in form.sections" :id="section.name" :key="section.name">
+        <div id="inputGroupWrapper" class="columns is-vcentered">
+            <div class="column accordion inputGroupItem" v-for="(inputGroup, index) in form.input_groups" :id="inputGroup.name" :key="inputGroup.name">
                 <div class="card">
                     <div class="card-content">
                         <div class="content">
                             <div class="column">
-                                <input type="text" class="input" placeholder="Section Label" v-model="section.label">
+                                <input type="text" class="input" placeholder="Input Group Label" v-model="inputGroup.label">
                             </div>
                             <div class="column text-right">
                                 <p style="margin-top: 5px;">
                                     <span class="pr-2 clickable" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add Row</span>
-                                    <span class="pr-2 clickable" @click="delSection(index)"><font-awesome-icon icon="times"/> Remove Section</span>
-                                    <span class="pr-2 clickable" @click="configSection(index)"><font-awesome-icon icon="cog"/> Section Config</span>
-                                    <span class="clickable collapsed" data-toggle="collapse" :data-target="'#' + section.name + '_body'">
+                                    <span class="pr-2 clickable" @click="delInputGroup(index)"><font-awesome-icon icon="times"/> Remove Input Group</span>
+                                    <span class="pr-2 clickable" @click="configInputGroup(index)"><font-awesome-icon icon="cog"/> Input Group Config</span>
+                                    <span class="clickable collapsed" data-toggle="collapse" :data-target="'#' + inputGroup.name + '_body'">
                                         <i class="fa fa-fw fa-chevron-up"></i>
                                         <i class="fa fa-fw fa-chevron-down"></i>
                                     </span>
@@ -41,9 +41,9 @@
                             </div>
                         </div>
                     </div>
-                    <div :id="section.name + '_body'" class="collapse">
-                        <div class="card-body sectionBody">
-                            <row-component :section="section"></row-component>
+                    <div :id="inputGroup.name + '_body'" class="collapse">
+                        <div class="card-body inputGroupBody">
+                            <row-component :section="inputGroup"></row-component>
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <section-config-modal ref="SectionConfigModal" @updateSectionInfo="updateSectionInfo"></section-config-modal>
+        <section-config-modal ref="SectionConfigModal" @updateSectionInfo="updateInputGroupInfo"></section-config-modal>
     </div>
 </template>
 
@@ -64,107 +64,107 @@
 
     export default {
         components: {SectionConfigModal, RowComponent, FontAwesomeIcon},
-        name: "section-component",
+        name: "input-group-component",
         props: {
             form: {
                 type: Object
             }
         },
         data: () => ({
-            layouts: FORM_CONSTANTS.SectionLayout
+            layouts: FORM_CONSTANTS.InputGroupLayout
         }),
         methods: {
-            addSection() {
-                var sectionInfo = _.cloneDeep(FORM_CONSTANTS.Section);
+            addInputGroup() {
+                var inputGroupInfo = _.cloneDeep(FORM_CONSTANTS.InputGroup);
                 // set uniqueID
-                sectionInfo.name = _.domUniqueID('section_');
-                sectionInfo.clientKey = sectionInfo.name;
+                inputGroupInfo.name = _.domUniqueID('input_group_');
+                inputGroupInfo.clientKey = inputGroupInfo.name;
 
                 // Before hook
-                let b4Run = Hooks.Section.beforeAdd.runSequence(sectionInfo);
+                let b4Run = Hooks.InputGroup.beforeAdd.runSequence(inputGroupInfo);
                 if (b4Run === false) {
                     return;
                 }
 
-                this.form.sections.push(sectionInfo);
+                this.form.input_groups.push(inputGroupInfo);
 
                 // After hook
-                Hooks.Section.afterAdd.run(sectionInfo);
+                Hooks.InputGroup.afterAdd.run(inputGroupInfo);
             },
-            delSection(secIndex) {
+            delInputGroup(secIndex) {
                 // make sure no dependencies
-                if (this.form.sections[secIndex].rows.length > 0) {
-                    SethPhatToaster.error("Can't remove this section because it's still have row(s) inside.");
+                if (this.form.input_groups[secIndex].rows.length > 0) {
+                    SethPhatToaster.error("Can't remove this input group because it's still have row(s) inside.");
                     return;
                 }
 
-                var sectionInfo = this.form.sections[secIndex];
-                let beforeRun = Hooks.Section.beforeRemove.runSequence(sectionInfo);
+                var inputGroupInfo = this.form.input_groups[secIndex];
+                let beforeRun = Hooks.InputGroup.beforeRemove.runSequence(inputGroupInfo);
                 if (beforeRun === false) {
                     return;
                 }
 
-                // remove section
-                this.form.sections.splice(secIndex, 1);
+                // remove input group
+                this.form.input_groups.splice(secIndex, 1);
 
                 // final hook
-                Hooks.Section.afterRemove.run(sectionInfo);
+                Hooks.InputGroup.afterRemove.run(inputGroupInfo);
             },
-            configSection(secIndex) {
-                var sectionInfo = this.form.sections[secIndex];
-                this.$refs.SectionConfigModal.openModal(sectionInfo, secIndex);
+            configInputGroup(secIndex) {
+                var inputGroupInfo = this.form.input_groups[secIndex];
+                this.$refs.SectionConfigModal.openModal(inputGroupInfo, secIndex);
             },
-            traverseSection() {
+            traverseInputGroup() {
                 let self = this;
 
                 // prepare data
-                var items = $(this.$el).find("#sectionWrapper .sectionItem");
+                var items = $(this.$el).find("#inputGroupWrapper .inputGroupItem");
                 var finalItems = [];
 
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var sectionItem = _.find(self.form.sections, {name: id});
-                    sectionItem.order = index;
-                    finalItems.push(sectionItem);
+                    var inputGroupItem = _.find(self.form.input_groups, {name: id});
+                    inputGroupItem.order = index;
+                    finalItems.push(inputGroupItem);
                 });
 
-                // reset the current sections
-                this.form.sections = finalItems;
+                // reset the current input groups
+                this.form.input_groups = finalItems;
             },
             addRow(secIndex) {
                 var rowInfo = _.cloneDeep(FORM_CONSTANTS.Row);
 
                 // general row_name (id)
-                rowInfo.name = _.domUniqueID(this.form.sections[secIndex].name + '_row_');
+                rowInfo.name = _.domUniqueID(this.form.input_groups[secIndex].name + '_row_');
 
                 // before hook
-                let b4Run = Hooks.Row.beforeAdd.runSequence(rowInfo, this.form.sections[secIndex]);
+                let b4Run = Hooks.Row.beforeAdd.runSequence(rowInfo, this.form.input_groups[secIndex]);
                 if (b4Run === false) {
                     return;
                 }
 
-                this.form.sections[secIndex].rows.push(rowInfo);
+                this.form.input_groups[secIndex].rows.push(rowInfo);
 
                 // after hook
-                Hooks.Row.afterAdd.run(rowInfo, this.form.sections[secIndex]);
+                Hooks.Row.afterAdd.run(rowInfo, this.form.input_groups[secIndex]);
             },
             preview() {
                 this.$parent.preview();
             },
-            updateSectionInfo(sectionInfo, index) {
-                _.deepExtend(this.form.sections[index], sectionInfo);
+            updateInputGroupInfo(inputGroupInfo, index) {
+                _.deepExtend(this.form.input_groups[index], inputGroupInfo);
             }
         },
         mounted() {
             let self = this;
 
-            $("#sectionWrapper").sortable({
+            $("#inputGroupWrapper").sortable({
                 cursor: "move",
                 delay: 200,
                 placeholder: "ui-state-highlight",
                 update: function (event, ui) {
-                    self.traverseSection();
+                    self.traverseInputGroup();
                 },
                 start: function(e, ui){
                     ui.placeholder.height(ui.item.height());
@@ -180,7 +180,7 @@
 </script>
 
 <style scoped>
-    .sectionBody {
+    .inputGroupBody {
         /*padding: 30px 0;*/
         border-bottom: 1px solid rgba(0,0,0,.125);
     }

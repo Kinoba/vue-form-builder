@@ -8,13 +8,13 @@ import {faDatabase} from '@fortawesome/free-solid-svg-icons/faDatabase';
 var FORM_CONSTANTS = {};
 var CONTROL_CONSTANTS = {};
 
-FORM_CONSTANTS.SectionLayout = {
+FORM_CONSTANTS.InputGroupLayout = {
   collapse: "Collapse",
   tab: "Tab",
   // inner: "Inner Parent",
 };
 
-FORM_CONSTANTS.Section = {
+FORM_CONSTANTS.InputGroup = {
     name: "",
     label: "",
     clientKey: "",

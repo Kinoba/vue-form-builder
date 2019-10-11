@@ -50,9 +50,10 @@
             form: {
                 type: Object,
                 default:() => ({
-                    sections: [],
-                    layout: "",
-                    _uniqueId: Math.random()
+                    uuid: Math.random(),
+                    title: '',
+                    input_groups: [],
+                    layout: ""
                 })
             },
             value: null,

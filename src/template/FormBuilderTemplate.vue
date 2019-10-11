@@ -1,7 +1,7 @@
 <template>
     <div class="columns" style="margin: 0 20px;">
         <div class="column is-9">
-            <section-component :form="form" ref="SectionComponent"></section-component>
+            <input-group-component :form="form" ref="InputGroupComponent"></input-group-component>
         </div>
         <div class="column is-3">
             <sidebar-component></sidebar-component>
@@ -12,16 +12,17 @@
 </template>
 
 <script>
-    import SectionComponent from "./ui/SectionComponent";
+    import InputGroupComponent from "./ui/InputGroupComponent";
     import { dom } from '@fortawesome/fontawesome-svg-core'
     import SidebarComponent from "./ui/SidebarComponent";
     import PreviewComponent from "./ui/PreviewComponent";
     dom.watch();
 
     var default_form_value = () => ({
-        sections: [],
-        layout: "",
-        _uniqueId: Math.random()
+        uuid: Math.random(),
+        title: '',
+        input_groups: [],
+        layout: ""
     });
 
     export default {
@@ -29,7 +30,7 @@
         components: {
             PreviewComponent,
             SidebarComponent,
-            SectionComponent
+            InputGroupComponent
         },
         props: {
             form: {
