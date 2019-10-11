@@ -51,19 +51,19 @@
             </div>
         </div>
 
-        <section-config-modal ref="SectionConfigModal" @updateSectionInfo="updateInputGroupInfo"></section-config-modal>
+        <input-group-config-modal ref="inputGroupConfigModal" @updateInputGroupInfo="updateInputGroupInfo"></input-group-config-modal>
     </div>
 </template>
 
 <script>
     import {FORM_CONSTANTS} from "sethFormBuilder/config/constants";
     import RowComponent from "./RowComponent";
-    import SectionConfigModal from "./common/SectionConfigModal";
+    import InputGroupConfigModal from "./common/InputGroupConfigModal";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
 
     export default {
-        components: {SectionConfigModal, RowComponent, FontAwesomeIcon},
+        components: {InputGroupConfigModal, RowComponent, FontAwesomeIcon},
         name: "input-group-component",
         props: {
             form: {
@@ -112,7 +112,7 @@
             },
             configInputGroup(secIndex) {
                 var inputGroupInfo = this.form.input_groups[secIndex];
-                this.$refs.SectionConfigModal.openModal(inputGroupInfo, secIndex);
+                this.$refs.inputGroupConfigModal.openModal(inputGroupInfo, secIndex);
             },
             traverseInputGroup() {
                 let self = this;
