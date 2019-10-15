@@ -1,22 +1,8 @@
 <template>
     <div>
         <div class="columns">
-
-            <div class="column is-8">
-                <div class="select">
-                    <select class="form-control" v-model="form.layout">
-                        <option value="" disabled selected>Select layout</option>
-                        <option v-for="(value, key) in layouts" :value="key">{{value}} layout</option>
-                    </select>
-                </div>
-            </div>
-            <div class="column is-4 text-right">
-                <button @click="preview">
-                    <font-awesome-icon icon="image"/>
-                    Preview
-                </button>
-
-                <button @click="addInputGroup">Add Input Group</button>
+            <div class="column is-12">
+                <button class="button is-primary" @click="addInputGroup">Add Input Group</button>
             </div>
         </div>
 
