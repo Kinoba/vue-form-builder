@@ -37,7 +37,7 @@
 </template>
 
 <script>
-    import {CONTROL_CONSTANTS} from "sethFormBuilder/config/constants";
+    import {INPUT_CONSTANTS} from "sethFormBuilder/config/constants";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/gui/components/hook_lists';
     import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
@@ -72,7 +72,7 @@
 
             // today value or not
             if (this.control.isTodayValue) {
-                this.control.value = (moment().format(CONTROL_CONSTANTS.DateFormat[this.control.dateFormat]));
+                this.control.value = (moment().format(INPUT_CONSTANTS.DateFormat[this.control.dateFormat]));
             }
         },
         mounted() {

@@ -8,8 +8,8 @@
             </div>
 
             <div id="sidebarControls">
-                    <a href="javascript:void(0)" class="panel-block list-group-item list-group-item-action control-wrapper bd-notification"
-                   v-for="(obj, value) in controls" :data-control-type="value">
+                    <a href="javascript:void(0)" class="panel-block list-group-item list-group-item-action input-wrapper bd-notification"
+                   v-for="(obj, value) in controls" :data-input-type="value">
                         <font-awesome-icon :icon="obj.icon"></font-awesome-icon> {{obj.label}}
                     </a>
             </div>

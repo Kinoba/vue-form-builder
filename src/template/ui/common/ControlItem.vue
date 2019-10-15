@@ -1,6 +1,6 @@
 <template>
-    <div class="controlItemWrapper" :class="control.className" @dblclick="openConfig" :data-control-name="control.name">
-        <div class="controlItem row" :id="control.name" v-if="labelPosition === 'left'">
+    <div class="inputItemWrapper" :class="control.className" @dblclick="openConfig" :data-input-name="control.name">
+        <div class="inputItem row" :id="control.name" v-if="labelPosition === 'left'">
             <div class="col-md-4">
                 <label :class="{'bold': control.labelBold, 'italic': control.labelItalic, 'underline': control.labelUnderline}">
                     {{control.label}}
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="controlItem row" :id="control.name" v-else>
+        <div class="inputItem row" :id="control.name" v-else>
             <div class="form-group col-md-12">
                 <label :class="{'bold': control.labelBold, 'italic': control.labelItalic, 'underline': control.labelUnderline}">
                     {{control.label}}
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-    import {FORM_CONSTANTS, CONTROL_CONSTANTS} from "sethFormBuilder/config/constants";
+    import {FORM_CONSTANTS, INPUT_CONSTANTS} from "sethFormBuilder/config/constants";
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
     import {ControlHandler} from 'sethFormBuilder/template/handler/control_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -165,12 +165,12 @@
                         return "Text here";
                     case 'datepicker':
                         if (this.control.isTodayValue) {
-                            return moment().format(CONTROL_CONSTANTS.DateFormat[this.control.dateFormat]);
+                            return moment().format(INPUT_CONSTANTS.DateFormat[this.control.dateFormat]);
                         }
                         break;
                     case 'timepicker':
                         if (this.control.isNowTimeValue) {
-                            return moment().format(CONTROL_CONSTANTS.TimeFormat[this.control.timeFormat]);
+                            return moment().format(INPUT_CONSTANTS.TimeFormat[this.control.timeFormat]);
                         }
                         break;
                     case 'number':
@@ -199,12 +199,12 @@
 
 <style scoped>
 
-    .controlItemWrapper {
+    .inputItemWrapper {
         border: 1px solid silver;
         padding:0;
     }
 
-    .controlItem {
+    .inputItem {
         margin: 0;
         padding: 10px;
         padding-left: 0;

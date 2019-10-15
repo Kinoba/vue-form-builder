@@ -15,12 +15,12 @@ import GUITextControl from 'sethFormBuilder/gui/ui/controls/TextControl';
 import GUITimePickerControl from 'sethFormBuilder/gui/ui/controls/TimePickerControl';
 
 // TEMPLATE Control
-import TEMPLATETextControl from 'sethFormBuilder/template/ui/common/controls/TextControl';
-import TEMPLATENumberControl from 'sethFormBuilder/template/ui/common/controls/NumberControl';
-import TEMPLATECheckboxControl from 'sethFormBuilder/template/ui/common/controls/CheckboxControl';
-import TEMPLATEDatePickerControl from 'sethFormBuilder/template/ui/common/controls/DatePickerControl';
-import TEMPLATETimePickerControl from 'sethFormBuilder/template/ui/common/controls/TimePickerControl';
-import TEMPLATESelectControl from 'sethFormBuilder/template/ui/common/controls/SelectControl';
+import TEMPLATETextControl from 'sethFormBuilder/template/ui/common/inputs/TextControl';
+import TEMPLATENumberControl from 'sethFormBuilder/template/ui/common/inputs/NumberControl';
+import TEMPLATECheckboxControl from 'sethFormBuilder/template/ui/common/inputs/CheckboxControl';
+import TEMPLATEDatePickerControl from 'sethFormBuilder/template/ui/common/inputs/DatePickerControl';
+import TEMPLATETimePickerControl from 'sethFormBuilder/template/ui/common/inputs/TimePickerControl';
+import TEMPLATESelectControl from 'sethFormBuilder/template/ui/common/inputs/SelectControl';
 
 // CONFIG CONTROL
 import SIDEBARDatePickerControl from 'sethFormBuilder/template/ui/sidebar_items/DatePickerConfigComponent';

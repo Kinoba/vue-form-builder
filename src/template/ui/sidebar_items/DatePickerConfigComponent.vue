@@ -17,7 +17,7 @@
 
 <script>
     import Select2Control from "sethFormBuilder/third_party_controls/Select2Control";
-    import {CONTROL_CONSTANTS} from "sethFormBuilder/config/constants";
+    import {INPUT_CONSTANTS} from "sethFormBuilder/config/constants";
 
     export default {
         name: "DatePickerConfigComponent",
@@ -31,7 +31,7 @@
             dateFormatOptions: [],
         }),
         created() {
-            this.dateFormatOptions = _.map(CONTROL_CONSTANTS.DateFormat, (value, key) => {
+            this.dateFormatOptions = _.map(INPUT_CONSTANTS.DateFormat, (value, key) => {
                 return key;
             });
         },

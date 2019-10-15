@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import {CONTROL_CONSTANTS} from "sethFormBuilder/config/constants";
+    import {INPUT_CONSTANTS} from "sethFormBuilder/config/constants";
     import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/gui/components/hook_lists';
@@ -63,7 +63,7 @@
             }
 
             if (this.control.isNowTimeValue) {
-                this.control.value = moment().format(CONTROL_CONSTANTS.TimeFormat[this.control.timeFormat]);
+                this.control.value = moment().format(INPUT_CONSTANTS.TimeFormat[this.control.timeFormat]);
             }
 
         },

@@ -1,5 +1,5 @@
 <template>
-    <div class="controlItemWrapper" :class="control.className" :data-control-name="control.name">
+    <div class="controlItemWrapper" :class="control.className" :data-input-name="control.name">
         <div class="controlItem row" :id="control.name" v-if="labelPosition === 'left'">
             <div class="col-md-4">
                 <label :class="{'bold': control.labelBold, 'italic': control.labelItalic, 'underline': control.labelUnderline}">
@@ -9,8 +9,7 @@
             <div class="col-md-8 input-group">
                 <input type="text" class="form-control"
                        :readonly="control.readonly"
-                       :name="control.fieldName"
-                       :value="demo_value">
+                       :name="control.fieldName">
 
                 <div class="input-group-append">
                         <span class="input-group-text">
@@ -27,8 +26,7 @@
                 <div class="input-group">
                     <input type="text" class="form-control"
                            :readonly="control.readonly"
-                           :name="control.fieldName"
-                           :value="demo_value">
+                           :name="control.fieldName">
 
                     <div class="input-group-append">
                         <span class="input-group-text">
@@ -42,30 +40,46 @@
 </template>
 
 <script>
-    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
+    import {CONTROL_TYPES} from "sethFormBuilder/config/input_constant";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {
-        name: "NumberControl",
+        name: "DatePickerControl",
         props: ['control', 'labelPosition'],
         components: {FontAwesomeIcon},
         data: () => ({
-            icon: INPUT_TYPES.number.icon
+            $control: null,
+            icon: CONTROL_TYPES.datepicker.icon
         }),
-        computed: {
-            demo_value() {
-                if (!_.isEmpty(this.control.defaultValue)) {
-                    return this.control.defaultValue;
+        watch: {
+            "control.defaultValue": function(val) {
+                if (!this.$control) {
+                    return;
                 }
 
-                if (this.control.isInteger) {
-                    return 0;
-                } else {
-                    let decimal = parseInt(this.control.decimalPlace);
-                    let x = 0;
-                    return x.toFixed(decimal);
-                }
+                this.$control.val(val);
             }
+        },
+        methods: {
+            configUpdated() {
+                this.$control.datepicker("option", "dateFormat", this.control.dateFormat);
+            }
+        },
+        mounted() {
+            let self = this;
+            this.$control = $(this.$el).find("input");
+            this.$control.datepicker({
+                dateFormat: this.control.dateFormat,
+                beforeShow:function(input) {
+                    // read only can't choose
+                    if (self.control.readonly) {
+                        return false;
+                    }
+                }
+            });
+        },
+        beforeDestroy() {
+            this.$control.datepicker('destroy');
         }
     }
 </script>

@@ -6,7 +6,7 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons/faCheck';
 import {faDatabase} from '@fortawesome/free-solid-svg-icons/faDatabase';
 
 var FORM_CONSTANTS = {};
-var CONTROL_CONSTANTS = {};
+var INPUT_CONSTANTS = {};
 
 FORM_CONSTANTS.InputGroupLayout = {
   collapse: "Collapse",
@@ -38,8 +38,8 @@ FORM_CONSTANTS.Row = {
     controls: [],
 };
 
-FORM_CONSTANTS.Control = {
-    type: "",
+FORM_CONSTANTS.Input = {
+    input_type: "",
     name: "",
     fieldName: "",
     label: "",
@@ -129,7 +129,7 @@ FORM_CONSTANTS.OptionDefault = {
     text: ""
 };
 
-CONTROL_CONSTANTS.DateFormat = {
+INPUT_CONSTANTS.DateFormat = {
     // rule: date picker format => moment format
     'dd/mm/yy': "D/M/YYYY",
     'dd-mm-yy': "D-M-YYYY",
@@ -139,7 +139,7 @@ CONTROL_CONSTANTS.DateFormat = {
     'yy-mm-dd': "YYYY-M-D",
 };
 
-CONTROL_CONSTANTS.TimeFormat = {
+INPUT_CONSTANTS.TimeFormat = {
     'H:m': 'H:m',
     'HH:mm': 'HH:mm',
     'h:m p': "h:m A",
@@ -148,5 +148,5 @@ CONTROL_CONSTANTS.TimeFormat = {
 
 export {
     FORM_CONSTANTS,
-    CONTROL_CONSTANTS
+    INPUT_CONSTANTS
 }

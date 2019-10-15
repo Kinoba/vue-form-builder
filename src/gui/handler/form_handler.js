@@ -237,7 +237,7 @@ FormHandler.recorrectStructure = function (form) {
                 let staticSource = _.cloneDeep(controlInfo.dataOptions);
 
                 // extend
-                rowInfo.controls[index] = _.extend(_.cloneDeep(FORM_CONSTANTS.Control), controlInfo);
+                rowInfo.controls[index] = _.extend(_.cloneDeep(FORM_CONSTANTS.Input), controlInfo);
 
                 // special information need to clone
                 rowInfo.controls[index].dataOptions = staticSource;

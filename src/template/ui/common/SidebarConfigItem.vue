@@ -172,7 +172,7 @@
 </template>
 
 <script>
-    import {FORM_CONSTANTS, CONTROL_CONSTANTS} from "sethFormBuilder/config/constants";
+    import {FORM_CONSTANTS, INPUT_CONSTANTS} from "sethFormBuilder/config/constants";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import Select2Control from "sethFormBuilder/third_party_controls/Select2Control";
     import SelectAjaxModal from "sethFormBuilder/template/ui/common/sidebar_config/SelectAjaxModal";
@@ -205,10 +205,10 @@
             }
         },
         created() {
-            this.dateFormatOptions = _.map(CONTROL_CONSTANTS.DateFormat, (value, key) => {
+            this.dateFormatOptions = _.map(INPUT_CONSTANTS.DateFormat, (value, key) => {
                 return key;
             });
-            this.timeFormatOptions = _.map(CONTROL_CONSTANTS.TimeFormat, (value, key) => {
+            this.timeFormatOptions = _.map(INPUT_CONSTANTS.TimeFormat, (value, key) => {
                 return key;
             });
         },

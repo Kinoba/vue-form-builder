@@ -37,14 +37,14 @@
         },
         data: () => ({
             INPUT_TYPES,
-            editing_control: null,
+            editing_input: null,
         }),
         methods: {
             addInput(inputType) {
-                var inputInfo = _.cloneDeep(FORM_CONSTANTS.Control);
-                inputInfo.type = inputType;
+                var inputInfo = _.cloneDeep(FORM_CONSTANTS.Input);
+                inputInfo.input_type = inputType;
                 // generate id
-                inputInfo.name = _.domUniqueID(`control_${inputType}_`);
+                inputInfo.name = _.domUniqueID(`input_${inputType}_`);
                 inputInfo.label = FORM_CONSTANTS.Type[inputType].label;
                 inputInfo.fieldName = inputInfo.name; // same for both
 
@@ -62,7 +62,7 @@
                 }
 
                 // add to row
-                this.row.controls.push(inputInfo);
+                this.row.inputs.push(inputInfo);
 
                 // after hook
                 Hooks.Control.afterAdd.run(inputInfo, this.row);
@@ -71,81 +71,81 @@
                 let self = this;
 
                 // prepare data
-                var items = $(this.$el).find('.controlItem');
+                var items = $(this.$el).find('.inputItem');
                 var finalItems = [];
 
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var inputItem = _.find(self.row.controls, {name: id});
-                    controlItem.order = index;
+                    var inputItem = _.find(self.row.inputs, {name: id});
+                    inputItem.order = index;
                     finalItems.push(inputItem);
                 });
 
                 // reset the current sections
-                this.row.controls = finalItems;
+                this.row.inputs = finalItems;
             },
             removeRow(id) {
                 this.$emit('removeRow', id);
             },
 
-            // control
+            // input
             openConfig(inputInfo) {
                 ControlHandler.clearSelect();
                 ControlHandler.setSelect(inputInfo.name);
-                this.editing_control = inputInfo;
+                this.editing_input = inputInfo;
                 eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(inputInfo));
             }
         },
         created() {
             let self = this;
 
-            // remove control bus
+            // remove input bus
             eventBus.$on(EventHandlerConstant.REMOVE_CONTROL, ui => {
                 // prepare data
-                var id = ui.helper.attr('data-control-name');
-                var inputIndex = _.findIndex(this.row.controls, {name: id});
+                var id = ui.helper.attr('data-input-name');
+                var inputIndex = _.findIndex(this.row.inputs, {name: id});
 
                 if (inputIndex < 0) {
                     return;
                 }
 
                 // before hook
-                var inputInfo = this.row.controls[inputIndex];
+                var inputInfo = this.row.inputs[inputIndex];
                 let beforeRun = Hooks.Control.beforeRemove.runSequence(inputInfo);
                 if (beforeRun === false) {
                     return;
                 }
 
-                // remove control
-                this.row.controls.splice(inputIndex, 1);
+                // remove input
+                this.row.inputs.splice(inputIndex, 1);
 
                 // after hook
                 Hooks.Control.afterRemove.run(inputInfo);
             });
 
-            // update control bus
-            eventBus.$on(EventHandlerConstant.ON_APPLY_EDITOR_SIDEBAR, control => {
-                //var oldInput = _.find(this.row.controls, {name: control.name});
-                let inputIndex = _.findIndex(self.row.controls, {name: control.name});
-                if (inputIndex <= -1 || self.row.controls[inputIndex].name !== self.editing_control.name) {
+            // update input bus
+            eventBus.$on(EventHandlerConstant.ON_APPLY_EDITOR_SIDEBAR, input => {
+                //var oldInput = _.find(this.row.input, {name: input.name});
+                let inputIndex = _.findIndex(self.row.input, {uuid: input.uuid});
+                if (inputIndex <= -1 || self.row.input[inputIndex].uuid !== self.editing_input.uuid) {
                     return;
                 }
 
-                let oldInput = self.row.controls[inputIndex];
+                let oldInput = self.row.input[inputIndex];
                 // check if existed name in this section
-                if (control.fieldName !== oldInput.fieldName && ControlHandler.isControlNameExisted(self.row.uuid, control.fieldName)) {
+                if (input.fieldName !== oldInput.fieldName && ControlHandler.isControlNameExisted(self.row.uuid, input.fieldName)) {
                     SethPhatToaster.error("This field Name is already existed in the current section.");
                     return;
                 }
 
                 // replace value
-                var inputInfo = _.cloneDeep(control);
+                var inputInfo = _.cloneDeep(input);
                 _.each(inputInfo, (value, key) => {
-                    self.row.controls[inputIndex][key] = value;
+                    self.row.input[inputIndex][key] = value;
                 });
 
-                // update gui for specific control
+                // update gui for specific input
                 if (self.$refs[inputInfo.name]) {
                     if (_.isFunction(self.$refs[inputInfo.name].configUpdated)) {
                         self.$refs[inputInfo.name].configUpdated();
@@ -161,9 +161,9 @@
         mounted() {
             let self = this;
             $(this.$el).droppable({
-                accept: ".control-wrapper",
+                accept: ".input-wrapper",
                 drop: function (event, ui){
-                    self.addInput($(ui.draggable[0]).attr('data-control-type'));
+                    self.addInput($(ui.draggable[0]).attr('data-input-type'));
                 },
                 over: function( event, ui ) {
                     ui.helper.css('border', '1px solid green');
