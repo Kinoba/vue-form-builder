@@ -42,7 +42,7 @@
 <script>
     import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
-    import {ControlHandler} from 'sethFormBuilder/template/handler/control_handler';
+    import {InputHandler} from 'sethFormBuilder/template/handler/input_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
     import BaseConfigComponent from "./sidebar_items/BaseConfigComponent";
@@ -61,10 +61,10 @@
             closeEditSidebar() {
                 this.isConfig = false;
                 this.controlInfo = null;
-                ControlHandler.clearSelect();
+                InputHandler.clearSelect();
             },
             applyEditSidebar() {
-                if (this.controlInfo.name !== ControlHandler.getSelectedItem()) {
+                if (this.controlInfo.name !== InputHandler.getSelectedItem()) {
                     return;
                 }
 

@@ -41,8 +41,8 @@
             },
             removeRow(id) {
                 var rowIndex = _.findIndex(this.inputGroup.rows, {uuid: id});
-                if (this.inputGroup.rows[rowIndex].controls.length > 0) {
-                    SethPhatToaster.error("Can't remove this row because it's still have controls inside.");
+                if (this.inputGroup.rows[rowIndex].inputs.length > 0) {
+                    SethPhatToaster.error("Can't remove this row because it's still have inputs inside.");
                     return;
                 }
 

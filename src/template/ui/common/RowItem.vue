@@ -8,7 +8,7 @@
         <component v-for="(input, index) in row.inputs"
                    :is="INPUT_TYPES[input.input_type].source.template"
                    :key="input.uuid"
-                   :control="input"
+                   :input="input"
                    @dblclick.native="openConfig(input)"
                    :ref="input.uuid"
                    :label-position="labelPosition">
@@ -23,7 +23,7 @@
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
-    import {ControlHandler} from 'sethFormBuilder/template/handler/control_handler';
+    import {InputHandler} from 'sethFormBuilder/template/handler/input_handler';
 
     export default {
         components: {FontAwesomeIcon},
@@ -91,8 +91,8 @@
 
             // input
             openConfig(inputInfo) {
-                ControlHandler.clearSelect();
-                ControlHandler.setSelect(inputInfo.name);
+                InputHandler.clearSelect();
+                InputHandler.setSelect(inputInfo.name);
                 this.editing_input = inputInfo;
                 eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(inputInfo));
             }
@@ -134,7 +134,7 @@
 
                 let oldInput = self.row.input[inputIndex];
                 // check if existed name in this section
-                if (input.fieldName !== oldInput.fieldName && ControlHandler.isControlNameExisted(self.row.uuid, input.fieldName)) {
+                if (input.fieldName !== oldInput.fieldName && InputHandler.isControlNameExisted(self.row.uuid, input.fieldName)) {
                     SethPhatToaster.error("This field Name is already existed in the current section.");
                     return;
                 }
@@ -154,7 +154,7 @@
 
                 // replace
                 this.$nextTick(() => {
-                    ControlHandler.setSelect(oldInput.name);
+                    InputHandler.setSelect(oldInput.name);
                 });
             });
         },

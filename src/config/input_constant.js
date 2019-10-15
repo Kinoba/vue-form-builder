@@ -15,12 +15,12 @@ import GUITextControl from 'sethFormBuilder/gui/ui/controls/TextControl';
 import GUITimePickerControl from 'sethFormBuilder/gui/ui/controls/TimePickerControl';
 
 // TEMPLATE Control
-import TEMPLATETextControl from 'sethFormBuilder/template/ui/common/inputs/TextControl';
-import TEMPLATENumberControl from 'sethFormBuilder/template/ui/common/inputs/NumberControl';
-import TEMPLATECheckboxControl from 'sethFormBuilder/template/ui/common/inputs/CheckboxControl';
-import TEMPLATEDatePickerControl from 'sethFormBuilder/template/ui/common/inputs/DatePickerControl';
-import TEMPLATETimePickerControl from 'sethFormBuilder/template/ui/common/inputs/TimePickerControl';
-import TEMPLATESelectControl from 'sethFormBuilder/template/ui/common/inputs/SelectControl';
+import TEMPLATETextInput from 'sethFormBuilder/template/ui/common/inputs/TextInput';
+import TEMPLATENumberInput from 'sethFormBuilder/template/ui/common/inputs/NumberInput';
+import TEMPLATECheckboxInput from 'sethFormBuilder/template/ui/common/inputs/CheckboxInput';
+import TEMPLATEDatePickerInput from 'sethFormBuilder/template/ui/common/inputs/DatePickerInput';
+import TEMPLATETimePickerInput from 'sethFormBuilder/template/ui/common/inputs/TimePickerInput';
+import TEMPLATESelectInput from 'sethFormBuilder/template/ui/common/inputs/SelectInput';
 
 // CONFIG CONTROL
 import SIDEBARDatePickerControl from 'sethFormBuilder/template/ui/sidebar_items/DatePickerConfigComponent';
@@ -47,7 +47,7 @@ const INPUT_TYPES = {
         icon: faEdit,
         source: {
             gui: GUITextControl,
-            template: TEMPLATETextControl,
+            template: TEMPLATETextInput,
             config: SIDEBARTextControl
         }
     },
@@ -56,7 +56,7 @@ const INPUT_TYPES = {
         icon: faCalculator,
         source: {
             gui: GUINumberControl,
-            template: TEMPLATENumberControl,
+            template: TEMPLATENumberInput,
             config: SIDEBARNumberControl
         }
     },
@@ -65,7 +65,7 @@ const INPUT_TYPES = {
         icon: faCalendarAlt,
         source: {
             gui: GUIDatePickerControl,
-            template: TEMPLATEDatePickerControl,
+            template: TEMPLATEDatePickerInput,
             config: SIDEBARDatePickerControl,
         }
     },
@@ -74,7 +74,7 @@ const INPUT_TYPES = {
         icon: faClock,
         source: {
             gui: GUITimePickerControl,
-            template: TEMPLATETimePickerControl,
+            template: TEMPLATETimePickerInput,
             config: SIDEBARTimePickerControl,
         }
     },
@@ -83,7 +83,7 @@ const INPUT_TYPES = {
         icon: faDatabase,
         source: {
             gui: GUISelectControl,
-            template: TEMPLATESelectControl,
+            template: TEMPLATESelectInput,
             config: SIDEBARSelectControl
         }
     },
@@ -92,7 +92,7 @@ const INPUT_TYPES = {
         icon: faCheck,
         source: {
             gui: GUICheckboxControl,
-            template: TEMPLATECheckboxControl,
+            template: TEMPLATECheckboxInput,
             config: SIDEBARCheckboxControl
         }
     }

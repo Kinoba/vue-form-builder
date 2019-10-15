@@ -70,7 +70,7 @@
 <script>
     import {FORM_CONSTANTS, INPUT_CONSTANTS} from "sethFormBuilder/config/constants";
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
-    import {ControlHandler} from 'sethFormBuilder/template/handler/control_handler';
+    import {InputHandler} from 'sethFormBuilder/template/handler/input_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {
@@ -88,8 +88,8 @@
         }),
         methods: {
             openConfig() {
-                ControlHandler.clearSelect();
-                ControlHandler.setSelect(this.control.name);
+                InputHandler.clearSelect();
+                InputHandler.setSelect(this.control.name);
                 eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(this.control));
             },
             updating() {
@@ -105,7 +105,7 @@
                 }
 
                 // check if existed name in this section
-                if (control.fieldName !== oldControl.fieldName && ControlHandler.isControlNameExisted(this.$parent.row.name, control.fieldName)) {
+                if (control.fieldName !== oldControl.fieldName && InputHandler.isControlNameExisted(this.$parent.row.name, control.fieldName)) {
                     SethPhatToaster.error("This field Name is already existed in the current section.");
                     return;
                 }
@@ -127,7 +127,7 @@
 
                 // make sure that after re-render, this control still selected in order to update later...
                 this.$nextTick(() => {
-                    ControlHandler.setSelect(this.control.name);
+                    InputHandler.setSelect(this.control.name);
                 });
             });
         },

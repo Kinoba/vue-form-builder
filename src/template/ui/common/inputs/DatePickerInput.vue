@@ -1,15 +1,15 @@
 <template>
-    <div class="controlItemWrapper" :class="control.className" :data-input-name="control.name">
-        <div class="controlItem row" :id="control.name" v-if="labelPosition === 'left'">
+    <div class="inputItemWrapper" :class="input.className" :data-input-name="input.name">
+        <div class="inputItem row" :id="input.name" v-if="labelPosition === 'left'">
             <div class="col-md-4">
-                <label :class="{'bold': control.labelBold, 'italic': control.labelItalic, 'underline': control.labelUnderline}">
-                    {{control.label}}
+                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                    {{input.label}}
                 </label>
             </div>
             <div class="col-md-8 input-group">
                 <input type="text" class="form-control"
-                       :readonly="control.readonly"
-                       :name="control.fieldName">
+                       :readonly="input.readonly"
+                       :name="input.fieldName">
 
                 <div class="input-group-append">
                         <span class="input-group-text">
@@ -18,15 +18,15 @@
                 </div>
             </div>
         </div>
-        <div class="controlItem row" :id="control.name" v-else>
+        <div class="inputItem row" :id="input.name" v-else>
             <div class="form-group col-md-12">
-                <label :class="{'bold': control.labelBold, 'italic': control.labelItalic, 'underline': control.labelUnderline}">
-                    {{control.label}}
+                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                    {{input.label}}
                 </label>
                 <div class="input-group">
                     <input type="text" class="form-control"
-                           :readonly="control.readonly"
-                           :name="control.fieldName">
+                           :readonly="input.readonly"
+                           :name="input.fieldName">
 
                     <div class="input-group-append">
                         <span class="input-group-text">
@@ -40,46 +40,46 @@
 </template>
 
 <script>
-    import {CONTROL_TYPES} from "sethFormBuilder/config/input_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {
-        name: "DatePickerControl",
-        props: ['control', 'labelPosition'],
+        name: "DatePickerInput",
+        props: ['input', 'labelPosition'],
         components: {FontAwesomeIcon},
         data: () => ({
-            $control: null,
-            icon: CONTROL_TYPES.datepicker.icon
+            $input: null,
+            icon: INPUT_TYPES.datepicker.icon
         }),
         watch: {
-            "control.defaultValue": function(val) {
-                if (!this.$control) {
+            "input.defaultValue": function(val) {
+                if (!this.$input) {
                     return;
                 }
 
-                this.$control.val(val);
+                this.$input.val(val);
             }
         },
         methods: {
             configUpdated() {
-                this.$control.datepicker("option", "dateFormat", this.control.dateFormat);
+                this.$input.datepicker("option", "dateFormat", this.input.dateFormat);
             }
         },
         mounted() {
             let self = this;
-            this.$control = $(this.$el).find("input");
-            this.$control.datepicker({
-                dateFormat: this.control.dateFormat,
+            this.$input = $(this.$el).find("input");
+            this.$input.datepicker({
+                dateFormat: this.input.dateFormat,
                 beforeShow:function(input) {
                     // read only can't choose
-                    if (self.control.readonly) {
+                    if (self.input.readonly) {
                         return false;
                     }
                 }
             });
         },
         beforeDestroy() {
-            this.$control.datepicker('destroy');
+            this.$input.datepicker('destroy');
         }
     }
 </script>
