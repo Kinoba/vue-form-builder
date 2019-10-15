@@ -1,39 +1,33 @@
 <template>
     <div>
-        <div class="columns">
-            <div class="column is-12">
-                <button class="button is-primary" @click="addInputGroup">Add Input Group</button>
+        <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in form.input_groups">
+            <div class="inputGroupItem" :id="inputGroup.name" :key="inputGroup.name">
+                <div class="column is-12 field has-text-left">
+                    <label class="label">Input Group</label>
+                    <div class="control">
+                        <input type="text" class="input" placeholder="Enter input group label" v-model="inputGroup.label">
+                    </div>
+                </div>
+                <div class="column is-12 input-group-button-bar has-text-left">
+                    <button class="button is-secondary is-pulled-right" @click="configInputGroup(index)"><font-awesome-icon icon="cog"/> Input group configuration</button>
+                    <button class="button is-secondary is-pulled-right" @click="delInputGroup(index)"><font-awesome-icon icon="times"/> Delete input group</button>
+                    <button class="button is-secondary is-pulled-right" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add input</button>
+                    <!-- <span class="clickable collapsed" data-toggle="collapse" :data-target="'#' + inputGroup.name + '_body'">
+                        <i class="fa fa-fw fa-chevron-up"></i>
+                        <i class="fa fa-fw fa-chevron-down"></i>
+                    </span> -->
+                </div>
+                <div :id="inputGroup.name + '_body'" class="column is-12">
+                    <div class="inputGroupBody">
+                        <row-component :section="inputGroup"></row-component>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="inputGroupWrapper" class="columns is-vcentered">
-            <div class="column accordion inputGroupItem" v-for="(inputGroup, index) in form.input_groups" :id="inputGroup.name" :key="inputGroup.name">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="content">
-                            <div class="column">
-                                <input type="text" class="input" placeholder="Input Group Label" v-model="inputGroup.label">
-                            </div>
-                            <div class="column text-right">
-                                <p style="margin-top: 5px;">
-                                    <span class="pr-2 clickable" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add Row</span>
-                                    <span class="pr-2 clickable" @click="delInputGroup(index)"><font-awesome-icon icon="times"/> Remove Input Group</span>
-                                    <span class="pr-2 clickable" @click="configInputGroup(index)"><font-awesome-icon icon="cog"/> Input Group Config</span>
-                                    <span class="clickable collapsed" data-toggle="collapse" :data-target="'#' + inputGroup.name + '_body'">
-                                        <i class="fa fa-fw fa-chevron-up"></i>
-                                        <i class="fa fa-fw fa-chevron-down"></i>
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div :id="inputGroup.name + '_body'" class="collapse">
-                        <div class="card-body inputGroupBody">
-                            <row-component :section="inputGroup"></row-component>
-                        </div>
-                    </div>
-                </div>
-
+        <div class="columns">
+            <div class="column is-12">
+                <button class="button is-primary is-pulled-right" @click="addInputGroup">Add Input Group</button>
             </div>
         </div>
 
@@ -171,8 +165,18 @@
         border-bottom: 1px solid rgba(0,0,0,.125);
     }
 
-    .clickable {
-        cursor: pointer;
+    .inputGroupItem {
+        width: 100%;
+    }
+
+    button.is-secondary {
+        margin-left: .5rem;
+    }
+
+    button > .svg-inline--fa { margin-right: .5rem }
+
+    .input-group-button-bar {
+        display: inline-block;
     }
 
     .accordion .collapsed .fa-chevron-up,

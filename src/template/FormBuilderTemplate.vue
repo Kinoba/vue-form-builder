@@ -1,18 +1,20 @@
 <template>
     <div class="columns" style="margin: 0 20px;">
         <div class="column is-9">
+            <form-title-component :title="form.title" @change="setFormTitle"></form-title-component>
             <input-group-component :form="form" ref="InputGroupComponent"></input-group-component>
         </div>
         <div class="column is-3">
             <sidebar-component></sidebar-component>
         </div>
 
-        <preview-component ref="PreviewComponent" :form="form"></preview-component>
+        <!-- <preview-component ref="PreviewComponent" :form="form"></preview-component> -->
     </div>
 </template>
 
 <script>
     import InputGroupComponent from "./ui/InputGroupComponent";
+    import FormTitleComponent from "./ui/FormTitleComponent";
     import { dom } from '@fortawesome/fontawesome-svg-core'
     import SidebarComponent from "./ui/SidebarComponent";
     import PreviewComponent from "./ui/PreviewComponent";
@@ -30,7 +32,8 @@
         components: {
             PreviewComponent,
             SidebarComponent,
-            InputGroupComponent
+            InputGroupComponent,
+            FormTitleComponent
         },
         props: {
             form: {
@@ -53,6 +56,9 @@
             },
             preview() {
                 this.$refs.PreviewComponent.openModal(this.form);
+            },
+            setFormTitle(title) {
+                this.form.title = title;
             }
         }
     }
