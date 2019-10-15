@@ -1,7 +1,7 @@
 <template>
     <div class="columns" style="margin: 0 20px;">
         <div class="column is-9">
-            <form-title-component :title="form.title" @change="setFormTitle"></form-title-component>
+            <form-title-component v-model="form.title"></form-title-component>
             <input-group-component :form="form" ref="InputGroupComponent"></input-group-component>
         </div>
         <div class="column is-3">
@@ -38,6 +38,9 @@
         props: {
             form: {
                 type: Object
+            },
+            index: {
+                type: Number
             }
         },
         // data: () => ({
@@ -56,10 +59,10 @@
             },
             preview() {
                 this.$refs.PreviewComponent.openModal(this.form);
-            },
-            setFormTitle(title) {
-                this.form.title = title;
             }
+        },
+        mounted() {
+            console.log(this.form)
         }
     }
 </script>

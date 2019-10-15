@@ -2,7 +2,7 @@
     <div class="field has-text-left">
       <label class="label">Form title</label>
       <div class="control">
-        <input class="input" type="text" v-model="formTitle" @change="updateFormTitle" placeholder="Enter form title">
+        <input class="input" type="text" v-model="formTitle" placeholder="Enter form title">
       </div>
       <hr>
     </div>
@@ -14,20 +14,24 @@
         components: {},
         name: "form-title-component",
         props: {
-            title: {
-                type: String
+            value: {
+                type: String,
+                required: true
             }
         },
         data: () => ({
             formTitle: ''
         }),
-        methods: {
-            updateFormTitle() {
-                this.$emit('change', this.formTitle)
+        watch: {
+            value(newVal) {
+                this.formTitle = newVal;
+            },
+            formTitle(newVal) {
+                this.$emit('input', newVal);
             }
         },
         mounted() {
-            this.formTitle = this.title;
+            this.formTitle = this.value;
         }
     }
 </script>
