@@ -11,16 +11,16 @@
                 <div class="column is-12 input-group-button-bar has-text-left">
                     <button class="button is-secondary is-pulled-right" @click="configInputGroup(index)"><font-awesome-icon icon="cog"/> Input group configuration</button>
                     <button class="button is-secondary is-pulled-right" @click="delInputGroup(index)"><font-awesome-icon icon="times"/> Delete input group</button>
-                    <button class="button is-secondary is-pulled-right" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add input</button>
+                    <button class="button is-secondary is-pulled-right" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add row</button>
                     <!-- <span class="clickable collapsed" data-toggle="collapse" :data-target="'#' + inputGroup.name + '_body'">
                         <i class="fa fa-fw fa-chevron-up"></i>
                         <i class="fa fa-fw fa-chevron-down"></i>
                     </span> -->
                 </div>
                 <div :id="inputGroup.name + '_body'" class="column is-12">
-                    <div class="inputGroupBody">
-                        <row-component :section="inputGroup"></row-component>
-                    </div>
+                    <label class="label has-text-left">Inputs</label>
+                    <row-component :section="inputGroup"></row-component>
+                    <hr>
                 </div>
             </div>
         </div>
@@ -70,6 +70,8 @@
 
                 // After hook
                 Hooks.InputGroup.afterAdd.run(inputGroupInfo);
+
+                this.addRow(0);
             },
             delInputGroup(secIndex) {
                 // make sure no dependencies
@@ -160,11 +162,6 @@
 </script>
 
 <style scoped>
-    .inputGroupBody {
-        /*padding: 30px 0;*/
-        border-bottom: 1px solid rgba(0,0,0,.125);
-    }
-
     .inputGroupItem {
         width: 100%;
     }

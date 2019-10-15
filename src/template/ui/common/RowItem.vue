@@ -3,6 +3,7 @@
         <div class="tools">
             <font-awesome-icon icon="times" class="clickable" @click="removeRow(row.name)"></font-awesome-icon>
         </div>
+        <div v-if="row.controls.length === 0">Choose a control in the Supported Controls sections and drag it here.</div>
 
         <component v-for="(control, index) in row.controls"
                    :is="CONTROL_TYPES[control.type].source.template"
@@ -190,10 +191,10 @@
 
 <style scoped>
     .rowItem {
-        border-radius: 10px;
-        background-color:rgba(0,0,0,.03);
-        padding: 30px 10px;
-        margin: 0;
+        border-radius: .5rem;
+        border: 1px dashed #e6e6e6;
+        padding: .5rem;
+        margin-bottom: .5rem;
         position: relative;
     }
 
