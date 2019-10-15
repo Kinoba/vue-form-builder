@@ -41,7 +41,7 @@ import SIDEBARCheckboxControl from 'sethFormBuilder/template/ui/sidebar_items/Ch
 //  // validation function here
 // }
 //
-const CONTROL_TYPES = {
+const INPUT_TYPES = {
     text: {
         label:"Text Input",
         icon: faEdit,
@@ -99,5 +99,5 @@ const CONTROL_TYPES = {
 };
 
 export {
-    CONTROL_TYPES
+    INPUT_TYPES
 }

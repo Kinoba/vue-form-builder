@@ -40,7 +40,7 @@
 </template>
 
 <script>
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {CONTROL_TYPES} from "sethFormBuilder/config/input_constant";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {

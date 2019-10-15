@@ -6,7 +6,7 @@
 
 <script>
     import {Hooks} from 'sethFormBuilder/gui/components/hook_lists';
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
 
     export default {
         name: "ControlComponent",
@@ -15,7 +15,7 @@
             controlInstance: null,
         }),
         created() {
-            if (!CONTROL_TYPES[this.control.type]) {
+            if (!INPUT_TYPES[this.control.type]) {
                 console.error(`Control type ${this.control.type} doesn't exist to render.`);
                 return;
             }
@@ -23,7 +23,7 @@
             Hooks.Control.beforeRegister.run(this.control);
 
             // set control
-            this.controlInstance = CONTROL_TYPES[this.control.type].source.gui;
+            this.controlInstance = INPUT_TYPES[this.control.type].source.gui;
         },
         mounted() {
             Hooks.Control.afterRegister.run(this.control);

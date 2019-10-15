@@ -40,7 +40,7 @@
     import {CONTROL_CONSTANTS} from "sethFormBuilder/config/constants";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/gui/components/hook_lists';
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     import ControlDatePicker from 'sethFormBuilder/third_party_controls/DatePickerControl';
 
     export default {
@@ -57,7 +57,7 @@
             this.options.dateFormat = this.control.dateFormat;
 
             // get base icon
-            this.icon = CONTROL_TYPES[this.control.type].icon;
+            this.icon = INPUT_TYPES[this.control.type].icon;
 
             // if this control already have value, set it (value => default value => settings)
             if (!_.isEmpty(this.control.value)) {

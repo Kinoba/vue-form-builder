@@ -30,7 +30,7 @@
 
     // special hook
     import {ValidateSettingHandler} from "sethFormBuilder/template/handler/validate_setting_handler";
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
 
     export default {
         name: "FormBuilder",
@@ -150,12 +150,12 @@
             if (_.has(this.options, 'moreControls')) {
                 _.each(this.options.moreControls, (item, key) => {
                     // won't add existed
-                    if (CONTROL_TYPES[key]) {
+                    if (INPUT_TYPES[key]) {
                         console.error("EXISTED CONTROL KEY: " + key);
                         return;
                     }
 
-                    CONTROL_TYPES[key] = item;
+                    INPUT_TYPES[key] = item;
                 });
             }
         },

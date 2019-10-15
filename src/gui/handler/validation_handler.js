@@ -1,4 +1,4 @@
-import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
 
 const ValidationHandler = {
     section_info: {},
@@ -19,10 +19,10 @@ ValidationHandler.init = function(formData) {
             _.each(rowInfo.controls, controlInfo => {
                 let name = sectionInfo.clientKey + "." + controlInfo.fieldName;
                 // define validation info
-                if (_.isFunction(CONTROL_TYPES[controlInfo.type].validation_func)) {
+                if (_.isFunction(INPUT_TYPES[controlInfo.type].validation_func)) {
 
                     // create custom validation
-                    _custom_validation_init(name, CONTROL_TYPES[controlInfo.type].validation_func);
+                    _custom_validation_init(name, INPUT_TYPES[controlInfo.type].validation_func);
 
                     // set it
                     controls[name] =  {};

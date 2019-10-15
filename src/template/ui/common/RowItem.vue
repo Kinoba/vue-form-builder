@@ -1,16 +1,16 @@
 <template>
-    <div class="col-md-12 mb-2 rowItem row" :id="row.name">
+    <div class="col-md-12 mb-2 rowItem row" :id="row.uuid">
         <div class="tools">
-            <font-awesome-icon icon="times" class="clickable" @click="removeRow(row.name)"></font-awesome-icon>
+            <font-awesome-icon icon="times" class="clickable" @click="removeRow(row.uuid)"></font-awesome-icon>
         </div>
-        <div v-if="row.controls.length === 0">Choose a control in the Supported Controls sections and drag it here.</div>
+        <div v-if="row.inputs.length === 0">Choose an input in the Supported Inputs section and drag it here.</div>
 
-        <component v-for="(control, index) in row.controls"
-                   :is="CONTROL_TYPES[control.type].source.template"
-                   :key="control.name"
-                   :control="control"
-                   @dblclick.native="openConfig(control)"
-                   :ref="control.name"
+        <component v-for="(input, index) in row.inputs"
+                   :is="INPUT_TYPES[input.input_type].source.template"
+                   :key="input.uuid"
+                   :control="input"
+                   @dblclick.native="openConfig(input)"
+                   :ref="input.uuid"
                    :label-position="labelPosition">
         </component>
     </div>
@@ -18,7 +18,7 @@
 
 <script>
     import {FORM_CONSTANTS} from "sethFormBuilder/config/constants";
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     //import ControlItem from "./ControlItem";
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -36,38 +36,38 @@
             labelPosition: null
         },
         data: () => ({
-            CONTROL_TYPES,
+            INPUT_TYPES,
             editing_control: null,
         }),
         methods: {
-            addControl(controlType) {
-                var controlInfo = _.cloneDeep(FORM_CONSTANTS.Control);
-                controlInfo.type = controlType;
+            addInput(inputType) {
+                var inputInfo = _.cloneDeep(FORM_CONSTANTS.Control);
+                inputInfo.type = inputType;
                 // generate id
-                controlInfo.name = _.domUniqueID(`control_${controlType}_`);
-                controlInfo.label = FORM_CONSTANTS.Type[controlType].label;
-                controlInfo.fieldName = controlInfo.name; // same for both
+                inputInfo.name = _.domUniqueID(`control_${inputType}_`);
+                inputInfo.label = FORM_CONSTANTS.Type[inputType].label;
+                inputInfo.fieldName = inputInfo.name; // same for both
 
                 // check if there's any more special fields?
-                if(CONTROL_TYPES[controlType].other_properties) {
-                    _.each(CONTROL_TYPES[controlType].other_properties, (value, key) => {
-                        controlInfo[key] = value;
+                if(INPUT_TYPES[inputType].other_properties) {
+                    _.each(INPUT_TYPES[inputType].other_properties, (value, key) => {
+                        inputInfo[key] = value;
                     });
                 }
 
                 // before hook
-                let b4Run = Hooks.Control.beforeAdd.runSequence(controlInfo, this.row);
+                let b4Run = Hooks.Control.beforeAdd.runSequence(inputInfo, this.row);
                 if (b4Run === false) {
                     return;
                 }
 
                 // add to row
-                this.row.controls.push(controlInfo);
+                this.row.controls.push(inputInfo);
 
                 // after hook
-                Hooks.Control.afterAdd.run(controlInfo, this.row);
+                Hooks.Control.afterAdd.run(inputInfo, this.row);
             },
-            traverseControl() {
+            traverseInput() {
                 let self = this;
 
                 // prepare data
@@ -77,24 +77,24 @@
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var controlItem = _.find(self.row.controls, {name: id});
+                    var inputItem = _.find(self.row.controls, {name: id});
                     controlItem.order = index;
-                    finalItems.push(controlItem);
+                    finalItems.push(inputItem);
                 });
 
                 // reset the current sections
                 this.row.controls = finalItems;
             },
-            removeRow(rowName) {
-                this.$emit('removeRow', rowName);
+            removeRow(id) {
+                this.$emit('removeRow', id);
             },
 
             // control
-            openConfig(controlInfo) {
+            openConfig(inputInfo) {
                 ControlHandler.clearSelect();
-                ControlHandler.setSelect(controlInfo.name);
-                this.editing_control = controlInfo;
-                eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(controlInfo));
+                ControlHandler.setSelect(inputInfo.name);
+                this.editing_control = inputInfo;
+                eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(inputInfo));
             }
         },
         created() {
@@ -104,57 +104,57 @@
             eventBus.$on(EventHandlerConstant.REMOVE_CONTROL, ui => {
                 // prepare data
                 var id = ui.helper.attr('data-control-name');
-                var controlIndex = _.findIndex(this.row.controls, {name: id});
+                var inputIndex = _.findIndex(this.row.controls, {name: id});
 
-                if (controlIndex < 0) {
+                if (inputIndex < 0) {
                     return;
                 }
 
                 // before hook
-                var controlInfo = this.row.controls[controlIndex];
-                let beforeRun = Hooks.Control.beforeRemove.runSequence(controlInfo);
+                var inputInfo = this.row.controls[inputIndex];
+                let beforeRun = Hooks.Control.beforeRemove.runSequence(inputInfo);
                 if (beforeRun === false) {
                     return;
                 }
 
                 // remove control
-                this.row.controls.splice(controlIndex, 1);
+                this.row.controls.splice(inputIndex, 1);
 
                 // after hook
-                Hooks.Control.afterRemove.run(controlInfo);
+                Hooks.Control.afterRemove.run(inputInfo);
             });
 
             // update control bus
             eventBus.$on(EventHandlerConstant.ON_APPLY_EDITOR_SIDEBAR, control => {
-                //var oldControl = _.find(this.row.controls, {name: control.name});
-                let controlIndex = _.findIndex(self.row.controls, {name: control.name});
-                if (controlIndex <= -1 || self.row.controls[controlIndex].name !== self.editing_control.name) {
+                //var oldInput = _.find(this.row.controls, {name: control.name});
+                let inputIndex = _.findIndex(self.row.controls, {name: control.name});
+                if (inputIndex <= -1 || self.row.controls[inputIndex].name !== self.editing_control.name) {
                     return;
                 }
 
-                let oldControl = self.row.controls[controlIndex];
+                let oldInput = self.row.controls[inputIndex];
                 // check if existed name in this section
-                if (control.fieldName !== oldControl.fieldName && ControlHandler.isControlNameExisted(self.row.name, control.fieldName)) {
+                if (control.fieldName !== oldInput.fieldName && ControlHandler.isControlNameExisted(self.row.uuid, control.fieldName)) {
                     SethPhatToaster.error("This field Name is already existed in the current section.");
                     return;
                 }
 
                 // replace value
-                var controlInfo = _.cloneDeep(control);
-                _.each(controlInfo, (value, key) => {
-                    self.row.controls[controlIndex][key] = value;
+                var inputInfo = _.cloneDeep(control);
+                _.each(inputInfo, (value, key) => {
+                    self.row.controls[inputIndex][key] = value;
                 });
 
                 // update gui for specific control
-                if (self.$refs[controlInfo.name]) {
-                    if (_.isFunction(self.$refs[controlInfo.name].configUpdated)) {
-                        self.$refs[controlInfo.name].configUpdated();
+                if (self.$refs[inputInfo.name]) {
+                    if (_.isFunction(self.$refs[inputInfo.name].configUpdated)) {
+                        self.$refs[inputInfo.name].configUpdated();
                     }
                 }
 
                 // replace
                 this.$nextTick(() => {
-                    ControlHandler.setSelect(oldControl.name);
+                    ControlHandler.setSelect(oldInput.name);
                 });
             });
         },
@@ -163,7 +163,7 @@
             $(this.$el).droppable({
                 accept: ".control-wrapper",
                 drop: function (event, ui){
-                    self.addControl($(ui.draggable[0]).attr('data-control-type'));
+                    self.addInput($(ui.draggable[0]).attr('data-control-type'));
                 },
                 over: function( event, ui ) {
                     ui.helper.css('border', '1px solid green');
@@ -176,7 +176,7 @@
                 helper: 'clone',
                 placeholder: "ui-state-highlight",
                 update: function (event, ui) {
-                    self.traverseControl();
+                    self.traverseInput();
                 },
                 start: function(e, ui){
                     ui.placeholder.height(ui.item.height());

@@ -42,7 +42,7 @@
 </template>
 
 <script>
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {
@@ -50,7 +50,7 @@
         props: ['control', 'labelPosition'],
         components: {FontAwesomeIcon},
         data: () => ({
-            icon: CONTROL_TYPES.number.icon
+            icon: INPUT_TYPES.number.icon
         }),
         computed: {
             demo_value() {

@@ -1,10 +1,10 @@
 <template>
     <div class="rowWrapper">
-        <row-item v-for="row in section.rows"
-                  :key="row.name"
+        {{inputGroup.rows}}
+        <row-item v-for="row in inputGroup.rows"
+                  :key="row.uuid"
                   :row="row"
-                  @removeRow="removeRow"
-                  :label-position="section.labelPosition">
+                  @removeRow="removeRow">
         </row-item>
     </div>
 </template>
@@ -17,7 +17,7 @@
         components: {RowItem},
         name: "row-component",
         props: {
-            section: {
+            inputGroup: {
                 type: Object
             }
         },
@@ -32,33 +32,34 @@
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var rowItem = _.find(self.section.rows, {name: id});
+                    var rowItem = _.find(self.inputGroup.rows, {uuid: id});
                     finalItems.push(rowItem);
                 });
 
                 // reset the current sections
-                this.section.rows = finalItems;
+                this.inputGroup.rows = finalItems;
             },
-            removeRow(rowName) {
-                var rowIndex = _.findIndex(this.section.rows, {name: rowName});
-                if (this.section.rows[rowIndex].controls.length > 0) {
+            removeRow(id) {
+                var rowIndex = _.findIndex(this.inputGroup.rows, {uuid: id});
+                if (this.inputGroup.rows[rowIndex].controls.length > 0) {
                     SethPhatToaster.error("Can't remove this row because it's still have controls inside.");
                     return;
                 }
 
-                var rowInfo = this.section.rows[rowIndex];
+                var rowInfo = this.inputGroup.rows[rowIndex];
                 let beforeRun = Hooks.Row.beforeRemove.runSequence(rowInfo, this.section);
                 if (beforeRun === false) {
                     return;
                 }
 
-                this.section.rows.splice(rowIndex, 1);
+                this.inputGroup.rows.splice(rowIndex, 1);
 
                 // final hook
-                Hooks.Row.afterRemove.run(rowInfo, this.section);
+                Hooks.Row.afterRemove.run(rowInfo, this.inputGroup);
             }
         },
         mounted() {
+
             let self = this;
             $(this.$el).sortable({
                 cursor: "move",

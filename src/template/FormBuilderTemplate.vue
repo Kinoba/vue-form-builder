@@ -60,9 +60,6 @@
             preview() {
                 this.$refs.PreviewComponent.openModal(this.form);
             }
-        },
-        mounted() {
-            console.log(this.form)
         }
     }
 </script>

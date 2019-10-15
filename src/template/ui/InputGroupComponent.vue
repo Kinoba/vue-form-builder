@@ -1,7 +1,7 @@
 <template>
     <div>
         <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in form.input_groups">
-            <div class="inputGroupItem" :id="inputGroup.name" :key="inputGroup.name">
+            <div class="inputGroupItem" :id="'input_group_' + inputGroup.uuid" :key="inputGroup.uuid">
                 <div class="column is-12 field has-text-left">
                     <label class="label">Input Group</label>
                     <div class="control">
@@ -17,9 +17,9 @@
                         <i class="fa fa-fw fa-chevron-down"></i>
                     </span> -->
                 </div>
-                <div :id="inputGroup.name + '_body'" class="column is-12">
+                <div :id="inputGroup.uuid + '_body'" class="column is-12">
                     <label class="label has-text-left">Inputs</label>
-                    <row-component :section="inputGroup"></row-component>
+                    <row-component :input-group="inputGroup"></row-component>
                     <hr>
                 </div>
             </div>
@@ -139,8 +139,6 @@
             }
         },
         mounted() {
-            let self = this;
-
             $("#inputGroupWrapper").sortable({
                 cursor: "move",
                 delay: 200,

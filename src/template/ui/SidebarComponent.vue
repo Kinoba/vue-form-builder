@@ -6,7 +6,7 @@
                     Supported Controls
                 </a>
             </div>
-            
+
             <div id="sidebarControls">
                     <a href="javascript:void(0)" class="panel-block list-group-item list-group-item-action control-wrapper bd-notification"
                    v-for="(obj, value) in controls" :data-control-type="value">
@@ -40,7 +40,7 @@
 </template>
 
 <script>
-    import {CONTROL_TYPES} from "sethFormBuilder/config/control_constant";
+    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
     import {ControlHandler} from 'sethFormBuilder/template/handler/control_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -52,7 +52,7 @@
         components: {BaseStyleComponent, BaseConfigComponent, FontAwesomeIcon},
         name: "sidebar-component",
         data: () => ({
-            controls: CONTROL_TYPES,
+            controls: INPUT_TYPES,
             isConfig: false,
             controlInfo: null,
             configComponent: null,
