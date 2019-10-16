@@ -49,6 +49,7 @@ FORM_CONSTANTS.Input = {
     value: "",
     className: 'col-md-4',
     readonly: false,
+    properties: [],
 
     // label style
     labelBold: false,
