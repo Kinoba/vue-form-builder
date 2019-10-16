@@ -9,9 +9,9 @@
                    :is="INPUT_TYPES[input.input_type].source.template"
                    :key="input.uuid"
                    :input="input"
-                   @dblclick.native="openConfig(input)"
                    :ref="input.uuid"
-                   :label-position="labelPosition">
+                   :label-position="labelPosition"
+                   @openConfig="openConfig(input)">
         </component>
     </div>
 </template>
@@ -193,7 +193,7 @@
     .rowItem {
         border-radius: .5rem;
         border: 1px dashed #e6e6e6;
-        padding: .5rem;
+        padding: 1rem;
         margin-bottom: .5rem;
         position: relative;
     }

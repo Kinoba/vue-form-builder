@@ -1,6 +1,5 @@
 <template>
     <div class="rowWrapper">
-        <pre class="has-text-left">{{inputGroup.rows_attributes}}</pre>
         <row-item v-for="row in inputGroup.rows_attributes"
                   :key="row.uuid"
                   :row="row"

@@ -10,13 +10,12 @@
                 </label>
               <div class="control">
                   <div v-if="input.input_type == 'select'" class="select" >
-                  <select :name="input.fieldName">
-                      <option disabled selected>Select options</option>
-                      <option v-for="option in input.properties.options">{{ option.value }}</option>
-                  </select>
+                      <select :name="input.fieldName">
+                          <option disabled selected>Select options</option>
+                          <option v-for="option in input.properties.options">{{ option.value }}</option>
+                      </select>
+                 </div>
               </div>
-              </div>
-              <hr>
             </div>
         </div>
     </div>
