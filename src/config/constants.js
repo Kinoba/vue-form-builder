@@ -40,47 +40,35 @@ FORM_CONSTANTS.Row = {
 };
 
 FORM_CONSTANTS.Input = {
+    uuid: null,
     input_type: "",
     name: "",
-    fieldName: "",
     label: "",
     order: 0,
+    properties: [],
+    validations: [],
+
+    //Other properties
+    fieldName: "",
     defaultValue: "",
     value: "",
     className: 'col-md-4',
     readonly: false,
-    properties: [],
-
-    // label style
     labelBold: false,
     labelItalic: false,
     labelUnderline: false,
-
-    // validation
     required: false,
-
-    // attr for text
     isMultiLine: false,
-
-    // attr for number
     isInteger: false,
     decimalPlace: 0,
-
-    // attr for datePicker
     isTodayValue: false,
     dateFormat: "dd/mm/yy",
-
-    // attr for timePicker
     isNowTimeValue: false,
     timeFormat: "HH:mm", // enhancement later
-
-    // attr for select
     isMultiple: false,
     isAjax: false, // is ajax data source or not
     dataOptions: [], // static data source
     ajaxDataUrl: "", // ajax data source
-
-    // attr for checkbox
     isChecked: false
 };
 
