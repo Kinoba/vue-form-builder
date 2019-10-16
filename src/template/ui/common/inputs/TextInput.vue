@@ -62,17 +62,17 @@
 
     .button-bar {
         display: inline-block;
-        text-align: right;
     }
 
     .button-bar > button {
         margin-left: .5rem;
-        float: right;
-        text-align: right;
     }
 
     button > .svg-inline--fa {
         margin-right: .5rem;
     }
 
+    .control {
+        margin-bottom: .5rem;
+    }
 </style>
