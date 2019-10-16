@@ -15,20 +15,21 @@ FORM_CONSTANTS.InputGroupLayout = {
 };
 
 FORM_CONSTANTS.InputGroup = {
+    uuid: null,
     name: "",
     label: "",
-    clientKey: "",
     order: 0,
     rows_attributes: [],
+    conditions: [],
 
     // config
-    labelPosition: "left", // left or top
+    //labelPosition: "left", // left or top
 
     // for dynamic
-    isDynamic: false,
-    minInstance: 1,
-    maxInstance: 0, //0 for unlimited
-    instances: [], // for save data in GUI to easily to retrieve @@
+    //isDynamic: false,
+    //minInstance: 1,
+    //maxInstance: 0, //0 for unlimited
+    //instances: [], // for save data in GUI to easily to retrieve @@
 };
 
 FORM_CONSTANTS.Row = {

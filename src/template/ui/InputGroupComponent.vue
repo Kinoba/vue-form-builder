@@ -36,11 +36,11 @@
 </template>
 
 <script>
-    import {FORM_CONSTANTS} from "sethFormBuilder/config/constants";
+    import { FORM_CONSTANTS } from "sethFormBuilder/config/constants";
     import RowComponent from "./RowComponent";
     import InputGroupConfigModal from "./common/InputGroupConfigModal";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-    import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
+    import { Hooks } from 'sethFormBuilder/template/components/hook_lists';
 
     export default {
         components: {InputGroupConfigModal, RowComponent, FontAwesomeIcon},
@@ -58,7 +58,7 @@
                 var inputGroupInfo = _.cloneDeep(FORM_CONSTANTS.InputGroup);
                 // set uniqueID
                 inputGroupInfo.name = _.domUniqueID('input_group_');
-                inputGroupInfo.clientKey = inputGroupInfo.name;
+                inputGroupInfo.uuid = _.domUniqueID(this.form.uuid + '-');
 
                 // Before hook
                 let b4Run = Hooks.InputGroup.beforeAdd.runSequence(inputGroupInfo);
@@ -75,10 +75,10 @@
             },
             delInputGroup(secIndex) {
                 // make sure no dependencies
-                if (this.form.input_groups_attributes[secIndex].rows_attributes.length > 0) {
-                    SethPhatToaster.error("Can't remove this input group because it's still have row(s) inside.");
-                    return;
-                }
+                // if (this.form.input_groups_attributes[secIndex].rows_attributes.length > 0) {
+                //     SethPhatToaster.error("Can't remove this input group because it's still have row(s) inside.");
+                //     return;
+                // }
 
                 var inputGroupInfo = this.form.input_groups_attributes[secIndex];
                 let beforeRun = Hooks.InputGroup.beforeRemove.runSequence(inputGroupInfo);
