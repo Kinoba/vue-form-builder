@@ -1,5 +1,5 @@
 <template>
-    <div id="inputGroupConfigModal" class="modal">
+    <div id="inputGroupConfigModal" v-if="inputGroup" class="modal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -19,15 +19,16 @@
                 <input class="input" type="text" v-model="inputGroup.name" placeholder="Enter input group name">
               </div>
             </div>
-            <div class="field has-text-left" v-if="maxOrder > inputGroup.order">
+            <div class="field has-text-left" v-if="maxOrder > (oldInputGroupOrder + 1)">
               <label class="label">Input group order</label>
               <div class="control">
-                <input class="input" type="number" v-model="inputGroup.order" :min="0" :max="maxOrder" placeholder="Enter input group order">
+                <input class="input" :class="{'is-danger': (inputGroup.order >= maxOrder) || (inputGroup.order < 0)}" type="number" v-model="inputGroup.order" :min="0" :max="maxOrder" placeholder="Enter input group order">
               </div>
+              <p v-if="inputGroup && ((inputGroup.order >= maxOrder) || (inputGroup.order < 0))" class="help is-danger">You are trying to reorder the input group to an unknow position.</p>
             </div>
         </section>
         <footer class="modal-card-foot has-text-right">
-          <button class="button is-success" @click="save">Save</button>
+          <button class="button is-success" :disabled="(inputGroup.order >= maxOrder) || (inputGroup.order < 0)" @click="save">Save</button>
           <button class="button" @click="closeModal">Cancel</button>
         </footer>
       </div>
@@ -42,7 +43,8 @@
         props:['updateInputGroupInfo', 'maxOrder'],
         data: () => ({
             index: null,
-            inputGroup: null
+            inputGroup: null,
+            oldInputGroupOrder: null,
         }),
         methods: {
             openModal(inputGroupInfo, index) {
@@ -54,13 +56,21 @@
                 $(INPUT_GROUP_ID).modal('hide');
             },
             save() {
-                this.$emit('updateInputGroupInfo', this.inputGroup, this.index);
+                let reOrder = false;
+                if(this.oldInputGroupOrder !== this.inputGroup.order) reOrder = true;
+                this.$emit('updateInputGroupInfo', this.inputGroup, this.index, reOrder, this.inputGroup.order);
                 this.closeModal();
             }
         },
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
-        }
+            if(this.inputGroup) this.oldInputGroupOrder = this.inputGroup.order;
+        },
+        watch: {
+            inputGroup(val) {
+                if(this.inputGroup) this.oldInputGroupOrder = val.order;
+            }
+        },
     }
 </script>
 

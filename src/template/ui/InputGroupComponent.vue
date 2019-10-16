@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in form.input_groups_attributes">
+        <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in orderedInputGroups">
             <div class="inputGroupItem" :id="'input_group_' + inputGroup.uuid" :key="inputGroup.uuid">
                 <div class="column is-12 field has-text-left">
                     <label class="label">Input Group</label>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+    import * as lodash from 'lodash';
     import { FORM_CONSTANTS } from "sethFormBuilder/config/constants";
     import RowComponent from "./RowComponent";
     import InputGroupConfigModal from "./common/InputGroupConfigModal";
@@ -55,6 +56,7 @@
                 // set uniqueID
                 inputGroupInfo.name = _.domUniqueID('input_group_');
                 inputGroupInfo.uuid = _.domUniqueID(this.form.uuid + '-');
+                inputGroupInfo.order = this.form.input_groups_attributes.length;
 
                 // Before hook
                 let b4Run = Hooks.InputGroup.beforeAdd.runSequence(inputGroupInfo);
@@ -67,7 +69,8 @@
                 // After hook
                 Hooks.InputGroup.afterAdd.run(inputGroupInfo);
 
-                this.addRow(0);
+                //Add a row in the newly created input group
+                this.addRow(this.form.input_groups_attributes.length - 1);
             },
             delInputGroup(secIndex) {
                 // make sure no dependencies
@@ -132,8 +135,18 @@
             preview() {
                 this.$parent.preview();
             },
-            updateInputGroupInfo(inputGroupInfo, index) {
+            updateInputGroupOrder(inputGroupInfo, index, newOrder) {
+                this.form.input_groups_attributes.splice(index, 1); // Remove item from its current position
+                this.form.input_groups_attributes.splice(newOrder, 0, inputGroupInfo);// Insert item in the new position
+
+                this.form.input_groups_attributes.forEach((input_group, index) => {
+                    input_group.order = index;
+                });
+            },
+            updateInputGroupInfo(inputGroupInfo, index, reOrder, newOrder) {
                 _.deepExtend(this.form.input_groups_attributes[index], inputGroupInfo);
+
+                if(reOrder) this.updateInputGroupOrder(inputGroupInfo, index, newOrder);
             }
         },
         mounted() {
@@ -153,6 +166,11 @@
         },
         updated() {
             this.form._uniqueId = Math.random();
+        },
+        computed: {
+          orderedInputGroups: function () {
+            return lodash.orderBy(this.form.input_groups_attributes, 'order')
+          }
         }
     }
 </script>
