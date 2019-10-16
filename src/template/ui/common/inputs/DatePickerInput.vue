@@ -1,46 +1,38 @@
 <template>
-    <div class="inputItemWrapper" :class="input.className" :data-input-name="input.name">
-        <div class="inputItem row" :id="input.name" v-if="labelPosition === 'left'">
-            <div class="col-md-4">
-                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
-                    {{input.label}}
-                </label>
-            </div>
-            <div class="col-md-8 input-group">
-                <input type="text" class="form-control"
-                       :readonly="input.readonly"
-                       :name="input.fieldName">
-
-                <div class="input-group-append">
-                        <span class="input-group-text">
-                            <font-awesome-icon :icon="icon"></font-awesome-icon>
-                        </span>
+    <div class="inputItemWrapper columns" :data-input-name="input.name">
+        <div class="column is-12">
+            <div :id="input.name" class="field has-text-left inputItem">
+                <div v-if="!editLabel">
+                    <label v-if="input.label" :class="{'label' : true, 'is-inline-block': true ,'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                        {{input.label}}
+                    </label>
+                    <label v-else :class="{'label' : true, 'is-inline-block': true, 'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                        Date Picker input
+                    </label>
+                </div>
+                <div v-else class="control">
+                    <input type="text" class="input" v-model="input.label">
+                </div>
+                <div class="control has-icons-left">
+                  <input type="text" class="input" :readonly="input.readonly" :name="input.fieldName">
+                  <span class="icon is-small is-left">
+                    <font-awesome-icon :icon="icon"></font-awesome-icon>
+                  </span>
                 </div>
             </div>
-        </div>
-        <div class="inputItem row" :id="input.name" v-else>
-            <div class="form-group col-md-12">
-                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
-                    {{input.label}}
-                </label>
-                <div class="input-group">
-                    <input type="text" class="form-control"
-                           :readonly="input.readonly"
-                           :name="input.fieldName">
-
-                    <div class="input-group-append">
-                        <span class="input-group-text">
-                            <font-awesome-icon :icon="icon"></font-awesome-icon>
-                        </span>
-                    </div>
-                </div>
+            <div class="button-bar is-pulled-right is-inline-block">
+                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
+                    <span v-if="!editLabel">Edit label</span>
+                    <span v-else>Save label</span>
+                </button>
+                <button class="button is-secondary" @click="$emit('openConfig', input)"><font-awesome-icon icon="cog"/> Configuration</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
+    import { INPUT_TYPES } from "sethFormBuilder/config/input_constant";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     export default {
@@ -49,7 +41,8 @@
         components: {FontAwesomeIcon},
         data: () => ({
             $input: null,
-            icon: INPUT_TYPES.datepicker.icon
+            icon: INPUT_TYPES.datepicker.icon,
+            editLabel: false
         }),
         watch: {
             "input.defaultValue": function(val) {
@@ -85,5 +78,19 @@
 </script>
 
 <style scoped>
+    .button-bar {
+        display: inline-block;
+    }
 
+    .button-bar > button {
+        margin-left: .5rem;
+    }
+
+    button > .svg-inline--fa {
+        margin-right: .5rem;
+    }
+
+    .control {
+        margin-bottom: .5rem;
+    }
 </style>
