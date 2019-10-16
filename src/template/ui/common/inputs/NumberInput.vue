@@ -1,41 +1,31 @@
 <template>
-    <div class="inputItemWrapper" :class="input.className" :data-input-name="input.name">
-        <div class="inputItem row" :id="input.name" v-if="labelPosition === 'left'">
-            <div class="col-md-4">
-                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+    <div class="inputItemWrapper columns" :data-input-name="input.name">
+        <div class="column is-12">
+            <div :id="input.name" class="field has-text-left inputItem">
+              <div v-if="!editLabel">
+                  <label v-if="input.label" :class="{'label' : true, 'is-inline-block': true ,'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
                     {{input.label}}
-                </label>
+                  </label>
+                  <label v-else :class="{'label' : true, 'is-inline-block': true, 'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                    Number input
+                  </label>
+              </div>
+              <div v-else class="control">
+                  <input type="text" class="input" v-model="input.label">
+              </div>
+              <div class="control has-icons-left">
+                <input type="input" class="input" :name="input.fieldName" :value="input.value">
+                <span class="icon is-small is-left">
+                  <font-awesome-icon :icon="icon"></font-awesome-icon>
+                </span>
+              </div>
             </div>
-            <div class="col-md-8 input-group">
-                <input type="text" class="form-control"
-                       :readonly="input.readonly"
-                       :name="input.fieldName"
-                       :value="demo_value">
-
-                <div class="input-group-append">
-                        <span class="input-group-text">
-                            <font-awesome-icon :icon="icon"></font-awesome-icon>
-                        </span>
-                </div>
-            </div>
-        </div>
-        <div class="inputItem row" :id="input.name" v-else>
-            <div class="form-group col-md-12">
-                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
-                    {{input.label}}
-                </label>
-                <div class="input-group">
-                    <input type="text" class="form-control"
-                           :readonly="input.readonly"
-                           :name="input.fieldName"
-                           :value="demo_value">
-
-                    <div class="input-group-append">
-                        <span class="input-group-text">
-                            <font-awesome-icon :icon="icon"></font-awesome-icon>
-                        </span>
-                    </div>
-                </div>
+            <div class="button-bar is-pulled-right is-inline-block">
+                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
+                    <span v-if="!editLabel">Edit label</span>
+                    <span v-else>Save label</span>
+                </button>
+                <button class="button is-secondary" @click="$emit('openConfig', input)"><font-awesome-icon icon="cog"/> Configuration</button>
             </div>
         </div>
     </div>
@@ -50,7 +40,8 @@
         props: ['input', 'labelPosition'],
         components: {FontAwesomeIcon},
         data: () => ({
-            icon: INPUT_TYPES.number.icon
+            icon: INPUT_TYPES.number.icon,
+            editLabel: false
         }),
         computed: {
             demo_value() {
@@ -71,5 +62,23 @@
 </script>
 
 <style scoped>
+    hr {
+        margin: 1rem 0;
+    }
 
+    .button-bar {
+        display: inline-block;
+    }
+
+    .button-bar > button {
+        margin-left: .5rem;
+    }
+
+    button > .svg-inline--fa {
+        margin-right: .5rem;
+    }
+
+    .control {
+        margin-bottom: .5rem;
+    }
 </style>

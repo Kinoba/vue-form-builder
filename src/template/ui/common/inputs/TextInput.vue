@@ -17,7 +17,7 @@
                     <input type="text" class="input"
                            :readonly="input.readonly"
                            :name="input.fieldName"
-                           :value="demo_value">
+                           :value="input.value">
                 </div>
             </div>
             <div class="button-bar is-pulled-right is-inline-block">
