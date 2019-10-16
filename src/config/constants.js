@@ -19,7 +19,7 @@ FORM_CONSTANTS.InputGroup = {
     label: "",
     clientKey: "",
     order: 0,
-    rows: [],
+    rows_attributes: [],
 
     // config
     labelPosition: "left", // left or top
@@ -32,10 +32,10 @@ FORM_CONSTANTS.InputGroup = {
 };
 
 FORM_CONSTANTS.Row = {
+    uuid: null,
+    inputs_attributes: [],
     name: "",
-    label: "",
     order: 0,
-    controls: [],
 };
 
 FORM_CONSTANTS.Input = {

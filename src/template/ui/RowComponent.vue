@@ -1,7 +1,7 @@
 <template>
     <div class="rowWrapper">
-        {{inputGroup.rows}}
-        <row-item v-for="row in inputGroup.rows"
+        <pre class="has-text-left">{{inputGroup.rows_attributes}}</pre>
+        <row-item v-for="row in inputGroup.rows_attributes"
                   :key="row.uuid"
                   :row="row"
                   @removeRow="removeRow">
@@ -32,27 +32,28 @@
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var rowItem = _.find(self.inputGroup.rows, {uuid: id});
+                    var rowItem = _.find(self.inputGroup.rows_attributes, {uuid: id});
                     finalItems.push(rowItem);
                 });
 
                 // reset the current sections
-                this.inputGroup.rows = finalItems;
+                this.inputGroup.rows_attributes = finalItems;
             },
             removeRow(id) {
-                var rowIndex = _.findIndex(this.inputGroup.rows, {uuid: id});
-                if (this.inputGroup.rows[rowIndex].inputs.length > 0) {
+                var rowIndex = _.findIndex(this.inputGroup.rows_attributes, {uuid: id});
+                /*if (this.inputGroup.rows_attributes[rowIndex].inputs_attributes.length > 0) {
                     SethPhatToaster.error("Can't remove this row because it's still have inputs inside.");
                     return;
-                }
+                }*/
 
-                var rowInfo = this.inputGroup.rows[rowIndex];
+                var rowInfo = this.inputGroup.rows_attributes[rowIndex];
                 let beforeRun = Hooks.Row.beforeRemove.runSequence(rowInfo, this.section);
                 if (beforeRun === false) {
                     return;
                 }
 
-                this.inputGroup.rows.splice(rowIndex, 1);
+                if(this.inputGroup.rows_attributes.length === 1) this.inputGroup.rows_attributes[rowIndex].inputs_attributes = []; //Clear current row from inputs
+                else this.inputGroup.rows_attributes.splice(rowIndex, 1); //Remove row
 
                 // final hook
                 Hooks.Row.afterRemove.run(rowInfo, this.inputGroup);

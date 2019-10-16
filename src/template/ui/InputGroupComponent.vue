@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in form.input_groups">
+        <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in form.input_groups_attributes">
             <div class="inputGroupItem" :id="'input_group_' + inputGroup.uuid" :key="inputGroup.uuid">
                 <div class="column is-12 field has-text-left">
                     <label class="label">Input Group</label>
@@ -66,7 +66,7 @@
                     return;
                 }
 
-                this.form.input_groups.push(inputGroupInfo);
+                this.form.input_groups_attributes.push(inputGroupInfo);
 
                 // After hook
                 Hooks.InputGroup.afterAdd.run(inputGroupInfo);
@@ -75,25 +75,25 @@
             },
             delInputGroup(secIndex) {
                 // make sure no dependencies
-                if (this.form.input_groups[secIndex].rows.length > 0) {
+                if (this.form.input_groups_attributes[secIndex].rows_attributes.length > 0) {
                     SethPhatToaster.error("Can't remove this input group because it's still have row(s) inside.");
                     return;
                 }
 
-                var inputGroupInfo = this.form.input_groups[secIndex];
+                var inputGroupInfo = this.form.input_groups_attributes[secIndex];
                 let beforeRun = Hooks.InputGroup.beforeRemove.runSequence(inputGroupInfo);
                 if (beforeRun === false) {
                     return;
                 }
 
                 // remove input group
-                this.form.input_groups.splice(secIndex, 1);
+                this.form.input_groups_attributes.splice(secIndex, 1);
 
                 // final hook
                 Hooks.InputGroup.afterRemove.run(inputGroupInfo);
             },
             configInputGroup(secIndex) {
-                var inputGroupInfo = this.form.input_groups[secIndex];
+                var inputGroupInfo = this.form.input_groups_attributes[secIndex];
                 this.$refs.inputGroupConfigModal.openModal(inputGroupInfo, secIndex);
             },
             traverseInputGroup() {
@@ -106,36 +106,38 @@
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var inputGroupItem = _.find(self.form.input_groups, {name: id});
+                    var inputGroupItem = _.find(self.form.input_groups_attributes, {uuid: id});
                     inputGroupItem.order = index;
                     finalItems.push(inputGroupItem);
                 });
 
                 // reset the current input groups
-                this.form.input_groups = finalItems;
+                this.form.input_groups_attributes = finalItems;
             },
             addRow(secIndex) {
                 var rowInfo = _.cloneDeep(FORM_CONSTANTS.Row);
 
                 // general row_name (id)
-                rowInfo.name = _.domUniqueID(this.form.input_groups[secIndex].name + '_row_');
+                rowInfo.name = _.domUniqueID(this.form.input_groups_attributes[secIndex].uuid + '_row_');
+                rowInfo.uuid = _.domUniqueID(this.form.input_groups_attributes[secIndex].uuid + '-');
+                rowInfo.order = this.form.input_groups_attributes[secIndex].rows_attributes.length;
 
                 // before hook
-                let b4Run = Hooks.Row.beforeAdd.runSequence(rowInfo, this.form.input_groups[secIndex]);
+                let b4Run = Hooks.Row.beforeAdd.runSequence(rowInfo, this.form.input_groups_attributes[secIndex]);
                 if (b4Run === false) {
                     return;
                 }
 
-                this.form.input_groups[secIndex].rows.push(rowInfo);
+                this.form.input_groups_attributes[secIndex].rows_attributes.push(rowInfo);
 
                 // after hook
-                Hooks.Row.afterAdd.run(rowInfo, this.form.input_groups[secIndex]);
+                Hooks.Row.afterAdd.run(rowInfo, this.form.input_groups_attributes[secIndex]);
             },
             preview() {
                 this.$parent.preview();
             },
             updateInputGroupInfo(inputGroupInfo, index) {
-                _.deepExtend(this.form.input_groups[index], inputGroupInfo);
+                _.deepExtend(this.form.input_groups_attributes_attributes[index], inputGroupInfo);
             }
         },
         mounted() {

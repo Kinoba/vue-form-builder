@@ -3,9 +3,9 @@
         <div class="tools">
             <font-awesome-icon icon="times" class="clickable" @click="removeRow(row.uuid)"></font-awesome-icon>
         </div>
-        <div v-if="row.inputs.length === 0">Choose an input in the Supported Inputs section and drag it here.</div>
+        <div v-if="row.inputs_attributes.length === 0">Choose an input in the Supported Inputs section and drag it here.</div>
 
-        <component v-for="(input, index) in row.inputs"
+        <component v-for="(input, index) in row.inputs_attributes"
                    :is="INPUT_TYPES[input.input_type].source.template"
                    :key="input.uuid"
                    :input="input"
@@ -62,7 +62,7 @@
                 }
 
                 // add to row
-                this.row.inputs.push(inputInfo);
+                this.row.inputs_attributes.push(inputInfo);
 
                 // after hook
                 Hooks.Control.afterAdd.run(inputInfo, this.row);
@@ -77,13 +77,13 @@
                 // sort
                 _.each(items, (item, index) => {
                     var id = $(item).attr('id');
-                    var inputItem = _.find(self.row.inputs, {name: id});
+                    var inputItem = _.find(self.row.inputs_attributes, {name: id});
                     inputItem.order = index;
                     finalItems.push(inputItem);
                 });
 
                 // reset the current sections
-                this.row.inputs = finalItems;
+                this.row.inputs_attributes = finalItems;
             },
             removeRow(id) {
                 this.$emit('removeRow', id);
@@ -104,21 +104,21 @@
             eventBus.$on(EventHandlerConstant.REMOVE_CONTROL, ui => {
                 // prepare data
                 var id = ui.helper.attr('data-input-name');
-                var inputIndex = _.findIndex(this.row.inputs, {name: id});
+                var inputIndex = _.findIndex(this.row.inputs_attributes, {name: id});
 
                 if (inputIndex < 0) {
                     return;
                 }
 
                 // before hook
-                var inputInfo = this.row.inputs[inputIndex];
+                var inputInfo = this.row.inputs_attributes[inputIndex];
                 let beforeRun = Hooks.Control.beforeRemove.runSequence(inputInfo);
                 if (beforeRun === false) {
                     return;
                 }
 
                 // remove input
-                this.row.inputs.splice(inputIndex, 1);
+                this.row.inputs_attributes.splice(inputIndex, 1);
 
                 // after hook
                 Hooks.Control.afterRemove.run(inputInfo);
