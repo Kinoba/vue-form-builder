@@ -7,7 +7,7 @@
                         {{input.label}}
                     </label>
                     <label v-else :class="{'label' : true, 'is-inline-block': true, 'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
-                        Text input
+                        Time Picker input
                     </label>
                 </div>
                 <div v-else class="control">

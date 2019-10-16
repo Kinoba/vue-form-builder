@@ -1,39 +1,78 @@
 <template>
-    <div class="inputItemWrapper" :class="input.className" :data-input-name="input.name">
-        <div class="inputItem row" :id="input.name" v-if="labelPosition === 'left'">
-            <div class="col-md-4">
-                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
-                    {{input.label}}
-                </label>
-            </div>
-            <div class="col-md-8 input-group">
-                <div class="text-center w-100">
-                    <input type="checkbox" :name="input.fieldName" :checked="input.isChecked">
+    <div class="inputItemWrapper columns" :data-input-name="input.name">
+        <div class="column is-12">
+            <div :id="input.name" class="field has-text-left inputItem">
+                <div v-if="!editLabel">
+                    <label v-if="input.label" :class="{'label' : true, 'is-inline-block': true ,'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                        {{input.label}}
+                    </label>
+                    <label v-else :class="{'label' : true, 'is-inline-block': true, 'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
+                        Checkbox input
+                    </label>
+                </div>
+                <div v-else class="control">
+                    <input type="text" class="input" v-model="input.label">
+                </div>
+                <div class="control" v-if="input.properties.options" v-for="checkbox in input.properties.options">
+                    <label class="checkbox">
+                      <input type="checkbox" :checked="checkbox.value">
+                      {{ checkbox.label }}
+                    </label>
+                </div>
+                <div class="control" v-if="!input.properties.options || input.properties.options.length === 0">
+                    Initialise checkbox options in the configuration section.
                 </div>
             </div>
-        </div>
-        <div class="inputItem row" :id="input.name" v-else>
-            <div class="form-group col-md-12">
-                <label :class="{'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}">
-                    {{input.label}}
-                </label>
-                <div class="input-group">
-                    <div class="text-center w-100">
-                        <input type="checkbox" :name="input.fieldName" :checked="input.isChecked">
-                    </div>
-                </div>
+            <div class="button-bar is-pulled-right is-inline-block">
+                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
+                    <span v-if="!editLabel">Edit label</span>
+                    <span v-else>Save label</span>
+                </button>
+                <button class="button is-secondary" @click="$emit('openConfig', input)"><font-awesome-icon icon="cog"/> Configuration</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+
     export default {
         name: "CheckboxInput",
+        components: {
+            FontAwesomeIcon
+        },
         props: ['input', 'labelPosition'],
+        data: () => ({
+            editLabel: false
+        }),
+        mounted() {
+            //Parse properties string into JSON
+            if(this.input.properties && typeof this.input.properties === 'string') {
+                this.input.properties = JSON.parse(this.input.properties);
+            }
+        }
     }
 </script>
 
 <style scoped>
+    hr {
+        margin: 1rem 0;
+    }
 
+    .button-bar {
+        display: inline-block;
+    }
+
+    .button-bar > button {
+        margin-left: .5rem;
+    }
+
+    button > .svg-inline--fa {
+        margin-right: .5rem;
+    }
+
+    .control {
+        margin-bottom: .5rem;
+    }
 </style>
