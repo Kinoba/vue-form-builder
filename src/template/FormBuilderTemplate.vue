@@ -38,9 +38,6 @@
         props: {
             form: {
                 type: Object
-            },
-            index: {
-                type: Number
             }
         },
         // data: () => ({
