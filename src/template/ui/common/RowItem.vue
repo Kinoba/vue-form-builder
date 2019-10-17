@@ -12,7 +12,7 @@
                    :index="index"
                    :ref="input.uuid"
                    :label-position="labelPosition"
-                   @openConfig="openConfig(index)">
+                   @openConfig="openInputConfig(index)">
         </component>
 
         <input-config-modal ref="inputConfigModal" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
@@ -94,11 +94,7 @@
             },
 
             // input
-            openConfig(secIndex) {
-                // InputHandler.clearSelect();
-                // InputHandler.setSelect(inputInfo.name);
-                // this.editing_input = inputInfo;
-                // eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(inputInfo));
+            openInputConfig(secIndex) {
                 var inputInfo = this.row.inputs_attributes[secIndex];
                 this.$refs.inputConfigModal.openModal(inputInfo, secIndex);
             },

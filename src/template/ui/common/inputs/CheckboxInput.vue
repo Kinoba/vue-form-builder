@@ -28,7 +28,7 @@
                     <span v-if="!editLabel">Edit label</span>
                     <span v-else>Save label</span>
                 </button>
-                <button class="button is-secondary" @click="$emit('openConfig', input)"><font-awesome-icon icon="cog"/> Configuration</button>
+                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
         components: {
             FontAwesomeIcon
         },
-        props: ['input', 'labelPosition'],
+        props: ['input', 'labelPosition', 'index'],
         data: () => ({
             editLabel: false
         }),

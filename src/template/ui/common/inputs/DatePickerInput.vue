@@ -25,7 +25,7 @@
                     <span v-if="!editLabel">Edit label</span>
                     <span v-else>Save label</span>
                 </button>
-                <button class="button is-secondary" @click="$emit('openConfig', input)"><font-awesome-icon icon="cog"/> Configuration</button>
+                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
             </div>
         </div>
     </div>
@@ -37,7 +37,7 @@
 
     export default {
         name: "DatePickerInput",
-        props: ['input', 'labelPosition'],
+        props: ['input', 'labelPosition', 'index'],
         components: {FontAwesomeIcon},
         data: () => ({
             $input: null,
