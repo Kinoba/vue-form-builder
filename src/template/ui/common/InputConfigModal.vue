@@ -26,6 +26,20 @@
               </div>
               <p v-if="input && ((input.order >= maxOrder) || (input.order < 0))" class="help is-danger">You are trying to reorder the input to an unknow position.</p>
             </div>
+            <div class="field checkbox-choices has-text-left" v-if="input.input_type === 'checkbox'">
+              <label class="label">Checkbox choices</label>
+              <div class="control" v-if="input.properties.options" v-for="option in input.properties.options">
+                <input class="input" type="text" v-model="option.label" placeholder="Enter checkbox choice">
+              </div>
+              <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
+            </div>
+            <div class="field select-choices has-text-left" v-if="input.input_type === 'select'">
+              <label class="label">Select choices</label>
+              <div class="control" v-if="input.properties.options" v-for="option in input.properties.options">
+                <input class="input" type="text" v-model="option.value" placeholder="Enter select choice">
+              </div>
+              <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
+            </div>
         </section>
         <footer class="modal-card-foot has-text-right">
           <button class="button is-success" :disabled="(input.order >= maxOrder) || (input.order < 0)" @click="save">Save</button>
@@ -60,6 +74,15 @@
                 if(this.oldInputOrder !== this.input.order) reOrder = true;
                 this.$emit('updateInputInfo', this.input, this.index, reOrder, this.input.order);
                 this.closeModal();
+            },
+            addChoice() {
+                let newChoice= {};
+                if(this.input.input_type === 'checkbox') {
+                    newChoice = {"label": "", value: "false"};
+                } else if (this.input.input_type === 'select') {
+                    newChoice = {"key": "key_" + this.input.properties.options.length + 1, value: ""};
+                }
+                this.input.properties.options.push(newChoice);
             }
         },
         mounted() {
@@ -75,5 +98,10 @@
 </script>
 
 <style scoped>
-
+    .checkbox-choices > .control,
+    .select-choices > .control,
+    .checkbox-choices > button,
+    .select-choices > button {
+        margin-top: 10px;
+    }
 </style>
