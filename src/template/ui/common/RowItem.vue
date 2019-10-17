@@ -9,10 +9,13 @@
                    :is="INPUT_TYPES[input.input_type].source.template"
                    :key="input.uuid"
                    :input="input"
+                   :index="index"
                    :ref="input.uuid"
                    :label-position="labelPosition"
-                   @openConfig="openConfig(input)">
+                   @openConfig="openConfig(index)">
         </component>
+
+        <input-config-modal ref="inputConfigModal" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
     </div>
 </template>
 
@@ -24,9 +27,10 @@
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
     import {InputHandler} from 'sethFormBuilder/template/handler/input_handler';
+    import InputConfigModal from "./InputConfigModal";
 
     export default {
-        components: {FontAwesomeIcon},
+        components: {FontAwesomeIcon, InputConfigModal},
         name: "row-item",
         props: {
             row: {
@@ -90,11 +94,27 @@
             },
 
             // input
-            openConfig(inputInfo) {
-                InputHandler.clearSelect();
-                InputHandler.setSelect(inputInfo.name);
-                this.editing_input = inputInfo;
-                eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(inputInfo));
+            openConfig(secIndex) {
+                // InputHandler.clearSelect();
+                // InputHandler.setSelect(inputInfo.name);
+                // this.editing_input = inputInfo;
+                // eventBus.$emit(EventHandlerConstant.ACTIVATE_EDITOR_SIDEBAR, _.cloneDeep(inputInfo));
+                var inputInfo = this.row.inputs_attributes[secIndex];
+                this.$refs.inputConfigModal.openModal(inputInfo, secIndex);
+            },
+
+            updateInputOrder(inputInfo, index, newOrder) {
+                this.row.inputs_attributes.splice(index, 1); // Remove item from its current position
+                this.row.inputs_attributes.splice(newOrder, 0, inputInfo);// Insert item in the new position
+
+                this.row.inputs_attributes.forEach((input, index) => {
+                    input.order = index;
+                });
+            },
+            updateInputInfo(inputInfo, index, reOrder, newOrder) {
+                _.deepExtend(this.row.inputs_attributes[index], inputInfo);
+
+                if(reOrder) this.updateInputOrder(inputInfo, index, newOrder);
             }
         },
         created() {

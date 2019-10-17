@@ -45,8 +45,8 @@ FORM_CONSTANTS.Input = {
     name: "",
     label: "",
     order: 0,
-    properties: [],
-    validations: [],
+    properties: {},
+    validations: {},
 
     //Other properties
     fieldName: "",

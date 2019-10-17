@@ -1,7 +1,7 @@
 <template>
-    <div id="inputGroupConfigModal" v-if="inputGroup" class="modal">
+    <div id="inputGroupConfigModal" class="modal">
       <div class="modal-background"></div>
-      <div class="modal-card">
+      <div class="modal-card" v-if="inputGroup">
         <header class="modal-card-head">
           <p class="modal-card-title">Input Group Configuration</p>
           <button class="delete" aria-label="close" @click="closeModal"></button>
