@@ -4,6 +4,8 @@ import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons/faCalendarAlt';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faCheck} from '@fortawesome/free-solid-svg-icons/faCheck';
 import {faDatabase} from '@fortawesome/free-solid-svg-icons/faDatabase';
+import {faFile} from '@fortawesome/free-solid-svg-icons/faFile';
+import {faParagraph} from '@fortawesome/free-solid-svg-icons/faParagraph';
 
 var FORM_CONSTANTS = {};
 var INPUT_CONSTANTS = {};
@@ -50,26 +52,26 @@ FORM_CONSTANTS.Input = {
 
     //Other properties
     fieldName: "",
-    defaultValue: "",
+    // defaultValue: "",
     value: "",
-    className: 'col-md-4',
-    readonly: false,
-    labelBold: false,
-    labelItalic: false,
-    labelUnderline: false,
-    required: false,
-    isMultiLine: false,
-    isInteger: false,
-    decimalPlace: 0,
-    isTodayValue: false,
-    dateFormat: "dd/mm/yy",
-    isNowTimeValue: false,
-    timeFormat: "HH:mm", // enhancement later
-    isMultiple: false,
-    isAjax: false, // is ajax data source or not
-    dataOptions: [], // static data source
-    ajaxDataUrl: "", // ajax data source
-    isChecked: false
+    // className: 'col-md-4',
+    // readonly: false,
+    // labelBold: false,
+    // labelItalic: false,
+    // labelUnderline: false,
+    // required: false,
+    // isMultiLine: false,
+    // isInteger: false,
+    // decimalPlace: 0,
+    // isTodayValue: false,
+    // dateFormat: "dd/mm/yy",
+    // isNowTimeValue: false,
+    // timeFormat: "HH:mm", // enhancement later
+    // isMultiple: false,
+    // isAjax: false, // is ajax data source or not
+    // dataOptions: [], // static data source
+    // ajaxDataUrl: "", // ajax data source
+    // isChecked: false
 };
 
 FORM_CONSTANTS.Type = {
@@ -97,6 +99,14 @@ FORM_CONSTANTS.Type = {
         label:"Checkbox",
         icon: faCheck
     },
+    textarea: {
+        label:"Text Area",
+        icon: faParagraph
+    },
+    file: {
+        label:"Input File",
+        icon: faFile
+    }
 };
 
 FORM_CONSTANTS.WidthOptions = {

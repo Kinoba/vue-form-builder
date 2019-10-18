@@ -5,6 +5,8 @@ import {faCalendarAlt} from '@fortawesome/free-solid-svg-icons/faCalendarAlt';
 import {faClock} from '@fortawesome/free-solid-svg-icons/faClock';
 import {faCheck} from '@fortawesome/free-solid-svg-icons/faCheck';
 import {faDatabase} from '@fortawesome/free-solid-svg-icons/faDatabase';
+import {faFile} from '@fortawesome/free-solid-svg-icons/faFile';
+import {faParagraph} from '@fortawesome/free-solid-svg-icons/faParagraph';
 
 // GUI Control
 import GUICheckboxControl from 'sethFormBuilder/gui/ui/controls/CheckboxControl';
@@ -13,6 +15,8 @@ import GUINumberControl from 'sethFormBuilder/gui/ui/controls/NumberControl';
 import GUISelectControl from 'sethFormBuilder/gui/ui/controls/SelectControl';
 import GUITextControl from 'sethFormBuilder/gui/ui/controls/TextControl';
 import GUITimePickerControl from 'sethFormBuilder/gui/ui/controls/TimePickerControl';
+import GUITextAreaControl from 'sethFormBuilder/gui/ui/controls/TextAreaControl';
+import GUIFileControl from 'sethFormBuilder/gui/ui/controls/FileControl';
 
 // TEMPLATE Control
 import TEMPLATETextInput from 'sethFormBuilder/template/ui/common/inputs/TextInput';
@@ -21,14 +25,17 @@ import TEMPLATECheckboxInput from 'sethFormBuilder/template/ui/common/inputs/Che
 import TEMPLATEDatePickerInput from 'sethFormBuilder/template/ui/common/inputs/DatePickerInput';
 import TEMPLATETimePickerInput from 'sethFormBuilder/template/ui/common/inputs/TimePickerInput';
 import TEMPLATESelectInput from 'sethFormBuilder/template/ui/common/inputs/SelectInput';
+import TEMPLATETextAreaInput from 'sethFormBuilder/template/ui/common/inputs/TextAreaInput';
+import TEMPLATEFileInput from 'sethFormBuilder/template/ui/common/inputs/FileInput';
 
 // CONFIG CONTROL
-import SIDEBARDatePickerControl from 'sethFormBuilder/template/ui/sidebar_items/DatePickerConfigComponent';
-import SIDEBARTimePickerControl from 'sethFormBuilder/template/ui/sidebar_items/TimePickerConfigComponent';
-import SIDEBARSelectControl from 'sethFormBuilder/template/ui/sidebar_items/SelectConfigComponent';
-import SIDEBARNumberControl from 'sethFormBuilder/template/ui/sidebar_items/NumberConfigComponent';
-import SIDEBARTextControl from 'sethFormBuilder/template/ui/sidebar_items/TextConfigComponent';
-import SIDEBARCheckboxControl from 'sethFormBuilder/template/ui/sidebar_items/CheckboxConfigComponent';
+// import SIDEBARDatePickerControl from 'sethFormBuilder/template/ui/sidebar_items/DatePickerConfigComponent';
+// import SIDEBARTimePickerControl from 'sethFormBuilder/template/ui/sidebar_items/TimePickerConfigComponent';
+// import SIDEBARSelectControl from 'sethFormBuilder/template/ui/sidebar_items/SelectConfigComponent';
+// import SIDEBARNumberControl from 'sethFormBuilder/template/ui/sidebar_items/NumberConfigComponent';
+// import SIDEBARTextControl from 'sethFormBuilder/template/ui/sidebar_items/TextConfigComponent';
+// import SIDEBARCheckboxControl from 'sethFormBuilder/template/ui/sidebar_items/CheckboxConfigComponent';
+// import SIDEBARTextAreaControl from 'sethFormBuilder/template/ui/sidebar_items/TextConfigComponent';
 
 // Template Control
 // special key for control:
@@ -48,7 +55,7 @@ const INPUT_TYPES = {
         source: {
             gui: GUITextControl,
             template: TEMPLATETextInput,
-            config: SIDEBARTextControl
+            //config: SIDEBARTextControl
         }
     },
     number: {
@@ -57,7 +64,7 @@ const INPUT_TYPES = {
         source: {
             gui: GUINumberControl,
             template: TEMPLATENumberInput,
-            config: SIDEBARNumberControl
+            //config: SIDEBARNumberControl
         }
     },
     datepicker: {
@@ -66,7 +73,7 @@ const INPUT_TYPES = {
         source: {
             gui: GUIDatePickerControl,
             template: TEMPLATEDatePickerInput,
-            config: SIDEBARDatePickerControl,
+            //config: SIDEBARDatePickerControl,
         }
     },
     timepicker: {
@@ -75,7 +82,7 @@ const INPUT_TYPES = {
         source: {
             gui: GUITimePickerControl,
             template: TEMPLATETimePickerInput,
-            config: SIDEBARTimePickerControl,
+            //config: SIDEBARTimePickerControl,
         }
     },
     select: {
@@ -84,7 +91,7 @@ const INPUT_TYPES = {
         source: {
             gui: GUISelectControl,
             template: TEMPLATESelectInput,
-            config: SIDEBARSelectControl
+            //config: SIDEBARSelectControl
         }
     },
     checkbox: {
@@ -93,7 +100,25 @@ const INPUT_TYPES = {
         source: {
             gui: GUICheckboxControl,
             template: TEMPLATECheckboxInput,
-            config: SIDEBARCheckboxControl
+            //config: SIDEBARCheckboxControl
+        }
+    },
+    textarea: {
+        label:"Text Area",
+        icon: faParagraph,
+        source: {
+            gui: GUITextAreaControl,
+            template: TEMPLATETextAreaInput,
+            //config: SIDEBARTextAreaControl
+        }
+    },
+    file: {
+        label:"File",
+        icon: faFile,
+        source: {
+            gui: GUIFileControl,
+            template: TEMPLATEFileInput,
+            //config: SIDEBARTextAreaControl
         }
     }
 };

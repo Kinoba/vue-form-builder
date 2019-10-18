@@ -48,6 +48,7 @@
                 var inputInfo = _.cloneDeep(FORM_CONSTANTS.Input);
                 inputInfo.input_type = inputType;
                 // generate id
+                console.log(inputInfo)
                 inputInfo.name = _.domUniqueID(`input_${inputType}_`);
                 inputInfo.label = FORM_CONSTANTS.Type[inputType].label;
                 inputInfo.fieldName = inputInfo.name; // same for both
