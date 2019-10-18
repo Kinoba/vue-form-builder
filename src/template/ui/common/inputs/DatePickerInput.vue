@@ -41,7 +41,7 @@
         components: {FontAwesomeIcon},
         data: () => ({
             $input: null,
-            icon: INPUT_TYPES.datepicker.icon,
+            icon: INPUT_TYPES.date.icon,
             editLabel: false
         }),
         watch: {

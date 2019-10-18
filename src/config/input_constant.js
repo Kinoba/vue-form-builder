@@ -67,7 +67,7 @@ const INPUT_TYPES = {
             //config: SIDEBARNumberControl
         }
     },
-    datepicker: {
+    date: {
         label: "Date Picker",
         icon: faCalendarAlt,
         source: {
@@ -76,7 +76,7 @@ const INPUT_TYPES = {
             //config: SIDEBARDatePickerControl,
         }
     },
-    timepicker: {
+    time: {
         label:"Time Picker",
         icon: faClock,
         source: {

@@ -41,7 +41,7 @@
         components: {FontAwesomeIcon},
         data: () => ({
             $input: null,
-            icon: INPUT_TYPES.timepicker.icon,
+            icon: INPUT_TYPES.time.icon,
             editLabel: false
         }),
         watch: {

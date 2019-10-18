@@ -83,11 +83,11 @@ FORM_CONSTANTS.Type = {
         label:"Number Input",
         icon: faCalculator
     },
-    datepicker: {
+    date: {
         label: "Date Picker",
         icon: faCalendarAlt
     },
-    timepicker: {
+    time: {
         label:"Time Picker",
         icon: faClock
     },
