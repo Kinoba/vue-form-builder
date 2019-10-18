@@ -2,11 +2,8 @@
     <div class="panel">
         <div class="controlSidebar list-group" v-show="!isConfig">
             <div class="panel-heading">
-                <a href="#" class="list-group-item active">
-                    Supported Controls
-                </a>
+                <h5 class="title is-5">Available inputs</h5>
             </div>
-
             <div id="sidebarControls">
                     <a href="javascript:void(0)" class="panel-block list-group-item list-group-item-action input-wrapper bd-notification"
                    v-for="(obj, value) in controls" :data-input-type="value">
@@ -40,16 +37,14 @@
 </template>
 
 <script>
-    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
-    import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
-    import {InputHandler} from 'sethFormBuilder/template/handler/input_handler';
+    import { INPUT_TYPES } from "sethFormBuilder/config/input_constant";
+    import { eventBus, EventHandlerConstant } from 'sethFormBuilder/template/handler/event_handler';
+    import { InputHandler } from 'sethFormBuilder/template/handler/input_handler';
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-    import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
-    import BaseConfigComponent from "./sidebar_items/BaseConfigComponent";
-    import BaseStyleComponent from "./sidebar_items/BaseStyleComponent";
+    import { Hooks } from 'sethFormBuilder/template/components/hook_lists';
 
     export default {
-        components: {BaseStyleComponent, BaseConfigComponent, FontAwesomeIcon},
+        components: { FontAwesomeIcon },
         name: "sidebar-component",
         data: () => ({
             controls: INPUT_TYPES,
@@ -136,5 +131,9 @@
 </script>
 
 <style scoped>
+
+    #sidebarControls > a > svg {
+        margin-right: .5rem;
+    }
 
 </style>

@@ -26,7 +26,7 @@
                     </span>
                   </label>
                 </div>
-                <span>Files :</span>
+                <span v-if="fileList.length > 0">Files :</span>
                 <div v-for="file in fileList">
                     {{ file.name }}
                 </div>
