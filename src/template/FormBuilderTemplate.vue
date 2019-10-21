@@ -2,7 +2,7 @@
     <div class="columns" style="margin: 0 20px;">
         <div class="column is-9">
             <form-title-component v-model="form.title"></form-title-component>
-            <input-group-component :form="form" ref="InputGroupComponent"></input-group-component>
+            <input-group-component :form="form" :formTree="formTree" ref="InputGroupComponent"></input-group-component>
         </div>
         <div class="column is-3">
             <sidebar-component></sidebar-component>
@@ -37,6 +37,9 @@
         },
         props: {
             form: {
+                type: Object
+            },
+            formTree: {
                 type: Object
             }
         },

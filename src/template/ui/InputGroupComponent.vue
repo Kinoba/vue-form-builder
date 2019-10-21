@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <input-group-config-modal ref="inputGroupConfigModal" :maxOrder="this.form.input_groups_attributes.length" @updateInputGroupInfo="updateInputGroupInfo"></input-group-config-modal>
+        <input-group-config-modal ref="inputGroupConfigModal" :formTree="formTree" :maxOrder="this.form.input_groups_attributes.length" @updateInputGroupInfo="updateInputGroupInfo"></input-group-config-modal>
     </div>
 </template>
 
@@ -44,6 +44,9 @@
         name: "input-group-component",
         props: {
             form: {
+                type: Object
+            },
+            formTree: {
                 type: Object
             }
         },

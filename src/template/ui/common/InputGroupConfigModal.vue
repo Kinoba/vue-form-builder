@@ -26,6 +26,19 @@
               </div>
               <p v-if="inputGroup && ((inputGroup.order >= maxOrder) || (inputGroup.order < 0))" class="help is-danger">You are trying to reorder the input group to an unknow position.</p>
             </div>
+            <div class="field has-text-left" v-if="formTree.children && formTree.children.lenght > 0">
+              <label class="label">Conditions</label>
+              <div class="control">
+                  {{ formTree.children }}
+                  <treeselect
+                    placeholder="Sélectionnez les elements pour créer vos conditions"
+                    v-model="inputGroupCondition"
+                    :multiple="true"
+                    :options="formTree.children"
+                    :always-open="true"
+                    :default-expand-level="1"></treeselect>
+                </div>
+            </div>
         </section>
         <footer class="modal-card-foot has-text-right">
           <button class="button is-success" :disabled="(inputGroup.order >= maxOrder) || (inputGroup.order < 0)" @click="save">Save</button>
@@ -36,14 +49,19 @@
 </template>
 
 <script>
+    import Treeselect from '@riophae/vue-treeselect';
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+
     const INPUT_GROUP_ID = "#inputGroupConfigModal";
 
     export default {
         name: "InputGroupConfigModal",
-        props:['updateInputGroupInfo', 'maxOrder'],
+        props: ['updateInputGroupInfo', 'maxOrder', 'formTree'],
+        components: { Treeselect },
         data: () => ({
             index: null,
             inputGroup: null,
+            inputGroupCondition: [],
             oldInputGroupOrder: null,
         }),
         methods: {
