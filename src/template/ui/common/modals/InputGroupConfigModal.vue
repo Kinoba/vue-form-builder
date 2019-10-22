@@ -31,13 +31,33 @@
               <div class="control">
                   <treeselect
                     placeholder="Sélectionnez les elements pour créer vos conditions"
-                    v-model="inputGroupCondition"
                     :multiple="true"
                     :options="formTree.children"
                     :always-open="true"
                     :default-expand-level="1"
                     @select="onConditionSelect($event)"></treeselect>
                 </div>
+            </div>
+            <div class="field has-text-left" v-if="inputGroupConditions.length > 0" v-for="(inputCondition, index) in inputGroupConditions">
+              <label class="label">Validation <span class="is-italic">for {{ inputCondition.item.label }}</span></label>
+              <div class="control columns">
+                  <div class="column is-4">
+                      <div class="select">
+                          <select>
+                            <option>Selectionner</option>
+                            <option v-for="option in inputCondition.validations">{{ option.key }}</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="column is-8">
+                      <input class="input" :type="inputCondition.item.input_type" v-model="inputCondition.item.value" placeholder="Enter validation value">
+                  </div>
+              </div>
+              <div class="has-text-right columns" v-if="index === (inputGroupConditions.length - 1)">
+                  <div class="column is-12">
+                      <button class="button is-secondary" @click="addValidation(inputCondition)">Add validation</button>
+                  </div>
+              </div>
             </div>
         </section>
         <footer class="modal-card-foot has-text-right">
@@ -63,7 +83,8 @@
         data: () => ({
             index: null,
             inputGroup: null,
-            inputGroupCondition: [],
+            inputGroupConditions: [],
+            availableValidations: [],
             oldInputGroupOrder: null,
         }),
         methods: {
@@ -81,16 +102,27 @@
                 this.$emit('updateInputGroupInfo', this.inputGroup, this.index, reOrder, this.inputGroup.order);
                 this.closeModal();
             },
-            onConditionSelect(condition) {
+            onConditionSelect(item) {
+                let validationUrl = API_CONSTANTS.url;
+                // if(item.id) validationUrl += '/inputs/' + item.id + '/validations';
+                // else validationUrl += '/inputs/' + item.input_type + '/validations';
+
+                validationUrl += '/inputs/' + item.input_type + '/validations'
+
                 axios({
                   method: 'get',
-                  url: API_CONSTANTS.url + condition.validations_url,
+                  url: validationUrl,
                   data: {}
                 }).then(response => {
-                  console.log(response.data)
+                  this.inputGroupConditions.push({item: item, validations: response.data});
+                  console.log(this.inputGroupConditions)
                 }).catch(error => {
                   console.log(error);
                 });
+            },
+            addValidation(inputCondition) {
+                inputCondition.item.value = '';
+                this.inputGroupConditions.push(inputCondition);
             }
         },
         mounted() {
@@ -106,5 +138,15 @@
 </script>
 
 <style scoped>
+
+.vue-treeselect {
+    overflow-y: scroll;
+}
+
+.vue-treeselect /deep/ .vue-treeselect__menu-container {
+    position: relative;
+    display: inline-block;
+    height: 150px;
+}
 
 </style>

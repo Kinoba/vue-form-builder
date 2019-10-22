@@ -57,7 +57,7 @@
                 let treeChild = {
                     label: info.label,
                     children: [],
-                    validations_url: '',
+                    input_type: 'input_group',
                     id: null
                 };
 
