@@ -5,7 +5,7 @@
                 <div class="column is-12 field has-text-left">
                     <label class="label">Input Group</label>
                     <div class="control">
-                        <input type="text" class="input" placeholder="Enter input group label" v-model="inputGroup.label">
+                        <input type="text" class="input" placeholder="Enter input group label" v-model="inputGroup.label" @blur="updateInputGroupFromConditionTree(inputGroup, index)">
                     </div>
                 </div>
                 <div class="column is-12 input-group-button-bar has-text-left">
@@ -33,9 +33,10 @@
 
 <script>
     import * as lodash from 'lodash';
-    import { FORM_CONSTANTS } from "sethFormBuilder/config/constants";
+    import axios from 'axios';
+    import { FORM_CONSTANTS, API_CONSTANTS } from "sethFormBuilder/config/constants";
     import RowComponent from "./RowComponent";
-    import InputGroupConfigModal from "./common/InputGroupConfigModal";
+    import InputGroupConfigModal from "./common/modals/InputGroupConfigModal";
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import { Hooks } from 'sethFormBuilder/template/components/hook_lists';
 
@@ -45,15 +46,41 @@
         props: {
             form: {
                 type: Object
-            },
-            formTree: {
-                type: Object
             }
         },
         data: () => ({
-            layouts: FORM_CONSTANTS.InputGroupLayout
+            layouts: FORM_CONSTANTS.InputGroupLayout,
+            formTree: {}
         }),
         methods: {
+            addInputGroupToConditionTree(info) {
+                let treeChild = {
+                    label: info.label,
+                    children: [],
+                    validations_url: '',
+                    id: null
+                };
+
+                this.formTree.children.push(treeChild);
+            },
+            updateInputGroupFromConditionTree(info, index) {
+                if(this.formTree.children[index]) {
+                    let updateChild = this.formTree.children[index];
+
+                    updateChild.label = info.label;
+
+                    let children = [];
+                    info.rows_attributes.forEach((row) => {
+                        children.concat(row.inputs_attributes);
+                    });
+                    updateChild.children = children;
+
+                    this.formTree.children[index] = updateChild;
+                }
+            },
+            deleteInputGroupFromConditionTree(secIndex) {
+                this.formTree.children.splice(secIndex, 1);
+            },
             addInputGroup() {
                 var inputGroupInfo = _.cloneDeep(FORM_CONSTANTS.InputGroup);
                 // set uniqueID
@@ -68,6 +95,9 @@
                 }
 
                 this.form.input_groups_attributes.push(inputGroupInfo);
+
+                // Update condition tree with newly added info
+                this.addInputGroupToConditionTree(inputGroupInfo);
 
                 // After hook
                 Hooks.InputGroup.afterAdd.run(inputGroupInfo);
@@ -90,6 +120,9 @@
 
                 // remove input group
                 this.form.input_groups_attributes.splice(secIndex, 1);
+
+                // Update condition tree with newly deleted input group
+                this.deleteInputGroupFromConditionTree(secIndex);
 
                 // final hook
                 Hooks.InputGroup.afterRemove.run(inputGroupInfo);
@@ -149,7 +182,19 @@
             updateInputGroupInfo(inputGroupInfo, index, reOrder, newOrder) {
                 _.deepExtend(this.form.input_groups_attributes[index], inputGroupInfo);
 
-                if(reOrder) this.updateInputGroupOrder(inputGroupInfo, index, newOrder);
+                if(reOrder) {
+                    this.updateInputGroupOrder(inputGroupInfo, index, newOrder);
+                }
+            },
+            getFormAsTreeView() {
+              // Get tree data to display the form tree in config modals
+              axios
+                .get(`${API_CONSTANTS.url}/forms/${this.form.id}?view=tree_view`)
+                .then(response => {
+                  this.formTree = response.data;
+                }).catch(error => {
+                  console.log(error);
+                });
             }
         },
         mounted() {
@@ -166,6 +211,8 @@
                     ui.placeholder.css("background-color", "#3498db");
                 }
             }).disableSelection();
+
+            this.getFormAsTreeView();
         },
         updated() {
             this.form._uniqueId = Math.random();

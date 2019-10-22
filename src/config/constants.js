@@ -9,6 +9,7 @@ import {faParagraph} from '@fortawesome/free-solid-svg-icons/faParagraph';
 
 var FORM_CONSTANTS = {};
 var INPUT_CONSTANTS = {};
+var API_CONSTANTS = {};
 
 FORM_CONSTANTS.InputGroupLayout = {
   collapse: "Collapse",
@@ -146,7 +147,10 @@ INPUT_CONSTANTS.TimeFormat = {
     'hh:mm p': "hh:mm A"
 };
 
+API_CONSTANTS.url = 'http://localhost:3000';
+
 export {
     FORM_CONSTANTS,
-    INPUT_CONSTANTS
+    INPUT_CONSTANTS,
+    API_CONSTANTS
 }

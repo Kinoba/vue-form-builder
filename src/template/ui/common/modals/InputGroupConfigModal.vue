@@ -26,17 +26,17 @@
               </div>
               <p v-if="inputGroup && ((inputGroup.order >= maxOrder) || (inputGroup.order < 0))" class="help is-danger">You are trying to reorder the input group to an unknow position.</p>
             </div>
-            <div class="field has-text-left" v-if="formTree.children && formTree.children.lenght > 0">
+            <div class="field has-text-left" v-if="formTree.children && formTree.children.length > 0">
               <label class="label">Conditions</label>
               <div class="control">
-                  {{ formTree.children }}
                   <treeselect
                     placeholder="Sélectionnez les elements pour créer vos conditions"
                     v-model="inputGroupCondition"
                     :multiple="true"
                     :options="formTree.children"
                     :always-open="true"
-                    :default-expand-level="1"></treeselect>
+                    :default-expand-level="1"
+                    @select="onConditionSelect($event)"></treeselect>
                 </div>
             </div>
         </section>
@@ -50,6 +50,8 @@
 
 <script>
     import Treeselect from '@riophae/vue-treeselect';
+    import axios from 'axios';
+    import { API_CONSTANTS } from "sethFormBuilder/config/constants";;
     import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
     const INPUT_GROUP_ID = "#inputGroupConfigModal";
@@ -78,6 +80,17 @@
                 if(this.oldInputGroupOrder !== this.inputGroup.order) reOrder = true;
                 this.$emit('updateInputGroupInfo', this.inputGroup, this.index, reOrder, this.inputGroup.order);
                 this.closeModal();
+            },
+            onConditionSelect(condition) {
+                axios({
+                  method: 'get',
+                  url: API_CONSTANTS.url + condition.validations_url,
+                  data: {}
+                }).then(response => {
+                  console.log(response.data)
+                }).catch(error => {
+                  console.log(error);
+                });
             }
         },
         mounted() {

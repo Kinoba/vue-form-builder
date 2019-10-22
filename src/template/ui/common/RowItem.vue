@@ -27,7 +27,7 @@
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import {Hooks} from 'sethFormBuilder/template/components/hook_lists';
     import {InputHandler} from 'sethFormBuilder/template/handler/input_handler';
-    import InputConfigModal from "./InputConfigModal";
+    import InputConfigModal from "./modals/InputConfigModal";
 
     export default {
         components: {FontAwesomeIcon, InputConfigModal},
