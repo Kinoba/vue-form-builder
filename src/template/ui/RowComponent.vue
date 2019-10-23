@@ -3,6 +3,8 @@
         <row-item v-for="row in inputGroup.rows_attributes"
                   :key="row.uuid"
                   :row="row"
+                  :form="form"
+                  :parentInputGroup="inputGroup"
                   @removeRow="removeRow">
         </row-item>
     </div>
@@ -18,7 +20,8 @@
         props: {
             inputGroup: {
                 type: Object
-            }
+            },
+            form: {},
         },
         methods: {
             traverseRow() {

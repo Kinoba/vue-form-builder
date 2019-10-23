@@ -46,7 +46,7 @@
                   <div class="column is-4">
                       <div class="select">
                           <select v-model="conditionable.logic_attributes.conditions_attributes[index].operator">
-                            <option :key="'default_' + index">Selectionner</option>
+                            <option selected :key="'default_' + index">Selectionner</option>
                             <option v-for="option in availableValidations[selectedItem.input_type]" :key="option.key + '_' + index">{{ option.key }}</option>
                           </select>
                       </div>
@@ -144,7 +144,7 @@
 
                 this.deleteConditionable(index);
             },
-            initialiseCondtionable() {
+            initialiseConditionable() {
                 if(Object.keys(this.conditionable).length === 0) {
                     //Initialise conditionable
                     this.conditionable = {
@@ -158,7 +158,7 @@
                 }
             },
             addConditionable(selectedTreeItem) {
-                this.initialiseCondtionable();
+                this.initialiseConditionable();
 
                 let conditionableItem = {
                     conditionable_id: selectedTreeItem.uuid,
@@ -202,13 +202,17 @@
 
                 //Set unique IDs in form tree
                 this.formTree.children.forEach((inputGroup) => {
-                    inputGroup['uuid'] = inputGroup.id;
-                    inputGroup['id'] = inputGroup.engine_type + '_' + inputGroup.id;
+                    if(!inputGroup['uuid']) {
+                        inputGroup['uuid'] = inputGroup.id;
+                        inputGroup['id'] = inputGroup.engine_type + '_' + inputGroup.id;
 
-                    inputGroup.children.forEach((input) => {
-                        input['uuid'] = input.id;
-                        input['id'] = input.engine_type + '_' + input.id;
-                    });
+                        inputGroup.children.forEach((input) => {
+                            if(!input['uuid']) {
+                                input['uuid'] = input.id;
+                                input['id'] = input.engine_type + '_' + input.id;
+                            }
+                        });
+                    }
                 });
             }
         },

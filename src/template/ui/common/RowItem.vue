@@ -15,12 +15,13 @@
                    @openConfig="openInputConfig(index)">
         </component>
 
-        <input-config-modal ref="inputConfigModal" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
+        <input-config-modal ref="inputConfigModal" :formTree="formTree" :parentInputGroup="parentInputGroup" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
     </div>
 </template>
 
 <script>
-    import {FORM_CONSTANTS} from "sethFormBuilder/config/constants";
+    import axios from 'axios';
+    import {FORM_CONSTANTS, API_CONSTANTS} from "sethFormBuilder/config/constants";
     import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
     //import ControlItem from "./ControlItem";
     import {eventBus, EventHandlerConstant} from 'sethFormBuilder/template/handler/event_handler';
@@ -37,11 +38,14 @@
                 type: Object,
                 default: {}
             },
-            labelPosition: null
+            labelPosition: null,
+            form: {},
+            parentInputGroup: {}
         },
         data: () => ({
             INPUT_TYPES,
             editing_input: null,
+            formTree: {}
         }),
         methods: {
             addInput(inputType) {
@@ -111,6 +115,16 @@
                 _.deepExtend(this.row.inputs_attributes[index], inputInfo);
 
                 if(reOrder) this.updateInputOrder(inputInfo, index, newOrder);
+            },
+            getFormAsTreeView() {
+              // Get tree data to display the form tree in config modals
+              axios
+                .get(`${API_CONSTANTS.url}/forms/${this.form.id}?view=tree_view`)
+                .then(response => {
+                  this.formTree = response.data;
+                }).catch(error => {
+                  console.log(error);
+                });
             }
         },
         created() {
@@ -201,6 +215,8 @@
                     ui.placeholder.css("background-color", "#e74c3c");
                 }
             }).disableSelection();
+
+            this.getFormAsTreeView();
         }
     }
 </script>
