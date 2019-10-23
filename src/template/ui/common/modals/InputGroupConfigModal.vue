@@ -35,7 +35,6 @@
                     :options="formTree.children"
                     :always-open="true"
                     :default-expand-level="1"
-                    :valueFormat="'uuid'"
                     @select="onConditionSelect($event)"
                     @deselect="onConditionDeselect($event)"></treeselect>
                 </div>
@@ -148,7 +147,7 @@
                 if(Object.keys(this.conditionable).length === 0) {
                     //Initialise conditionable
                     this.conditionable = {
-                        conditionable_id: this.inputGroup.uuid,
+                        conditionable_id: this.inputGroup.id,
                         conditionable_type: this.inputGroup.engine_type,
                         logic_attributes: {
                             action: 'jump',
@@ -161,7 +160,7 @@
                 this.initialiseConditionable();
 
                 let conditionableItem = {
-                    conditionable_id: selectedTreeItem.uuid,
+                    conditionable_id: selectedTreeItem.form_id,
                     conditionable_type: selectedTreeItem.engine_type,
                     operator: '',
                     value: ''
@@ -202,13 +201,13 @@
 
                 //Set unique IDs in form tree
                 this.formTree.children.forEach((inputGroup) => {
-                    if(!inputGroup['uuid']) {
-                        inputGroup['uuid'] = inputGroup.id;
+                    if(!inputGroup['form_id']) {
+                        inputGroup['form_id'] = inputGroup.id;
                         inputGroup['id'] = inputGroup.engine_type + '_' + inputGroup.id;
 
                         inputGroup.children.forEach((input) => {
-                            if(!input['uuid']) {
-                                input['uuid'] = input.id;
+                            if(!input['form_id']) {
+                                input['form_id'] = input.id;
                                 input['id'] = input.engine_type + '_' + input.id;
                             }
                         });
