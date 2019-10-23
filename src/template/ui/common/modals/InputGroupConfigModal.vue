@@ -35,6 +35,7 @@
                     :options="formTree.children"
                     :always-open="true"
                     :default-expand-level="1"
+                    :valueFormat="'uuid'"
                     @select="onConditionSelect($event)"
                     @deselect="onConditionDeselect($event)"></treeselect>
                 </div>
@@ -100,6 +101,7 @@
             },
             save() {
                 let reOrder = false;
+                if(Object.keys(this.conditionable).length > 0) { this.saveConditionable(); }
                 if(this.oldInputGroupOrder !== this.inputGroup.order) reOrder = true;
                 this.$emit('updateInputGroupInfo', this.inputGroup, this.index, reOrder, this.inputGroup.order);
                 this.closeModal();
@@ -146,7 +148,7 @@
                 if(Object.keys(this.conditionable).length === 0) {
                     //Initialise conditionable
                     this.conditionable = {
-                        conditionable_id: this.inputGroup.id,
+                        conditionable_id: this.inputGroup.uuid,
                         conditionable_type: this.inputGroup.engine_type,
                         logic_attributes: {
                             action: 'jump',
@@ -159,7 +161,7 @@
                 this.initialiseCondtionable();
 
                 let conditionableItem = {
-                    conditionable_id: selectedTreeItem.id,
+                    conditionable_id: selectedTreeItem.uuid,
                     conditionable_type: selectedTreeItem.engine_type,
                     operator: '',
                     value: ''
@@ -173,6 +175,18 @@
             addValidation(item) {
                 this.selectedTreeItems.push(item);
                 this.addConditionable(item);
+            },
+            saveConditionable() {
+                axios({
+                  method: 'post',
+                  url: API_CONSTANTS.url + '/conditionables',
+                  data: this.conditionable
+                }).then(response => {
+                    // Populate availableValidations JSON if the validations for the given input does not exist
+                    console.log(response);
+                }).catch(error => {
+                  console.log(error);
+                });
             }
         },
         mounted() {
@@ -182,6 +196,20 @@
         watch: {
             inputGroup(val) {
                 if(this.inputGroup) this.oldInputGroupOrder = val.order;
+            },
+            formTree(val) {
+                this.formTree = val;
+
+                //Set unique IDs in form tree
+                this.formTree.children.forEach((inputGroup) => {
+                    inputGroup['uuid'] = inputGroup.id;
+                    inputGroup['id'] = inputGroup.engine_type + '_' + inputGroup.id;
+
+                    inputGroup.children.forEach((input) => {
+                        input['uuid'] = input.id;
+                        input['id'] = input.engine_type + '_' + input.id;
+                    });
+                });
             }
         },
     }
