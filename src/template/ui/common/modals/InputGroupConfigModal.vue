@@ -35,27 +35,28 @@
                     :options="formTree.children"
                     :always-open="true"
                     :default-expand-level="1"
-                    @select="onConditionSelect($event)"></treeselect>
+                    @select="onConditionSelect($event)"
+                    @deselect="onConditionDeselect($event)"></treeselect>
                 </div>
             </div>
-            <div class="field has-text-left" v-if="inputGroupConditions.length > 0" v-for="(inputCondition, index) in inputGroupConditions">
-              <label class="label">Validation <span class="is-italic">for {{ inputCondition.item.label }}</span></label>
+            <div class="field has-text-left" v-if="selectedTreeItems.length > 0" v-for="(selectedItem, index) in selectedTreeItems" :key="'validation_' + index">
+              <label class="label">Validation <span class="is-italic">for {{ selectedItem.label }}</span></label>
               <div class="control columns">
                   <div class="column is-4">
                       <div class="select">
-                          <select>
-                            <option>Selectionner</option>
-                            <option v-for="option in inputCondition.validations">{{ option.key }}</option>
+                          <select v-model="conditionable.logic_attributes.conditions_attributes[index].operator">
+                            <option :key="'default_' + index">Selectionner</option>
+                            <option v-for="option in availableValidations[selectedItem.input_type]" :key="option.key + '_' + index">{{ option.key }}</option>
                           </select>
                       </div>
                   </div>
                   <div class="column is-8">
-                      <input class="input" :type="inputCondition.item.input_type" v-model="inputCondition.item.value" placeholder="Enter validation value">
+                      <input class="input" :type="selectedItem.input_type" v-model="conditionable.logic_attributes.conditions_attributes[index].value" placeholder="Enter validation value">
                   </div>
               </div>
-              <div class="has-text-right columns" v-if="index === (inputGroupConditions.length - 1)">
+              <div class="has-text-right columns" v-if="index === (selectedTreeItems.length - 1)">
                   <div class="column is-12">
-                      <button class="button is-secondary" @click="addValidation(inputCondition)">Add validation</button>
+                      <button class="button is-secondary" @click="addValidation(selectedItem)">Add validation</button>
                   </div>
               </div>
             </div>
@@ -83,8 +84,9 @@
         data: () => ({
             index: null,
             inputGroup: null,
-            inputGroupConditions: [],
-            availableValidations: [],
+            selectedTreeItems: [],
+            availableValidations: {},
+            conditionable: {},
             oldInputGroupOrder: null,
         }),
         methods: {
@@ -103,26 +105,74 @@
                 this.closeModal();
             },
             onConditionSelect(item) {
-                let validationUrl = API_CONSTANTS.url;
-                // if(item.id) validationUrl += '/inputs/' + item.id + '/validations';
-                // else validationUrl += '/inputs/' + item.input_type + '/validations';
+                this.selectedTreeItems.push(item);
 
-                validationUrl += '/inputs/' + item.input_type + '/validations'
+                if(!this.availableValidations.hasOwnProperty(item.item_type)) {
+                    let validationUrl = API_CONSTANTS.url;
+                    // if(item.id) validationUrl += '/inputs/' + item.id + '/validations';
+                    // else validationUrl += '/inputs/' + item.input_type + '/validations';
 
-                axios({
-                  method: 'get',
-                  url: validationUrl,
-                  data: {}
-                }).then(response => {
-                  this.inputGroupConditions.push({item: item, validations: response.data});
-                  console.log(this.inputGroupConditions)
-                }).catch(error => {
-                  console.log(error);
-                });
+                    validationUrl += '/inputs/' + item.input_type + '/validations'
+
+                    axios({
+                      method: 'get',
+                      url: validationUrl,
+                      data: {}
+                    }).then(response => {
+                        // Populate availableValidations JSON if the validations for the given input does not exist
+                        this.availableValidations[item.input_type] = response.data;
+                        this.$forceUpdate();
+                    }).catch(error => {
+                      console.log(error);
+                    });
+                }
+
+                this.addConditionable(item);
             },
-            addValidation(inputCondition) {
-                inputCondition.item.value = '';
-                this.inputGroupConditions.push(inputCondition);
+            onConditionDeselect(item) {
+                let index = this.selectedTreeItems.indexOf(item);
+
+                if(index > -1) {
+                    this.selectedTreeItems.splice(index, 1); // remove item from selectedTreeItems array
+                }
+
+                if(this.availableValidations[item.input_type]) {
+                    delete this.availableValidations[item.input_type];
+                }
+
+                this.deleteConditionable(index);
+            },
+            initialiseCondtionable() {
+                if(Object.keys(this.conditionable).length === 0) {
+                    //Initialise conditionable
+                    this.conditionable = {
+                        conditionable_id: this.inputGroup.id,
+                        conditionable_type: this.inputGroup.engine_type,
+                        logic_attributes: {
+                            action: 'jump',
+                            conditions_attributes: []
+                        }
+                    };
+                }
+            },
+            addConditionable(selectedTreeItem) {
+                this.initialiseCondtionable();
+
+                let conditionableItem = {
+                    conditionable_id: selectedTreeItem.id,
+                    conditionable_type: selectedTreeItem.engine_type,
+                    operator: '',
+                    value: ''
+                };
+
+                this.conditionable.logic_attributes.conditions_attributes.push(conditionableItem);
+            },
+            deleteConditionable(index) {
+                this.conditionable.logic_attributes.conditions_attributes.splice(index, 1);
+            },
+            addValidation(item) {
+                this.selectedTreeItems.push(item);
+                this.addConditionable(item);
             }
         },
         mounted() {
