@@ -154,7 +154,30 @@
                             conditions_attributes: []
                         }
                     };
+                } else {
+                    if(!this.conditionable.logic_attributes) {
+                        this.conditionable.logic_attributes = {
+                            action: 'jump',
+                            conditions_attributes: []
+                        };
+                    }
+
+                    if(!this.conditionable.logic_attributes.conditions_attributes) {
+                        this.conditionable.logic_attributes.conditions_attributes = [];
+                    }
                 }
+            },
+            getConditionableFromServer() {
+                axios({
+                  method: 'get',
+                  url: API_CONSTANTS.url + '/conditionables/' + this.inputGroup.id,
+                  data: {}
+                }).then(response => {
+                    // Populate availableValidations JSON if the validations for the given input does not exist
+                    this.conditionable = response.data;
+                }).catch(error => {
+                  console.log(error);
+                });
             },
             addConditionable(selectedTreeItem) {
                 this.initialiseConditionable();
@@ -177,8 +200,8 @@
             },
             saveConditionable() {
                 axios({
-                  method: 'post',
-                  url: API_CONSTANTS.url + '/conditionables',
+                  method: 'put',
+                  url: API_CONSTANTS.url + '/conditionables/' + this.inputGroup.id,
                   data: this.conditionable
                 }).then(response => {
                     // Populate availableValidations JSON if the validations for the given input does not exist
@@ -194,7 +217,10 @@
         },
         watch: {
             inputGroup(val) {
-                if(this.inputGroup) this.oldInputGroupOrder = val.order;
+                if(val) {
+                    this.oldInputGroupOrder = val.order;
+                    this.getConditionableFromServer();
+                }
             },
             formTree(val) {
                 this.formTree = val;
