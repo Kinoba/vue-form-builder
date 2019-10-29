@@ -132,7 +132,9 @@
     components: { Treeselect },
     data: () => ({
       index: null,
-      inputGroup: null,
+      inputGroup: {
+        name: null
+      },
       selectedTreeItems: [],
       availableValidations: {},
       conditionable: {},
@@ -302,8 +304,7 @@
                 console.log(condition);
 
                 this.value.push(condition.conditionable.type + "_" + condition.conditionable.id);
-                this.selectedTreeItems.push(conditionable);
-                this.addConditionable(conditionable);
+                this.addValidation(conditionable);
               });
             }
           });
