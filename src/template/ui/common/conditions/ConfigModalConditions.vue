@@ -6,10 +6,12 @@
         <treeselect
           placeholder="Sélectionnez les elements pour créer vos conditions"
           :multiple="true"
+          :clearable="false"
           :options="formTree.children"
           :always-open="true"
           :default-expand-level="1"
           v-model="value"
+          @beforeClearAll="clearAll($event)"
           @select="onConditionSelect($event)"
           @deselect="onConditionDeselect($event)"
         ></treeselect>
@@ -107,6 +109,16 @@
         }
       },
       onConditionSelect(item) {
+        if(item.children) {
+          item.children.forEach((childItem) => {
+            this.selectItemInTree(childItem);
+          });
+        } else {
+          //The user has selected an input
+          this.selectItemInTree(item);
+        }
+      },
+      selectItemInTree(item) {
         this.selectedTreeItems.push(item);
         this.getAvailableValidationsFromServer(item.input_type);
         this.addConditionable(item);
@@ -216,17 +228,11 @@
       buildUniqueFormTreeIds(){
         //Set unique IDs in form tree
         this.formTree.children.forEach(inputGroup => {
-          //if (!inputGroup["input_id"]) {
-            // inputGroup["input_id"] = inputGroup.id;
-            inputGroup["id"] = inputGroup.conditionable_type + "_" + inputGroup.id;
+          inputGroup["id"] = inputGroup.conditionable_type + "_" + inputGroup.id;
 
-            inputGroup.children.forEach(input => {
-              //if (!input["input_id"]) {
-                // input["input_id"] = input.id;
-                input["id"] = input.conditionable_type + "_" + input.id;
-              //}
-            });
-          //}
+          inputGroup.children.forEach(input => {
+            input["id"] = input.conditionable_type + "_" + input.id;
+          });
         });
       }
     },
