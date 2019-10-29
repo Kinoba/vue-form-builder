@@ -108,10 +108,10 @@
       },
       onConditionSelect(item) {
         this.selectedTreeItems.push(item);
-        this.getAvailableValidations(item.input_type);
+        this.getAvailableValidationsFromServer(item.input_type);
         this.addConditionable(item);
       },
-      getAvailableValidations(input_type) {
+      getAvailableValidationsFromServer(input_type) {
         if (!this.availableValidations.hasOwnProperty(input_type)) {
           let validationUrl = API_CONSTANTS.url;
           validationUrl += "/inputs/" + input_type + "/validations";
@@ -131,6 +131,20 @@
             });
         }
       },
+      getConditionableFromServer() {
+        axios({
+          method: "get",
+          url: API_CONSTANTS.url + "/conditionables/" + this.currentInputGroup.id,
+          data: {}
+        })
+          .then(response => {
+            // Populate availableValidations JSON if the validations for the given input does not exist
+            this.conditionable = response.data;
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
       onConditionDeselect(item) {
         let index = this.selectedTreeItems.indexOf(item);
 
@@ -148,7 +162,7 @@
         if (Object.keys(this.conditionable).length === 0) {
           //Initialise conditionable
           this.conditionable = {
-            id: this.currentInputGroup.id,
+            conditionable_id: this.currentInputGroup.id,
             conditionable_type: this.currentInputGroup.input_type,
             logic_attributes: {
               action: "jump",
@@ -170,25 +184,11 @@
 
         this.$emit("updateConditionable",this.conditionable);
       },
-      getConditionableFromServer() {
-        axios({
-          method: "get",
-          url: API_CONSTANTS.url + "/conditionables/" + this.currentInputGroup.id,
-          data: {}
-        })
-          .then(response => {
-            // Populate availableValidations JSON if the validations for the given input does not exist
-            this.conditionable = response.data;
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      },
       addConditionable(selectedTreeItem) {
         this.initialiseConditionable();
 
         let conditionableItem = {
-          id: selectedTreeItem.input_id,
+          id: selectedTreeItem.conditionable_id,
           conditionable_type: selectedTreeItem.conditionable_type,
           operator: "",
           value: ""
@@ -197,23 +197,32 @@
         if(selectedTreeItem.operator) { conditionableItem.operator = selectedTreeItem.operator; }
         if(selectedTreeItem.value) { conditionableItem.value = selectedTreeItem.value; }
 
-        this.conditionable.logic_attributes.conditions_attributes.push(
-          conditionableItem
-        );
-
-        this.$emit("updateConditionable",this.conditionable);
+        this.conditionable.logic_attributes.conditions_attributes.push(conditionableItem);
+        this.$emit("updateConditionable",this.conditionable); //update parent conditionable
       },
       deleteConditionable(index) {
-        this.conditionable.logic_attributes.conditions_attributes.splice(
-          index,
-          1
-        );
-
-        this.$emit("updateConditionable",this.conditionable);
+        this.conditionable.logic_attributes.conditions_attributes.splice(index,1);
+        this.$emit("updateConditionable",this.conditionable); //update parent conditionable
       },
       addValidation(item) {
         this.selectedTreeItems.push(item);
         this.addConditionable(item);
+      },
+      buildUniqueFormTreeIds(){
+        //Set unique IDs in form tree
+        this.formTree.children.forEach(inputGroup => {
+          //if (!inputGroup["input_id"]) {
+            // inputGroup["input_id"] = inputGroup.id;
+            inputGroup["id"] = inputGroup.conditionable_type + "_" + inputGroup.id;
+
+            inputGroup.children.forEach(input => {
+              //if (!input["input_id"]) {
+                // input["input_id"] = input.id;
+                input["id"] = input.conditionable_type + "_" + input.id;
+              //}
+            });
+          //}
+        });
       }
     },
     mounted() {
@@ -232,7 +241,7 @@
 
               conditionable.logic_attributes.conditions_attributes.forEach(condition => {
                 this.value.push(condition.conditionable_type + "_" + condition.id);
-                this.getAvailableValidations(condition.input_type);
+                this.getAvailableValidationsFromServer(condition.input_type);
                 this.addValidation(condition);
               });
             }
@@ -241,21 +250,7 @@
       },
       formTree(val) {
         this.formTree = val;
-
-        //Set unique IDs in form tree
-        this.formTree.children.forEach(inputGroup => {
-          if (!inputGroup["input_id"]) {
-            inputGroup["input_id"] = inputGroup.id;
-            inputGroup["id"] = inputGroup.conditionable_type + "_" + inputGroup.id;
-
-            inputGroup.children.forEach(input => {
-              if (!input["input_id"]) {
-                input["input_id"] = input.id;
-                input["id"] = input.conditionable_type + "_" + input.id;
-              }
-            });
-          }
-        });
+        this.buildUniqueFormTreeIds();
       }
     }
   };
