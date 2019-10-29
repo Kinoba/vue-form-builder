@@ -189,6 +189,8 @@
       addConditionable(selectedTreeItem) {
         this.initialiseConditionable();
 
+      console.log(selectedTreeItem)
+
         let conditionableItem = {
           conditionable_id: selectedTreeItem.conditionable_id,
           conditionable_type: selectedTreeItem.conditionable_type,
@@ -240,9 +242,17 @@
           // Add the selected value to the tree view v-model
           if (this.currentInputGroup.conditionable.logic_attributes) {
             this.currentInputGroup.conditionable.logic_attributes.conditions_attributes.forEach(condition => {
-              this.value.push(condition.conditionable_type + "_" + condition.id);
+              let treeItem = {
+                id: condition.conditionable_type + "_" + condition.id,
+                conditionable_id: condition.conditionable_id,
+                conditionable_type: condition.conditionable_type,
+                input_type: condition.input_type,
+                label: condition.label
+              };
+
+              this.value.push(treeItem.id);
               this.getAvailableValidationsFromServer(condition.input_type);
-              this.addValidation(condition);
+              this.addValidation(treeItem);
             });
           }
 
