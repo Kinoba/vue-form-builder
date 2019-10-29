@@ -234,29 +234,31 @@
 
     },
     watch: {
-      // When the user clicks on the Configuration button for an InputGroup
+      // When the user clicks on the Configuration button
       inputGroup(val) {
         if (val) {
+
           this.currentInputGroup = val;
-          this.getConditionableFromServer();
+          if (Object.keys(this.conditionable).length === 0) {
+            this.getConditionableFromServer();
 
-          // Add the selected value to the tree view v-model
-          if (this.currentInputGroup.conditionable.logic_attributes) {
-            this.currentInputGroup.conditionable.logic_attributes.conditions_attributes.forEach(condition => {
-              let treeItem = {
-                id: condition.conditionable_type + "_" + condition.id,
-                conditionable_id: condition.conditionable_id,
-                conditionable_type: condition.conditionable_type,
-                input_type: condition.input_type,
-                label: condition.label
-              };
+            // Add the selected value to the tree view v-model
+            if (this.currentInputGroup.conditionable.logic_attributes) {
+              this.currentInputGroup.conditionable.logic_attributes.conditions_attributes.forEach(condition => {
+                let treeItem = {
+                  id: condition.conditionable_type + "_" + condition.id,
+                  conditionable_id: condition.conditionable_id,
+                  conditionable_type: condition.conditionable_type,
+                  input_type: condition.input_type,
+                  label: condition.label
+                };
 
-              this.value.push(treeItem.id);
-              this.getAvailableValidationsFromServer(condition.input_type);
-              this.addValidation(treeItem);
-            });
+                this.value.push(treeItem.id);
+                this.getAvailableValidationsFromServer(condition.input_type);
+                this.addValidation(treeItem);
+              });
+            }
           }
-
         }
       },
       formTree(val) {
