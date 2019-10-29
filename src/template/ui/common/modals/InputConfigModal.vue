@@ -130,9 +130,6 @@
             },
             onConditionSelect(item) {
                 this.selectedTreeItems.push(item);
-
-                console.log(this.selectedTreeItems)
-
                 if(!this.availableValidations.hasOwnProperty(item.item_type)) {
                     let validationUrl = API_CONSTANTS.url;
                     // if(item.id) validationUrl += '/inputs/' + item.id + '/validations';
@@ -207,7 +204,7 @@
                   data: this.conditionable
                 }).then(response => {
                     // Populate availableValidations JSON if the validations for the given input does not exist
-                    console.log(response);
+                    //console.log(response);
                 }).catch(error => {
                   console.log(error);
                 });
@@ -216,15 +213,12 @@
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
             if(this.input) this.oldInputOrder = this.input.order;
-
-            console.log(this.formTree);
         },
         watch: {
             input(val) {
                 if(this.input) this.oldInputOrder = val.order;
             },
             formTree(val) {
-              console.log(val);
               this.formTree = val;
 
               //Set unique IDs in form tree

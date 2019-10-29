@@ -166,8 +166,6 @@
         this.closeModal();
       },
       onConditionSelect(item) {
-        console.log(item);
-
         this.selectedTreeItems.push(item);
 
         if (!this.availableValidations.hasOwnProperty(item.item_type)) {
@@ -277,7 +275,7 @@
         })
           .then(response => {
             // Populate availableValidations JSON if the validations for the given input does not exist
-            console.log(response);
+            //console.log(response);
           })
           .catch(error => {
             console.log(error);
@@ -298,10 +296,8 @@
           // Add the selected value to the tree view v-model
           this.inputGroup.conditionables.forEach(conditionable => {
             if (conditionable.logic_attributes) {
-              console.log(conditionable);
 
               conditionable.logic_attributes.conditions.forEach(condition => {
-                console.log(condition);
 
                 this.value.push(condition.conditionable.type + "_" + condition.conditionable.id);
                 this.addValidation(conditionable);
