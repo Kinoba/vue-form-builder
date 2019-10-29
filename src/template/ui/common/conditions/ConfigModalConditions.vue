@@ -147,17 +147,20 @@
           });
       },
       onConditionDeselect(item) {
-        let index = this.selectedTreeItems.indexOf(item);
+        let deleteIndex = -1;
 
-        if (index > -1) {
-          this.selectedTreeItems.splice(index, 1); // remove item from selectedTreeItems array
-        }
+        this.selectedTreeItems.forEach((treeItem, index) => {
+          if(treeItem.id === item.id) { deleteIndex = index; }
+        });
 
         if (this.availableValidations[item.input_type]) {
           delete this.availableValidations[item.input_type];
         }
 
-        this.deleteConditionable(index);
+        if(deleteIndex > -1) {
+          this.selectedTreeItems.splice(deleteIndex, 1);
+          this.deleteConditionable(deleteIndex);
+        }
       },
       initialiseConditionable() {
         if (Object.keys(this.conditionable).length === 0) {
@@ -188,8 +191,6 @@
       },
       addConditionable(selectedTreeItem) {
         this.initialiseConditionable();
-
-      console.log(selectedTreeItem)
 
         let conditionableItem = {
           conditionable_id: selectedTreeItem.conditionable_id,
