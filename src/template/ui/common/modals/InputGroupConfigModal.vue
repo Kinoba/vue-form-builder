@@ -87,9 +87,27 @@
                 </div>
               </div>
               <div class="column is-8">
+                <!-- If the input is a text or number -->
                 <input
+                  v-if="selectedItem.input_type !== 'select' && selectedItem.input_type !== 'checkbox' && selectedItem.input_type !== 'time' && selectedItem.input_type !== 'date'"
                   class="input"
                   :type="selectedItem.input_type"
+                  v-model="conditionable.logic_attributes.conditions_attributes[index].value"
+                  placeholder="Enter validation value"
+                />
+                <!-- If the input is a select or checkbox -->
+                <input
+                  v-if="selectedItem.input_type === 'select' || selectedItem.input_type === 'checkbox'"
+                  class="input"
+                  type="text"
+                  v-model="conditionable.logic_attributes.conditions_attributes[index].value"
+                  placeholder="Enter validation value"
+                />
+                <!-- If the input is a date or time -->
+                <input
+                  v-if="selectedItem.input_type === 'time' || selectedItem.input_type === 'date'"
+                  class="input"
+                  type="text"
                   v-model="conditionable.logic_attributes.conditions_attributes[index].value"
                   placeholder="Enter validation value"
                 />
@@ -168,12 +186,14 @@
       onConditionSelect(item) {
         this.selectedTreeItems.push(item);
 
-        if (!this.availableValidations.hasOwnProperty(item.item_type)) {
-          let validationUrl = API_CONSTANTS.url;
-          // if(item.id) validationUrl += '/inputs/' + item.id + '/validations';
-          // else validationUrl += '/inputs/' + item.input_type + '/validations';
+        this.getAvailableValidations(item.input_type);
 
-          validationUrl += "/inputs/" + item.input_type + "/validations";
+        this.addConditionable(item);
+      },
+      getAvailableValidations(input_type) {
+        if (!this.availableValidations.hasOwnProperty(input_type)) {
+          let validationUrl = API_CONSTANTS.url;
+          validationUrl += "/inputs/" + input_type + "/validations";
 
           axios({
             method: "get",
@@ -182,15 +202,13 @@
           })
             .then(response => {
               // Populate availableValidations JSON if the validations for the given input does not exist
-              this.availableValidations[item.input_type] = response.data;
+              this.availableValidations[input_type] = response.data;
               this.$forceUpdate();
             })
             .catch(error => {
               console.log(error);
             });
         }
-
-        this.addConditionable(item);
       },
       onConditionDeselect(item) {
         let index = this.selectedTreeItems.indexOf(item);
@@ -209,7 +227,7 @@
         if (Object.keys(this.conditionable).length === 0) {
           //Initialise conditionable
           this.conditionable = {
-            conditionable_id: this.inputGroup.id,
+            id: this.inputGroup.id,
             conditionable_type: this.inputGroup.engine_type,
             logic_attributes: {
               action: "jump",
@@ -247,11 +265,14 @@
         this.initialiseConditionable();
 
         let conditionableItem = {
-          conditionable_id: selectedTreeItem.form_id,
-          conditionable_type: selectedTreeItem.engine_type,
+          id: selectedTreeItem.input_id,
+          conditionable_type: selectedTreeItem.conditionable_type,
           operator: "",
           value: ""
         };
+
+        if(selectedTreeItem.operator) { conditionableItem.operator = selectedTreeItem.operator; }
+        if(selectedTreeItem.value) { conditionableItem.value = selectedTreeItem.value; }
 
         this.conditionable.logic_attributes.conditions_attributes.push(
           conditionableItem
@@ -297,10 +318,10 @@
           this.inputGroup.conditionables.forEach(conditionable => {
             if (conditionable.logic_attributes) {
 
-              conditionable.logic_attributes.conditions.forEach(condition => {
-
-                this.value.push(condition.conditionable.type + "_" + condition.conditionable.id);
-                this.addValidation(conditionable);
+              conditionable.logic_attributes.conditions_attributes.forEach(condition => {
+                this.value.push(condition.conditionable_type + "_" + condition.id);
+                this.getAvailableValidations(condition.input_type);
+                this.addValidation(condition);
               });
             }
           });
@@ -311,14 +332,14 @@
 
         //Set unique IDs in form tree
         this.formTree.children.forEach(inputGroup => {
-          if (!inputGroup["form_id"]) {
-            inputGroup["form_id"] = inputGroup.id;
-            inputGroup["id"] = inputGroup.engine_type + "_" + inputGroup.id;
+          if (!inputGroup["input_id"]) {
+            inputGroup["input_id"] = inputGroup.id;
+            inputGroup["id"] = inputGroup.conditionable_type + "_" + inputGroup.id;
 
             inputGroup.children.forEach(input => {
-              if (!input["form_id"]) {
-                input["form_id"] = input.id;
-                input["id"] = input.engine_type + "_" + input.id;
+              if (!input["input_id"]) {
+                input["input_id"] = input.id;
+                input["id"] = input.conditionable_type + "_" + input.id;
               }
             });
           }
