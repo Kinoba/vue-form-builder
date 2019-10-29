@@ -236,16 +236,14 @@
           this.getConditionableFromServer();
 
           // Add the selected value to the tree view v-model
-          this.currentInputGroup.conditionables.forEach(conditionable => {
-            if (conditionable.logic_attributes) {
+          if (this.currentInputGroup.conditionable.logic_attributes) {
+            this.currentInputGroup.conditionable.logic_attributes.conditions_attributes.forEach(condition => {
+              this.value.push(condition.conditionable_type + "_" + condition.id);
+              this.getAvailableValidationsFromServer(condition.input_type);
+              this.addValidation(condition);
+            });
+          }
 
-              conditionable.logic_attributes.conditions_attributes.forEach(condition => {
-                this.value.push(condition.conditionable_type + "_" + condition.id);
-                this.getAvailableValidationsFromServer(condition.input_type);
-                this.addValidation(condition);
-              });
-            }
-          });
         }
       },
       formTree(val) {
