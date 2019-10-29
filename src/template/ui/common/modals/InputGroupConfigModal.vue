@@ -106,9 +106,15 @@
         this.closeModal();
       },
       saveConditionable() {
+        let requestMethod = 'post';
+        let requestUrl = API_CONSTANTS.url + "/conditionables"
+        if(this.conditionable.id) {
+          requestMethod = 'put';
+          requestUrl += '/' + this.conditionable.id;
+        }
         axios({
-          method: "put",
-          url: API_CONSTANTS.url + "/conditionables/" + this.inputGroup.id,
+          method: requestMethod,
+          url:  requestUrl,
           data: this.conditionable
         })
           .then(response => {
@@ -120,7 +126,6 @@
           });
       },
       updateConditionable(conditionable) {
-        console.log(conditionable);
         this.conditionable = conditionable;
       }
     },

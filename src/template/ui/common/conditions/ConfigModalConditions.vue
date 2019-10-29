@@ -140,6 +140,7 @@
           .then(response => {
             // Populate availableValidations JSON if the validations for the given input does not exist
             this.conditionable = response.data;
+            this.initialiseConditionable();
           })
           .catch(error => {
             console.log(error);
@@ -162,6 +163,7 @@
         if (Object.keys(this.conditionable).length === 0) {
           //Initialise conditionable
           this.conditionable = {
+            id: null,
             conditionable_id: this.currentInputGroup.id,
             conditionable_type: this.currentInputGroup.input_type,
             logic_attributes: {
@@ -188,7 +190,7 @@
         this.initialiseConditionable();
 
         let conditionableItem = {
-          id: selectedTreeItem.conditionable_id,
+          conditionable_id: selectedTreeItem.conditionable_id,
           conditionable_type: selectedTreeItem.conditionable_type,
           operator: "",
           value: ""

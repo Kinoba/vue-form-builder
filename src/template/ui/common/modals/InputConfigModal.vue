@@ -95,9 +95,15 @@
                 this.input.properties.options.push(newChoice);
             },
             saveConditionable() {
+              let requestMethod = 'post';
+              let requestUrl = API_CONSTANTS.url + "/conditionables"
+              if(this.conditionable.id) {
+                requestMethod = 'put';
+                requestUrl += '/' + this.conditionable.id;
+              }
               axios({
-                method: "put",
-                url: API_CONSTANTS.url + "/conditionables",
+                method: requestMethod,
+                url:  requestUrl,
                 data: this.conditionable
               })
                 .then(response => {
