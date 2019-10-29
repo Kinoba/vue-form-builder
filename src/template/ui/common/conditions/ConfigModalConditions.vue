@@ -29,7 +29,7 @@
           <div class="column is-4">
             <div class="select">
               <select
-                v-if="conditionable.logic_attributes.conditions_attributes[index]"
+                v-if="conditionable.logic_attributes && conditionable.logic_attributes.conditions_attributes[index]"
                 v-model="conditionable.logic_attributes.conditions_attributes[index].operator"
               >
                 <option selected :key="'default_' + index">Selectionner</option>
@@ -40,7 +40,7 @@
               </select>
             </div>
           </div>
-          <div class="column is-8" v-if="conditionable.logic_attributes.conditions_attributes[index]">
+          <div class="column is-8" v-if="conditionable.logic_attributes && conditionable.logic_attributes.conditions_attributes[index]">
             <!-- If the input is a text or number -->
             <input
               v-if="selectedItem.input_type !== 'select' && selectedItem.input_type !== 'checkbox' && selectedItem.input_type !== 'time' && selectedItem.input_type !== 'date'"
