@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="inputGroupWrapper" class="columns is-vcentered" v-for="(inputGroup, index) in orderedInputGroups">
+        <div id="inputGroupWrapper" class="inputGroupWrapper columns is-vcentered" v-for="(inputGroup, index) in orderedInputGroups">
             <div class="inputGroupItem" :id="'input_group_' + inputGroup.uuid" :key="inputGroup.uuid">
                 <div class="column is-12 field has-text-left">
                     <label class="label">Input Group</label>
@@ -226,6 +226,12 @@
 </script>
 
 <style scoped>
+    .inputGroupWrapper {
+      border: 1px solid#363636;
+      border-radius: .5em;
+      background-color:#36363610;
+    }
+
     .inputGroupItem {
         width: 100%;
     }
