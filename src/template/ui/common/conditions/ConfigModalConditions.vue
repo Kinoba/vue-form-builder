@@ -2,6 +2,9 @@
   <div>
     <div class="field has-text-left" v-if="formTree.children && formTree.children.length > 0">
       <label class="label">Conditions</label>
+      <pre>
+        {{ currentConditionable }}
+      </pre>
       <div class="control">
         <treeselect
           placeholder="Sélectionnez les elements pour créer vos conditions"
@@ -17,7 +20,7 @@
         ></treeselect>
       </div>
     </div>
-    <div v-if="selectedTreeItems.length > 0 && currentConditionable !== null">
+    <div v-if="selectedTreeItems.length > 0">
       <div
         class="field has-text-left"
         v-for="(selectedItem, index) in selectedTreeItems"
@@ -102,11 +105,6 @@
       value: [] // Treeview v-model, should be a list of ids ["FormEngine::Input_1"]
     }),
     methods: {
-      save() {
-        if (Object.keys(this.currentConditionable).length > 0) {
-          this.saveConditionable();
-        }
-      },
       onConditionSelect(item) {
         if(item.children) {
           item.children.forEach((childItem) => {
@@ -120,7 +118,7 @@
       selectItemInTree(item) {
         this.selectedTreeItems.push(item);
         this.getAvailableValidationsFromServer(item.input_type);
-        this.addConditionable(item);
+        this.addCondition(item);
       },
       deselectItemInTree(item) {
         let deleteIndex = -1;
@@ -210,20 +208,23 @@
 
         this.$emit("updateConditionable",this.currentConditionable);
       },
-      addConditionable(selectedTreeItem) {
-        this.initialiseConditionable();
+      addCondition(selectedTreeItem) {
+        if(selectedTreeItem.conditionable_id === null) {
+          this.initialiseConditionable();
 
-        let conditionableItem = {
-          conditionable_id: selectedTreeItem.conditionable_id,
-          conditionable_type: selectedTreeItem.conditionable_type,
-          operator: "",
-          value: ""
-        };
+          let conditionableItem = {
+            conditionable_id: selectedTreeItem.backend_id,
+            conditionable_type: selectedTreeItem.conditionable_type,
+            operator: "",
+            value: ""
+          };
 
 
-        if(selectedTreeItem.operator) { conditionableItem.operator = selectedTreeItem.operator; }
-        if(selectedTreeItem.value) { conditionableItem.value = selectedTreeItem.value; }
-        this.currentConditionable.logic_attributes.conditions_attributes.push(conditionableItem);
+          if(selectedTreeItem.operator) { conditionableItem.operator = selectedTreeItem.operator; }
+          if(selectedTreeItem.value) { conditionableItem.value = selectedTreeItem.value; }
+          this.currentConditionable.logic_attributes.conditions_attributes.push(conditionableItem);
+        }
+
         this.$emit("updateConditionable",this.currentConditionable); //update parent conditionable
       },
       deleteConditionable(index) {
@@ -232,14 +233,15 @@
       },
       addValidation(item) {
         this.selectedTreeItems.push(item);
-        this.addConditionable(item);
+        this.addCondition(item);
       },
       buildUniqueFormTreeIds() {
         //Set unique IDs in form tree
         this.formTree.children.forEach(inputGroup => {
+          inputGroup["backend_id"] = inputGroup.id;
           inputGroup["id"] = inputGroup.conditionable_type + "_" + inputGroup.id;
-
           inputGroup.children.forEach(input => {
+            input["backend_id"] = input.id;
             input["id"] = input.conditionable_type + "_" + input.id;
           });
         });
@@ -258,14 +260,11 @@
               conditionable_id: condition.conditionable_id,
               conditionable_type: condition.conditionable_type,
               input_type: condition.input_type,
-              label: condition.label,
-              operator: condition.operator,
-              value: condition.value
+              label: condition.label
             };
 
-            this.value.push(treeItem.id);
-            this.getAvailableValidationsFromServer(condition.input_type);
-            this.addValidation(treeItem);
+            this.value.push(condition.conditionable_type + "_" + condition.conditionable_id);
+            this.selectItemInTree(treeItem)
           });
         }
       }
