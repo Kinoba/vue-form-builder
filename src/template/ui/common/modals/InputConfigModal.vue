@@ -40,7 +40,7 @@
               </div>
               <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
             </div>
-            <config-modal-conditions :input-group="parentInputGroup" :form-tree="formTree" @updateConditionable="updateConditionable"></config-modal-conditions>
+            <config-modal-conditions :conditionable="input.conditionable" :form-tree="formTree" @updateConditionable="updateConditionable"></config-modal-conditions>
         </section>
         <footer class="modal-card-foot has-text-right" v-if="input !== null">
           <button class="button is-success" :disabled="(input.order >= maxOrder) || (input.order < 0)" @click="save">Save</button>
@@ -121,6 +121,8 @@
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
             if(this.input) this.oldInputOrder = this.input.order;
+            console.log(this.input);
+
         },
         watch: {
             input(val) {
