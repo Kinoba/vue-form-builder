@@ -15,7 +15,7 @@
                 </div>
                 <div class="control">
                     <input type="text" class="input"
-                           :readonly="input.readonly"
+                            placeholder="Representation of what the user will see"
                            :name="input.fieldName"
                            :value="input.value">
                 </div>

@@ -14,7 +14,7 @@
                   <input type="text" class="input" v-model="input.label">
               </div>
               <div class="control has-icons-left">
-                <input type="input" class="input" :name="input.fieldName" :value="input.value">
+                <input type="input" class="input" :name="input.fieldName" :value="input.value" placeholder="Representation of what the user will see">
                 <span class="icon is-small is-left">
                   <font-awesome-icon :icon="icon"></font-awesome-icon>
                 </span>

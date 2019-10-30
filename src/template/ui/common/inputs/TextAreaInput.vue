@@ -17,7 +17,8 @@
                     <input type="text" class="textarea"
                            :readonly="input.readonly"
                            :name="input.fieldName"
-                           :value="input.value">
+                           :value="input.value"
+                            placeholder="Representation of what the user will see">
                 </div>
             </div>
             <div class="button-bar is-pulled-right is-inline-block">
