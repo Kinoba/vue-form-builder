@@ -121,8 +121,6 @@
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
             if(this.input) this.oldInputOrder = this.input.order;
-            console.log(this.input);
-
         },
         watch: {
             input(val) {

@@ -242,9 +242,6 @@
         });
       },
       initialiseConditionableFromServer() {
-        console.log(Object.keys(this.currentConditionable).length);
-        console.log(this.currentConditionable.id);
-
         if (Object.keys(this.currentConditionable).length === 0 && typeof this.currentConditionable.id !== 'undefined') {
           this.getConditionableFromServer();
         }
@@ -252,7 +249,6 @@
         // Add the selected value to the tree view v-model
         if (this.currentConditionable && this.currentConditionable.logic_attributes) {
           this.currentConditionable.logic_attributes.conditions_attributes.forEach(condition => {
-            console.log(condition.conditionable_id);
 
             let treeItem = {
               id: condition.conditionable_type + "_" + condition.id,
@@ -263,8 +259,6 @@
               operator: condition.operator,
               value: condition.value
             };
-
-            console.log(treeItem['conditionable_id']);
 
             this.value.push(treeItem.id);
             this.getAvailableValidationsFromServer(condition.input_type);

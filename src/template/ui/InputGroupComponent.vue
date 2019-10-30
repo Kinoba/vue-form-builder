@@ -227,9 +227,9 @@
 
 <style scoped>
     .inputGroupWrapper {
-      border: 1px solid#363636;
+      border: 1px solid #e6e6e6;
       border-radius: .5em;
-      background-color:#36363610;
+      margin-bottom: 2rem;
     }
 
     .inputGroupItem {
