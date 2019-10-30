@@ -17,7 +17,7 @@
         ></treeselect>
       </div>
     </div>
-    <div v-if="selectedTreeItems.length > 0">
+    <div v-if="selectedTreeItems.length > 0 && currentConditionable !== null">
       <div
         class="field has-text-left"
         v-for="(selectedItem, index) in selectedTreeItems"
@@ -31,8 +31,8 @@
           <div class="column is-4">
             <div class="select">
               <select
-                v-if="conditionable.logic_attributes && conditionable.logic_attributes.conditions_attributes[index]"
-                v-model="conditionable.logic_attributes.conditions_attributes[index].operator"
+                v-if="currentConditionable.logic_attributes && currentConditionable.logic_attributes.conditions_attributes[index]"
+                v-model="currentConditionable.logic_attributes.conditions_attributes[index].operator"
               >
                 <option selected :key="'default_' + index">Selectionner</option>
                 <option
@@ -42,13 +42,13 @@
               </select>
             </div>
           </div>
-          <div class="column is-8" v-if="conditionable.logic_attributes && conditionable.logic_attributes.conditions_attributes[index]">
+          <div class="column is-8" v-if="currentConditionable.logic_attributes && currentConditionable.logic_attributes.conditions_attributes[index]">
             <!-- If the input is a text or number -->
             <input
               v-if="selectedItem.input_type !== 'select' && selectedItem.input_type !== 'checkbox' && selectedItem.input_type !== 'time' && selectedItem.input_type !== 'date'"
               class="input"
               :type="selectedItem.input_type"
-              v-model="conditionable.logic_attributes.conditions_attributes[index].value"
+              v-model="currentConditionable.logic_attributes.conditions_attributes[index].value"
               placeholder="Enter validation value"
             />
             <!-- If the input is a select or checkbox -->
@@ -56,7 +56,7 @@
               v-if="selectedItem.input_type === 'select' || selectedItem.input_type === 'checkbox'"
               class="input"
               type="text"
-              v-model="conditionable.logic_attributes.conditions_attributes[index].value"
+              v-model="currentConditionable.logic_attributes.conditions_attributes[index].value"
               placeholder="Enter validation value"
             />
             <!-- If the input is a date or time -->
@@ -64,7 +64,7 @@
               v-if="selectedItem.input_type === 'time' || selectedItem.input_type === 'date'"
               class="input"
               type="text"
-              v-model="conditionable.logic_attributes.conditions_attributes[index].value"
+              v-model="currentConditionable.logic_attributes.conditions_attributes[index].value"
               placeholder="Enter validation value"
             />
           </div>
@@ -118,11 +118,25 @@
         }
       },
       selectItemInTree(item) {
-        console.log("item", item);
-
         this.selectedTreeItems.push(item);
         this.getAvailableValidationsFromServer(item.input_type);
         this.addConditionable(item);
+      },
+      deselectItemInTree(item) {
+        let deleteIndex = -1;
+
+        this.selectedTreeItems.forEach((treeItem, index) => {
+          if(treeItem.id === item.id) { deleteIndex = index; }
+        });
+
+        if (this.availableValidations[item.input_type]) {
+          delete this.availableValidations[item.input_type];
+        }
+
+        if(deleteIndex > -1) {
+          this.selectedTreeItems.splice(deleteIndex, 1);
+          this.deleteConditionable(deleteIndex);
+        }
       },
       getAvailableValidationsFromServer(input_type) {
         if (!this.availableValidations.hasOwnProperty(input_type)) {
@@ -145,7 +159,6 @@
         }
       },
       getConditionableFromServer() {
-        console.log(this.currentConditionable);
         axios({
           method: "get",
           url: API_CONSTANTS.url + "/conditionables/" + this.currentConditionable.id,
@@ -155,26 +168,19 @@
             // Populate availableValidations JSON if the validations for the given input does not exist
             this.currentConditionable = response.data;
             this.initialiseConditionable();
-            console.log(this.currentConditionable);
           })
           .catch(error => {
             console.log(error);
           });
       },
       onConditionDeselect(item) {
-        let deleteIndex = -1;
-
-        this.selectedTreeItems.forEach((treeItem, index) => {
-          if(treeItem.id === item.id) { deleteIndex = index; }
-        });
-
-        if (this.availableValidations[item.input_type]) {
-          delete this.availableValidations[item.input_type];
-        }
-
-        if(deleteIndex > -1) {
-          this.selectedTreeItems.splice(deleteIndex, 1);
-          this.deleteConditionable(deleteIndex);
+        if(item.children) {
+          item.children.forEach((childItem) => {
+            this.deselectItemInTree(childItem);
+          });
+        } else {
+          //The user has selected an input
+          this.deselectItemInTree(item);
         }
       },
       initialiseConditionable() {
@@ -190,8 +196,6 @@
             }
           };
         } else {
-          console.log(this.currentConditionable);
-
           if (!this.currentConditionable.logic_attributes) {
             this.currentConditionable.logic_attributes = {
               action: "jump",
@@ -216,11 +220,10 @@
           value: ""
         };
 
+
         if(selectedTreeItem.operator) { conditionableItem.operator = selectedTreeItem.operator; }
         if(selectedTreeItem.value) { conditionableItem.value = selectedTreeItem.value; }
-
         this.currentConditionable.logic_attributes.conditions_attributes.push(conditionableItem);
-        console.log('current conditionable', this.currentConditionable.logic_attributes);
         this.$emit("updateConditionable",this.currentConditionable); //update parent conditionable
       },
       deleteConditionable(index) {
