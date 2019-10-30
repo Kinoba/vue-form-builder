@@ -20,13 +20,6 @@
                   </span>
                 </div>
             </div>
-            <div class="button-bar is-pulled-right is-inline-block">
-                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
-                    <span v-if="!editLabel">Edit label</span>
-                    <span v-else>Save label</span>
-                </button>
-                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
-            </div>
         </div>
     </div>
 </template>
@@ -37,12 +30,11 @@
 
     export default {
         name: "DatePickerInput",
-        props: ['input', 'labelPosition', 'index'],
+        props: ['input', 'labelPosition', 'index', 'editLabel'],
         components: {FontAwesomeIcon},
         data: () => ({
             $input: null,
-            icon: INPUT_TYPES.date.icon,
-            editLabel: false
+            icon: INPUT_TYPES.date.icon
         }),
         watch: {
             "input.defaultValue": function(val) {

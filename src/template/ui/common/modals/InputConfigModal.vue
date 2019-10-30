@@ -1,7 +1,7 @@
 <template>
     <div id="inputConfigModal" class="modal">
       <div class="modal-background"></div>
-      <div class="modal-card" v-if="input">
+      <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Input Configuration</p>
           <button class="delete" aria-label="close" @click="closeModal"></button>
@@ -42,7 +42,7 @@
             </div>
             <config-modal-conditions :input-group="parentInputGroup" :form-tree="formTree" @updateConditionable="updateConditionable"></config-modal-conditions>
         </section>
-        <footer class="modal-card-foot has-text-right">
+        <footer class="modal-card-foot has-text-right" v-if="input !== null">
           <button class="button is-success" :disabled="(input.order >= maxOrder) || (input.order < 0)" @click="save">Save</button>
           <button class="button" @click="closeModal">Cancel</button>
         </footer>
@@ -124,7 +124,10 @@
         },
         watch: {
             input(val) {
+              if(val) {
+                this.input = val;
                 if(this.input) this.oldInputOrder = val.order;
+              }
             },
             formTree(val) {
               this.formTree = val;

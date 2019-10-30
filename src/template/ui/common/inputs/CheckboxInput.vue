@@ -23,13 +23,6 @@
                     Initialise checkbox options in the configuration section.
                 </div>
             </div>
-            <div class="button-bar is-pulled-right is-inline-block">
-                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
-                    <span v-if="!editLabel">Edit label</span>
-                    <span v-else>Save label</span>
-                </button>
-                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
-            </div>
         </div>
     </div>
 </template>
@@ -42,10 +35,7 @@
         components: {
             FontAwesomeIcon
         },
-        props: ['input', 'labelPosition', 'index'],
-        data: () => ({
-            editLabel: false
-        }),
+        props: ['input', 'labelPosition', 'index', 'editLabel'],
         mounted() {
             //Parse properties string into JSON
             if(this.input.properties && typeof this.input.properties === 'string') {

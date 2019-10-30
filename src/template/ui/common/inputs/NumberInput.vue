@@ -20,13 +20,6 @@
                 </span>
               </div>
             </div>
-            <div class="button-bar is-pulled-right is-inline-block">
-                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
-                    <span v-if="!editLabel">Edit label</span>
-                    <span v-else>Save label</span>
-                </button>
-                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
-            </div>
         </div>
     </div>
 </template>
@@ -37,11 +30,10 @@
 
     export default {
         name: "NumberInput",
-        props: ['input', 'labelPosition', 'index'],
+        props: ['input', 'labelPosition', 'index', 'editLabel'],
         components: {FontAwesomeIcon},
         data: () => ({
-            icon: INPUT_TYPES.number.icon,
-            editLabel: false
+            icon: INPUT_TYPES.number.icon
         }),
         computed: {
             demo_value() {

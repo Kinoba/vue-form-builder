@@ -5,15 +5,25 @@
         </div>
         <div v-if="row.inputs_attributes.length === 0">Choose an input in the Supported Inputs section and drag it here.</div>
 
-        <component v-for="(input, index) in row.inputs_attributes"
-                   :is="INPUT_TYPES[input.input_type].source.template"
-                   :key="input.uuid"
-                   :input="input"
-                   :index="index"
-                   :ref="input.uuid"
-                   :label-position="labelPosition"
-                   @openConfig="openInputConfig(index)">
-        </component>
+        <div v-for="(input, index) in row.inputs_attributes">
+          <component
+                     :is="INPUT_TYPES[input.input_type].source.template"
+                     :key="input.uuid"
+                     :input="input"
+                     :index="index"
+                     :ref="input.uuid"
+                     :label-position="labelPosition"
+                     :edit-label="editLabel">
+          </component>
+
+          <div class="button-bar is-pulled-right is-inline-block">
+              <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
+                  <span v-if="!editLabel">Edit label</span>
+                  <span v-else>Save label</span>
+              </button>
+              <button class="button is-secondary" @click="openInputConfig(index)"><font-awesome-icon icon="cog"/> Configuration</button>
+          </div>
+        </div>
 
         <input-config-modal ref="inputConfigModal" :formTree="formTree" :parentInputGroup="parentInputGroup" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
     </div>
@@ -45,7 +55,8 @@
         data: () => ({
             INPUT_TYPES,
             editing_input: null,
-            formTree: {}
+            formTree: {},
+            editLabel: false
         }),
         methods: {
             addInput(inputType) {

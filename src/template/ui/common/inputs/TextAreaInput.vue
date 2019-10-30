@@ -21,13 +21,6 @@
                             placeholder="Representation of what the user will see">
                 </div>
             </div>
-            <div class="button-bar is-pulled-right is-inline-block">
-                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
-                    <span v-if="!editLabel">Edit label</span>
-                    <span v-else>Save label</span>
-                </button>
-                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
-            </div>
         </div>
     </div>
 </template>
@@ -40,10 +33,7 @@
         components: {
             FontAwesomeIcon
         },
-        props: ['input', 'labelPosition', 'index'],
-        data: () => ({
-            editLabel: false
-        }),
+        props: ['input', 'labelPosition', 'index', 'editLabel'],
         computed: {
             demo_value() {
                 if (!_.isEmpty(this.input.defaultValue)) {

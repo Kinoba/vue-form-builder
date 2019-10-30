@@ -1,7 +1,7 @@
 <template>
   <div id="inputGroupConfigModal" class="modal">
     <div class="modal-background"></div>
-    <div class="modal-card" v-if="inputGroup">
+    <div class="modal-card" v-if="inputGroup !== null">
       <header class="modal-card-head">
         <p class="modal-card-title">Input Group Configuration</p>
         <button class="delete" aria-label="close" @click="closeModal"></button>
@@ -49,7 +49,7 @@
         </div>
         <config-modal-conditions :input-group="inputGroup" :form-tree="formTree" @updateConditionable="updateConditionable"></config-modal-conditions>
       </section>
-      <footer class="modal-card-foot has-text-right">
+      <footer class="modal-card-foot has-text-right" v-if="inputGroup !== null">
         <button
           class="button is-success"
           :disabled="(inputGroup.order >= maxOrder) || (inputGroup.order < 0)"

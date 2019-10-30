@@ -31,14 +31,6 @@
                     {{ file.name }}
                 </div>
             </div>
-            <div class="button-bar is-pulled-right is-inline-block">
-                <button v-if="fileList.length > 0" class="button is-secondary" @click="clearInput"><font-awesome-icon icon="times"/> Clear</button>
-                <button class="button is-secondary" @click="editLabel = !editLabel"><font-awesome-icon icon="pen"/>
-                    <span v-if="!editLabel">Edit label</span>
-                    <span v-else>Save label</span>
-                </button>
-                <button class="button is-secondary" @click="$emit('openConfig', index)"><font-awesome-icon icon="cog"/> Configuration</button>
-            </div>
         </div>
     </div>
 </template>
@@ -51,9 +43,8 @@
         components: {
             FontAwesomeIcon
         },
-        props: ['input', 'labelPosition', 'index'],
+        props: ['input', 'labelPosition', 'index', 'editLabel'],
         data: () => ({
-            editLabel: false,
             fileList: []
         }),
         computed: {
