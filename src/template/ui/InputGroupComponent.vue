@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <input-group-config-modal ref="inputGroupConfigModal" :formTree="formTree" :maxOrder="this.form.input_groups_attributes.length" @updateInputGroupInfo="updateInputGroupInfo"></input-group-config-modal>
+        <input-group-config-modal ref="inputGroupConfigModal" :form="form" :formTree="formTree" :maxOrder="this.form.input_groups_attributes.length" @updateInputGroupInfo="updateInputGroupInfo"></input-group-config-modal>
     </div>
 </template>
 
@@ -50,15 +50,17 @@
         },
         data: () => ({
             layouts: FORM_CONSTANTS.InputGroupLayout,
-            formTree: {}
+            formTree: {
+              children: []
+            }
         }),
         methods: {
             addInputGroupToConditionTree(info) {
                 let treeChild = {
-                    label: info.label,
-                    children: [],
-                    input_type: 'input_group',
-                    id: null
+                  children: [],
+                  label: info.label,
+                  input_type: 'input_group',
+                  uuid: _.uniqueId()
                 };
 
                 this.formTree.children.push(treeChild);

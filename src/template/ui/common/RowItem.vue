@@ -25,7 +25,7 @@
           </div>
         </div>
 
-        <input-config-modal ref="inputConfigModal" :formTree="formTree" :parentInputGroup="parentInputGroup" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
+        <input-config-modal ref="inputConfigModal" :formTree="formTree" :form="form" :input-group-index="inputGroupIndex" :row-index="rowIndex" :parentInputGroup="parentInputGroup" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
     </div>
 </template>
 
@@ -50,12 +50,16 @@
             },
             labelPosition: null,
             form: {},
-            parentInputGroup: {}
+            parentInputGroup: {},
+            inputGroupIndex: null,
+            rowIndex: null
         },
         data: () => ({
             INPUT_TYPES,
             editing_input: null,
-            formTree: {},
+            formTree: {
+              children: []
+            },
             editLabel: false
         }),
         methods: {

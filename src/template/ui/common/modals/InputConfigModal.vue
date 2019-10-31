@@ -40,7 +40,7 @@
               </div>
               <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
             </div>
-            <config-modal-conditions :conditionable="input.conditionable" :form-tree="formTree" @updateConditionable="updateConditionable"></config-modal-conditions>
+            <config-modal-conditions :form="form" :input-group-index="form.input_groups_attributes.indexOf(parentInputGroup)" :row-index="rowIndex" :input-index="index" :form-tree="formTree" @updateForm="updateForm"></config-modal-conditions>
         </section>
         <footer class="modal-card-foot has-text-right" v-if="input !== null">
           <button class="button is-success" :disabled="(input.order >= maxOrder) || (input.order < 0)" @click="save">Save</button>
@@ -61,12 +61,12 @@
 
     export default {
         name: "InputConfigModal",
-        props:['updateInputInfo', 'maxOrder', 'formTree', 'parentInputGroup'],
+        props:['updateInputInfo', 'maxOrder', 'formTree', 'parentInputGroup', 'form', 'rowIndex'],
         components: { ConfigModalConditions },
         data: () => ({
             index: null,
             input: null,
-            conditionable: {},
+            currentForm: {},
             oldInputOrder: null
         }),
         methods: {
@@ -80,7 +80,7 @@
             },
             save() {
                 let reOrder = false;
-                if(Object.keys(this.conditionable).length > 0) { this.saveConditionable(); }
+                if(Object.keys(this.currentForm).length > 0) { this.saveForm(); }
                 if(this.oldInputOrder !== this.input.order) reOrder = true;
                 this.$emit('updateInputInfo', this.input, this.index, reOrder, this.input.order);
                 this.closeModal();
@@ -94,28 +94,31 @@
                 }
                 this.input.properties.options.push(newChoice);
             },
-            saveConditionable() {
+            saveForm() {
               let requestMethod = 'post';
-              let requestUrl = API_CONSTANTS.url + "/conditionables"
-              if(this.conditionable.id) {
+              let requestUrl = API_CONSTANTS.url + "/forms"
+              if(this.currentForm.id) {
                 requestMethod = 'put';
-                requestUrl += '/' + this.conditionable.id;
+                requestUrl += '/' + this.currentForm.id;
               }
               axios({
                 method: requestMethod,
                 url:  requestUrl,
-                data: this.conditionable
+                data: this.currentForm
               })
                 .then(response => {
                   // Populate availableValidations JSON if the validations for the given input does not exist
                   //console.log(response);
                 })
                 .catch(error => {
-                  console.log(error);
+                  this.$toasted.show( error.response.data.errors, { type: 'error' }).goAway(10000);
+                  console.log(error.response.data.errors);
                 });
             },
-            updateConditionable(conditionable) {
-              this.conditionable = conditionable;
+            updateForm(form) {
+              this.currentForm = form;
+              console.log(form);
+
             }
         },
         mounted() {
@@ -130,7 +133,7 @@
               }
             },
             formTree(val) {
-              this.formTree = val;
+              this.currentFormTree = val;
             }
         },
     }

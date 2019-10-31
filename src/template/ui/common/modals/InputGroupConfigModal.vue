@@ -47,7 +47,7 @@
             class="help is-danger"
           >You are trying to reorder the input group to an unknow position.</p>
         </div>
-        <config-modal-conditions :conditionable="inputGroup.conditionable" :form-tree="formTree" @updateConditionable="updateConditionable"></config-modal-conditions>
+        <config-modal-conditions :form="form" :input-group-index="index" :form-tree="formTree" @updateForm="updateForm"></config-modal-conditions>
       </section>
       <footer class="modal-card-foot has-text-right" v-if="inputGroup !== null">
         <button
@@ -71,14 +71,14 @@
 
   export default {
     name: "InputGroupConfigModal",
-    props: ["updateInputGroupInfo", "maxOrder", "formTree"],
+    props: ["updateInputGroupInfo", "maxOrder", "formTree", 'form'],
     components: { ConfigModalConditions },
     data: () => ({
       index: null,
       inputGroup: {
         name: null
       },
-      conditionable: {},
+      currentForm: {},
       oldInputGroupOrder: null,
     }),
     methods: {
@@ -92,8 +92,8 @@
       },
       save() {
         let reOrder = false;
-        if (Object.keys(this.conditionable).length > 0) {
-          this.saveConditionable();
+        if (Object.keys(this.currentForm).length > 0) {
+          this.saveForm();
         }
         if (this.oldInputGroupOrder !== this.inputGroup.order) reOrder = true;
         this.$emit(
@@ -105,17 +105,19 @@
         );
         this.closeModal();
       },
-      saveConditionable() {
+      saveForm() {
+        console.log(this.currentForm);
+
         let requestMethod = 'post';
-        let requestUrl = API_CONSTANTS.url + "/conditionables"
-        if(this.conditionable.id) {
+        let requestUrl = API_CONSTANTS.url + "/forms"
+        if(this.currentForm.id) {
           requestMethod = 'put';
-          requestUrl += '/' + this.conditionable.id;
+          requestUrl += '/' + this.currentForm.id;
         }
         axios({
           method: requestMethod,
           url:  requestUrl,
-          data: this.conditionable
+          data: this.currentForm
         })
           .then(response => {
             // Populate availableValidations JSON if the validations for the given input does not exist
@@ -125,13 +127,14 @@
             console.log(error);
           });
       },
-      updateConditionable(conditionable) {
-        this.conditionable = conditionable;
+      updateForm(form) {
+        this.currentForm = form;
       }
     },
     mounted() {
       $("[data-toggle='tooltip']").tooltip();
       if (this.inputGroup) this.oldInputGroupOrder = this.inputGroup.order;
+
     },
     watch: {
       // When the user clicks on the Configuration button for an InputGroup
@@ -141,7 +144,12 @@
         }
       },
       formTree(val) {
-        this.formTree = val;
+        this.currentFormTree = val;
+      },
+      form(val) {
+        console.log(val);
+
+        this.currentForm = val;
       }
     }
   };

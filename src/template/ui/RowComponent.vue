@@ -1,8 +1,9 @@
 <template>
     <div class="rowWrapper">
-        <row-item v-for="row in inputGroup.rows_attributes"
+        <row-item v-for="(row, index) in inputGroup.rows_attributes"
                   :key="row.uuid"
                   :row="row"
+                  :row-index="index"
                   :form="form"
                   :parentInputGroup="inputGroup"
                   @removeRow="removeRow">
