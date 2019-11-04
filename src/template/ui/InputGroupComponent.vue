@@ -27,7 +27,14 @@
             </div>
         </div>
 
-        <input-group-config-modal ref="inputGroupConfigModal" :form="form" :formTree="formTree" :maxOrder="this.form.input_groups_attributes.length" @updateInputGroupInfo="updateInputGroupInfo"></input-group-config-modal>
+        <input-group-config-modal
+          ref="inputGroupConfigModal"
+          :form="currentForm"
+          :formTree="formTree"
+          :maxOrder="this.form.input_groups_attributes.length"
+          @updateInputGroupInfo="updateInputGroupInfo" >
+          @getFormAsTreeView="reloadTreeViewData" >
+        </input-group-config-modal>
     </div>
 </template>
 
@@ -52,6 +59,12 @@
             layouts: FORM_CONSTANTS.InputGroupLayout,
             formTree: {
               children: []
+            },
+            currentForm: {
+              uuid: Math.random(),
+              title: '',
+              input_groups: [],
+              layout: ""
             }
         }),
         methods: {
@@ -174,29 +187,34 @@
                 this.$parent.preview();
             },
             updateInputGroupOrder(inputGroupInfo, index, newOrder) {
-                this.form.input_groups_attributes.splice(index, 1); // Remove item from its current position
-                this.form.input_groups_attributes.splice(newOrder, 0, inputGroupInfo);// Insert item in the new position
+                this.currentForm.input_groups_attributes.splice(index, 1); // Remove item from its current position
+                this.currentForm.input_groups_attributes.splice(newOrder, 0, inputGroupInfo);// Insert item in the new position
 
-                this.form.input_groups_attributes.forEach((input_group, index) => {
+                this.currentForm.input_groups_attributes.forEach((input_group, index) => {
                     input_group.order = index;
                 });
             },
             updateInputGroupInfo(inputGroupInfo, index, reOrder, newOrder) {
-                _.deepExtend(this.form.input_groups_attributes[index], inputGroupInfo);
+                _.deepExtend(this.currentForm.input_groups_attributes[index], inputGroupInfo);
 
                 if(reOrder) {
                     this.updateInputGroupOrder(inputGroupInfo, index, newOrder);
                 }
             },
             getFormAsTreeView() {
-              // Get tree data to display the form tree in config modals
-              axios
-                .get(`${API_CONSTANTS.url}/forms/${this.form.id}?view=tree_view`)
-                .then(response => {
-                  this.formTree = response.data;
-                }).catch(error => {
-                  console.log(error);
+              if (this.form.id) {
+                // Get tree data to display the form tree in config modals
+                axios
+                  .get(`${API_CONSTANTS.url}/forms/${this.form.id}?view=tree_view`)
+                  .then(response => {
+                    this.formTree = response.data;
+                  }).catch(error => {
+                    console.log(error);
                 });
+
+                console.log(('TREEVIEW'));
+
+              }
             }
         },
         mounted() {
@@ -213,8 +231,6 @@
                     ui.placeholder.css("background-color", "#3498db");
                 }
             }).disableSelection();
-
-            this.getFormAsTreeView();
         },
         updated() {
             this.form._uniqueId = Math.random();
@@ -223,6 +239,22 @@
           orderedInputGroups: function () {
             return lodash.orderBy(this.form.input_groups_attributes, 'order')
           }
+        },
+        watch: {
+            form: {
+                handler(val) {
+                  if (typeof val !== 'undefined') {
+                    console.log('cioucuou3', val.id);
+
+                    if (this.form.id) {
+                      this.getFormAsTreeView();
+                    }
+
+                    this.currentForm = val;
+                  }
+                },
+                deep: true
+            },
         }
     }
 </script>

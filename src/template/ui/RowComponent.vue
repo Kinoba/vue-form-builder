@@ -4,7 +4,7 @@
                   :key="row.uuid"
                   :row="row"
                   :row-index="index"
-                  :form="form"
+                  :form="currentForm"
                   :parentInputGroup="inputGroup"
                   @removeRow="removeRow">
         </row-item>
@@ -24,6 +24,9 @@
             },
             form: {},
         },
+        data: () => ({
+          currentForm: {}
+        }),
         methods: {
             traverseRow() {
                 let self = this;
@@ -63,7 +66,7 @@
             }
         },
         mounted() {
-
+          this.currentForm = this.form;
             let self = this;
             $(this.$el).sortable({
                 cursor: "move",
@@ -78,6 +81,16 @@
                     ui.placeholder.css("background-color", "#27ae60");
                 }
             }).disableSelection();
+        },
+        watch: {
+          form: {
+            handler: function(newVal) {
+              if (typeof newVal !== 'undefined') {
+                this.currentForm = newVal;
+              }
+            },
+            deep: true
+          },
         }
     }
 </script>

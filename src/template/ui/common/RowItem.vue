@@ -25,7 +25,7 @@
           </div>
         </div>
 
-        <input-config-modal ref="inputConfigModal" :formTree="formTree" :form="form" :input-group-index="inputGroupIndex" :row-index="rowIndex" :parentInputGroup="parentInputGroup" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
+        <input-config-modal ref="inputConfigModal" :formTree="formTree" :form="currentForm" :input-group-index="inputGroupIndex" :row-index="rowIndex" :parentInputGroup="parentInputGroup" :maxOrder="row.inputs_attributes.length" @updateInputInfo="updateInputInfo"></input-config-modal>
     </div>
 </template>
 
@@ -60,6 +60,7 @@
             formTree: {
               children: []
             },
+            currentForm: {},
             editLabel: false
         }),
         methods: {
@@ -134,7 +135,7 @@
             getFormAsTreeView() {
               // Get tree data to display the form tree in config modals
               axios
-                .get(`${API_CONSTANTS.url}/forms/${this.form.id}?view=tree_view`)
+                .get(`${API_CONSTANTS.url}/forms/${this.currentForm.id}?view=tree_view`)
                 .then(response => {
                   this.formTree = response.data;
                 }).catch(error => {
@@ -204,6 +205,8 @@
             });
         },
         mounted() {
+          this.currentForm = this.form;
+
             let self = this;
             $(this.$el).droppable({
                 accept: ".input-wrapper",
@@ -230,8 +233,20 @@
                     ui.placeholder.css("background-color", "#e74c3c");
                 }
             }).disableSelection();
+        },
+        watch: {
+          form: {
+            handler: function(newVal) {
+              if (typeof newVal !== 'undefined') {
+                this.currentForm = newVal;
 
-            this.getFormAsTreeView();
+                if (this.currentForm.id) {
+                  this.getFormAsTreeView();
+                }
+              }
+            },
+            deep: true
+          }
         }
     }
 </script>

@@ -40,7 +40,8 @@
               </div>
               <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
             </div>
-            <config-modal-conditions :form="form" :input-group-index="form.input_groups_attributes.indexOf(parentInputGroup)" :row-index="rowIndex" :input-index="index" :form-tree="formTree" @updateForm="updateForm"></config-modal-conditions>
+            {{index}}
+            <config-modal-conditions :form="currentForm" :input-group-index="parentInputGroup.order" :row-index="rowIndex" :input-index="index" :form-tree="formTree" @updateForm="updateForm"></config-modal-conditions>
         </section>
         <footer class="modal-card-foot has-text-right" v-if="input !== null">
           <button class="button is-success" :disabled="(input.order >= maxOrder) || (input.order < 0)" @click="save">Save</button>
@@ -73,6 +74,8 @@
             openModal(inputInfo, index) {
                 this.input = _.cloneDeep(inputInfo);
                 this.index = _.clone(index);
+                console.log(this.index);
+
                 $(INPUT_ID).modal('show');
             },
             closeModal() {
@@ -81,9 +84,12 @@
             save() {
                 let reOrder = false;
                 if(Object.keys(this.currentForm).length > 0) { this.saveForm(); }
+// console.log(this.currentForm.input_groups_attributes[this.parentInputGroup.order]);
+
+                // this.input = this.currentForm.input_groups_attributes[this.parentInputGroup.order].rows_attributes[this.rowIndex].inputs_attributes[this.index];
                 if(this.oldInputOrder !== this.input.order) reOrder = true;
-                this.$emit('updateInputInfo', this.input, this.index, reOrder, this.input.order);
-                this.closeModal();
+                // this.$emit('updateInputInfo', this.input, this.index, reOrder, this.input.order);
+                // this.closeModal();
             },
             addChoice() {
                 let newChoice= {};
@@ -126,15 +132,23 @@
             if(this.input) this.oldInputOrder = this.input.order;
         },
         watch: {
-            input(val) {
-              if(val) {
-                this.input = val;
-                if(this.input) this.oldInputOrder = val.order;
+          input(val) {
+            if(val) {
+              this.input = val;
+              if(this.input) this.oldInputOrder = val.order;
+            }
+          },
+          formTree(val) {
+            this.formTree = val;
+          },
+          form: {
+            handler(val) {
+              if (typeof val !== 'undefined') {
+                this.currentForm = val;
               }
             },
-            formTree(val) {
-              this.currentFormTree = val;
-            }
+            deep: true
+          }
         },
     }
 </script>

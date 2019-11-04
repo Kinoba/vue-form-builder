@@ -1,8 +1,8 @@
 <template>
     <div class="columns" style="margin: 0 20px;">
         <div class="column is-9">
-            <form-title-component v-model="form.title"></form-title-component>
-            <input-group-component :form="form" ref="InputGroupComponent"></input-group-component>
+            <form-title-component v-model="currentForm.title"></form-title-component>
+            <input-group-component :form="currentForm" ref="InputGroupComponent"></input-group-component>
         </div>
         <div class="column is-3">
             <sidebar-component></sidebar-component>
@@ -37,16 +37,24 @@
         },
         props: {
             form: {
-                type: Object
+                type: Object,
+                default:() => ({
+                    uuid: Math.random(),
+                    title: '',
+                    input_groups: [],
+                    layout: ""
+                })
             }
         },
-        // data: () => ({
-        //     form: {
-        //         sections: [],
-        //         layout: "",
-        //         _uniqueId: Math.random()
-        //     }
-        // }),
+        data: () => (
+          {
+            currentForm: {
+              uuid: Math.random(),
+              title: '',
+              input_groups_attributes: [],
+              layout: ""
+          }
+        }),
         methods: {
             getValue() {
                 return this.form;
@@ -57,6 +65,18 @@
             preview() {
                 this.$refs.PreviewComponent.openModal(this.form);
             }
+        },
+        watch: {
+            form: {
+                handler(val) {
+                  if (typeof val !== 'undefined') {
+                    console.log('coucou2', val);
+
+                    this.currentForm = val;
+                  }
+                },
+                deep: true
+            },
         }
     }
 </script>

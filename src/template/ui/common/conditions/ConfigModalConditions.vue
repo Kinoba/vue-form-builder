@@ -2,8 +2,12 @@
   <div>
     <div class="field has-text-left" v-if="formTree.children && formTree.children.length > 0">
       <label class="label">Conditions</label>
+      <pre>{{inputIndex}}</pre>
       <pre>
-        {{ currentForm }}
+        {{selectedTreeItems}}
+      </pre>
+      <pre>
+        {{currentConditionable}}
       </pre>
       <div class="control">
         <treeselect
@@ -36,8 +40,9 @@
           <div class="column is-4">
             <div class="select">
               <select
-                v-if="currentConditionable.logic_attributes && currentConditionable.logic_attributes.conditions_attributes[index]"
-                v-model="currentConditionable.logic_attributes.conditions_attributes[index].operator"
+                v-if="currentConditionable.conditionable_attributes.logic_attributes && currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index]"
+                v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].operator"
+                @change="updateFormData"
               >
                 <option selected :key="'default_' + index">Selectionner</option>
                 <option
@@ -47,13 +52,13 @@
               </select>
             </div>
           </div>
-          <div class="column is-8" v-if="currentConditionable.logic_attributes && currentConditionable.logic_attributes.conditions_attributes[index]">
+          <div class="column is-8" v-if="currentConditionable.conditionable_attributes.logic_attributes && currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index]">
             <!-- If the input is a text or number -->
             <input
               v-if="selectedItem.input_type !== 'select' && selectedItem.input_type !== 'checkbox' && selectedItem.input_type !== 'time' && selectedItem.input_type !== 'date'"
               class="input"
               :type="selectedItem.input_type"
-              v-model="currentConditionable.logic_attributes.conditions_attributes[index].value"
+              v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].value"
               placeholder="Enter validation value"
             />
             <!-- If the input is a select or checkbox -->
@@ -61,7 +66,7 @@
               v-if="selectedItem.input_type === 'select' || selectedItem.input_type === 'checkbox'"
               class="input"
               type="text"
-              v-model="currentConditionable.logic_attributes.conditions_attributes[index].value"
+              v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].value"
               placeholder="Enter validation value"
             />
             <!-- If the input is a date or time -->
@@ -69,7 +74,7 @@
               v-if="selectedItem.input_type === 'time' || selectedItem.input_type === 'date'"
               class="input"
               type="text"
-              v-model="currentConditionable.logic_attributes.conditions_attributes[index].value"
+              v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].value"
               placeholder="Enter validation value"
             />
           </div>
@@ -106,12 +111,46 @@
         }
       },
       index: null,
+      conditionableAttributes: {
+        conditionable_id: null,
+        conditionable_type: null,
+        logic_attributes: {}
+      },
+      logicAttributes: {
+        conditionable_id: null,
+        action: "jump",
+        conditions_attributes: []
+      },
+      conditionAttributes: {
+        conditionable_id: null,
+        operator: null,
+        value: null
+      },
       currentConditionable: {},
       currentForm: {},
       selectedTreeItems: [],
       availableValidations: {},
       value: [], // Treeview v-model, should be a list of ids ["FormEngine::Input_1"]
     }),
+    computed: {
+      conditionableAttributesTemplate() {
+        if (Object.keys(this.conditionableAttributes['logic_attributes']).length === 0) {
+          // this.logicAttributes['conditions_attributes'].push(this.conditionAttributes);
+          this.conditionableAttributes['logic_attributes'] = this.logicAttributes;
+        }
+
+        this.conditionableAttributes.conditionable_id = this.currentConditionable.id;
+        if (this.isInputModal()) {
+          this.conditionableAttributes.conditionable_type = 'FormEngine::Input';
+        } else if (this.isInputGroupModal()) {
+          this.conditionableAttributes.conditionable_type = 'FormEngine::InputGroup';
+        } else {
+          console.warn('I do not know if it is an Input or an InputGroup');
+        }
+
+        return this.conditionableAttributes;
+      }
+    },
     methods: {
       // User clicks on a treeview item (either an InputGroup or an Input)
       onConditionableSelect(item) {
@@ -124,8 +163,13 @@
           this.selectItemInTree(item);
         }
       },
-      selectItemInTree(item) {
-        this.selectedTreeItems.push(item);
+      selectItemInTree(item, addConditionToLogic=true) {
+        if (!this.selectedTreeItems.some(e => e.uuid === item.uuid)) {
+          this.selectedTreeItems.push(item);
+        }
+
+        console.log(item);
+
         this.getAvailableValidationsFromServer(item.input_type);
         this.addConditionToConditionable(item);
       },
@@ -191,161 +235,219 @@
         }
       },
       initialiseConditionable() {
-        if (Object.keys(this.currentConditionable).length === 0) {
-          //Initialise conditionable
-          this.currentConditionable = {
-            id: null,
-            conditionable_id: this.currentConditionable.id,
-            conditionable_type: this.currentConditionable.input_type,
-            logic_attributes: {
-              action: "jump",
-              conditions_attributes: []
-            }
-          };
-        } else {
-          if (!this.currentConditionable.logic_attributes) {
-            this.currentConditionable.logic_attributes = {
-              action: "jump",
-              conditions_attributes: []
-            };
-          }
+        if (!this.currentConditionable.conditionable_attributes) {
+          this.currentConditionable.conditionable_attributes = this.conditionableAttributesTemplate;
 
-          if (!this.currentConditionable.logic_attributes.conditions_attributes) {
-            this.currentConditionable.logic_attributes.conditions_attributes = [];
-          }
+          this.updateFormData();
         }
-
-        this.updateFormData();
       },
 
       // Based on a treeItem, adds a new condition to the parent conditionable JSON
-      addConditionToConditionable(selectedTreeItem) {
-        // We need to create a copy of the selectedTreeItem to make sure we don't modify it later
-        let conditionToAddToConditionable = JSON.parse(JSON.stringify(selectedTreeItem));
+      addConditionToConditionable(selectedTreeItem, addConditionToLogic=true) {
+        this.initialiseConditionable();
 
-        if(conditionToAddToConditionable.conditionable_id === null) {
-          this.initialiseConditionable();
-
-          let conditionableItem = {
-            conditionable_id: conditionToAddToConditionable.backend_id,
-            conditionable_type: conditionToAddToConditionable.conditionable_type,
-            operator: "",
-            value: ""
-          };
-
-          if(conditionToAddToConditionable.operator) { conditionableItem.operator = conditionToAddToConditionable.operator; }
-          if(conditionToAddToConditionable.value) { conditionableItem.value = conditionToAddToConditionable.value; }
-
-          this.currentConditionable.logic_attributes.conditions_attributes.push(conditionableItem);
+        // If the conditionable is not present in the intermediate conditionable table, we create it
+        if (selectedTreeItem.conditionable_id === null) {
+          this.createConditionable(selectedTreeItem, addConditionToLogic);
         } else {
+          // We need to create a copy of the selectedTreeItem to make sure we don't modify it later
+          let conditionToAddToConditionable = JSON.parse(JSON.stringify(selectedTreeItem));
+
           let conditionPresent = false;
-          this.currentConditionable.logic_attributes.conditions_attributes.forEach((condition) => {
+          this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.forEach((condition) => {
             if (conditionToAddToConditionable.conditionable_id === condition.conditionable_id && conditionToAddToConditionable.conditionable_type === condition.conditionable_type) {
               conditionPresent = true;
             }
           })
 
-          if (!conditionPresent) {
-            console.log(conditionToAddToConditionable);
-
+          if (!conditionPresent && addConditionToLogic) {
             // conditionToAddToConditionable.id = conditionToAddToConditionable.backend_id
-            delete conditionToAddToConditionable.id
-            delete conditionToAddToConditionable.backend_id
+            delete conditionToAddToConditionable.id;
+            delete conditionToAddToConditionable.backend_id;
+            delete conditionToAddToConditionable.input_type;
+            delete conditionToAddToConditionable.label;
+            delete conditionToAddToConditionable.uuid;
 
-            this.currentConditionable.logic_attributes.conditions_attributes.push(conditionToAddToConditionable);
+            this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.push(conditionToAddToConditionable);
+
+
+            this.updateFormData();
           }
         }
-
-        this.updateFormData();
       },
       deleteConditionable(index) {
-        this.currentConditionable.logic_attributes.conditions_attributes.splice(index,1);
+        this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.splice(index,1);
         this.updateFormData();
       },
       // Adds another validation to an already added conditionable (InputGroup or Input)
       addValidation(item) {
-        this.selectedTreeItems.push(item);
-        this.addConditionToConditionable(item);
-      },
-      initialiseConditionableFromServer() {
-        // if (Object.keys(this.currentConditionable).length === 0 && typeof this.currentConditionable.id !== 'undefined') {
-        //   this.getConditionableFromServer();
+        // if (!this.selectItemInTree.includes(item)) {
+        //   this.selectedTreeItems.push(item);
         // }
+        console.log('ADD VALIDATION');
 
-        // Add the selected value to the tree view v-model
-        if (this.currentConditionable && this.currentConditionable.logic_attributes) {
-          this.currentConditionable.logic_attributes.conditions_attributes.forEach(condition => {
+        this.addConditionToConditionable(item, false);
+      },
+      isInputGroupModal() {
+        return typeof this.inputGroupIndex !== 'undefined' && this.inputGroupIndex !== null;
+      },
+      isInputModal() {
+        return this.inputGroupIndex !== null && this.rowIndex !== null && this.inputIndex !== null;
+      },
+      // initialiseConditionableFromServer() {
+      //   // if (Object.keys(this.currentConditionable).length === 0 && typeof this.currentConditionable.id !== 'undefined') {
+      //   //   this.getConditionableFromServer();
+      //   // }
+
+      //   // Add the selected value to the tree view v-model
+      //   if (this.currentConditionable && this.currentConditionable.logic_attributes) {
+      //     this.currentConditionable.logic_attributes.conditions_attributes.forEach(condition => {
+
+      //       let treeItem = {
+      //         id: condition.uuid,
+      //         // conditionable_id: condition.conditionable_id,
+      //         // conditionable_type: condition.conditionable_type,
+      //         input_type: condition.input_type,
+      //         label: condition.label
+      //       };
+
+      //       this.value.push(condition.conditionable_uuid);
+      //       this.selectItemInTree(treeItem)
+      //     });
+      //   }
+      // },
+      selectTreeViewItemsBasedOnFormData() {
+        console.log(this.currentConditionable.conditionable_attributes.id);
+
+        if (this.currentConditionable && this.currentConditionable.conditionable_attributes.logic_attributes) {
+          this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.forEach(condition => {
 
             let treeItem = {
-              id: condition.uuid,
-              // conditionable_id: condition.conditionable_id,
-              // conditionable_type: condition.conditionable_type,
+              id: condition.id,
+              conditionable_id: condition.conditionable_id,
+              conditionable_conditionable_id: condition.conditionable_conditionable_id,
+              conditionable_conditionable_type: condition.conditionable_conditionable_type,
               input_type: condition.input_type,
-              label: condition.label
+              label: condition.label,
+              uuid: condition.conditionable_conditionable_uuid,
             };
 
-            this.value.push(condition.conditionable_uuid);
-            this.selectItemInTree(treeItem)
+            if (!this.value.includes(condition.conditionable_conditionable_uuid)) {
+              this.value.push(condition.conditionable_conditionable_uuid);
+            }
+
+            this.selectItemInTree(treeItem, false);
           });
         }
       },
+      updateConditionableFromFormData() {
+        if (this.isInputModal()) {
+          this.updateInputConditionableFromFormData();
+        } else if (this.isInputGroupModal()) {
+          this.updateInputGroupConditionableFromFormData();
+        } else {
+          console.warn('This modal has no inputGroupIndex, rowIndex and inputIndex');
+        }
+
+        this.initialiseConditionable();
+      },
       updateInputGroupConditionableFromFormData () {
-        this.currentConditionable = this.currentForm.input_groups_attributes[inputGroupIndex]['conditionable_attributes'];
+        console.info('I\'m an InputGroup modal');
+
+        this.currentConditionable = this.currentForm.input_groups_attributes[this.inputGroupIndex];
       },
       updateInputConditionableFromFormData () {
-        this.currentConditionable = this.currentForm[this.inputGroupIndex].rows_attributes[this.rowIndex].inputs_attributes[this.inputIndex]['conditionable_attributes'];
+        console.info('I\'m an Input modal');
+        console.log(this.currentForm.input_groups_attributes);
+
+        this.currentConditionable = this.currentForm.input_groups_attributes[this.inputGroupIndex].rows_attributes[this.rowIndex].inputs_attributes[this.inputIndex];
       },
       updateFormData() {
-         if (this.inputGroupIndex && this.rowIndex && this.inputIndex) {
-          this.currentForm.input_groups_attributes[inputGroupIndex]['conditionable_attributes'] = this.currentConditionable;
-        } else if (this.inputGroupIndex) {
-          this.currentForm[this.inputGroupIndex].rows_attributes[this.rowIndex].inputs_attributes[this.inputIndex]['conditionable_attributes'] = this.currentConditionable;
+        if (this.isInputModal()) {
+          this.currentForm.input_groups_attributes[this.inputGroupIndex].rows_attributes[this.rowIndex].inputs_attributes[this.inputIndex] = this.currentConditionable;
+        } else if (this.isInputGroupModal()) {
+          this.currentForm.input_groups_attributes[this.inputGroupIndex] = this.currentConditionable;
+        } else {
+          console.error('Don\'t know how to save formData');
         }
-        this.$emit('updateForm', this.currentForm); //update parent conditionable
 
-        console.log(this.currentForm);
+        this.propagateNewFormToBaseParent();
+      },
+      createConditionable(treeItem, addConditionToLogic) {
+        axios({
+            method: 'post',
+            url: `${API_CONSTANTS.url}/conditionables`,
+            data: {
+              conditionable: {
+                conditionable_id: treeItem.id,
+                conditionable_type: treeItem.conditionable_type
+              }
+            }
+          })
+            .then(response => {
+              treeItem.conditionable_id = response.data.conditionable_id;
+              this.reloadTreeViewData();
+              this.addConditionToConditionable(treeItem, addConditionToLogic);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+      },
+      reloadTreeViewData() {
+        this.$emit('reloadTreeView');
+        let vm = this.$parent
 
+        while(vm) {
+            vm.$emit('reloadTreeView')
+            vm = vm.$parent
+        }
+      },
+      propagateNewFormToBaseParent() {
+        this.$emit('updateForm', this.currentForm);
+        let vm = this.$parent
+
+        while(vm) {
+            vm.$emit('updateForm', this.currentForm)
+            vm = vm.$parent
+        }
       }
     },
     mounted() {
       this.currentForm = this.form;
-      this.initialiseConditionable();
     },
     watch: {
       form: {
-        handler: (newValue) => {
+        handler: function(newVal) {
           if (typeof newVal !== 'undefined') {
+            this.currentForm = newVal;
+            this.updateConditionableFromFormData();
 
-              this.currentForm = newVal;
-              console.log(newValue);
-
-        if (this.inputGroupIndex && this.rowIndex && this.inputIndex) {
-          this.updateInputConditionableFromFormData();
-        } else if (this.inputGroupIndex) {
-          this.updateInputGroupConditionableFromFormData();
-        }
-
-        this.initialiseConditionableFromServer();
-        }
-
-            },
-            deep: true
-
+            this.initialiseConditionable();
+            this.selectTreeViewItemsBasedOnFormData();
+          }
+        },
+        deep: true
       },
       inputGroupIndex(val) {
-        console.log(val);
+        console.info('InputGroupIndex: ' + val);
 
         this.inputGroupIndex = val;
+        this.updateConditionableFromFormData();
+        this.selectTreeViewItemsBasedOnFormData();
       },
       rowIndex(val) {
-        console.log(val);
+        console.info('RowIndex: ' + val);
 
         this.rowIndex = val;
+        this.updateConditionableFromFormData();
+        this.selectTreeViewItemsBasedOnFormData();
       },
       inputIndex(val) {
-        console.log(val);
+        console.info('InputIndex: ' + val);
 
         this.inputIndex = val;
+        this.updateConditionableFromFormData();
+        this.selectTreeViewItemsBasedOnFormData();
       },
       formTree(val) {
         this.formTree = val;

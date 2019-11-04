@@ -47,7 +47,7 @@
             class="help is-danger"
           >You are trying to reorder the input group to an unknow position.</p>
         </div>
-        <config-modal-conditions :form="form" :input-group-index="index" :form-tree="formTree" @updateForm="updateForm"></config-modal-conditions>
+        <config-modal-conditions :form="currentForm" :input-group-index="index" :form-tree="formTree"></config-modal-conditions>
       </section>
       <footer class="modal-card-foot has-text-right" v-if="inputGroup !== null">
         <button
@@ -95,18 +95,18 @@
         if (Object.keys(this.currentForm).length > 0) {
           this.saveForm();
         }
-        if (this.oldInputGroupOrder !== this.inputGroup.order) reOrder = true;
+        if (this.oldInputGroupOrder !== this.currentForm.input_groups_attributes[this.index].order) reOrder = true;
         this.$emit(
           "updateInputGroupInfo",
-          this.inputGroup,
+          this.currentForm.input_groups_attributes[this.index],
           this.index,
           reOrder,
-          this.inputGroup.order
+          this.currentForm.input_groups_attributes[this.index].order
         );
         this.closeModal();
       },
       saveForm() {
-        console.log(this.currentForm);
+        console.log(this.currentForm.input_groups_attributes[0].conditionable_attributes.logic_attributes.conditions_attributes[0].operator);
 
         let requestMethod = 'post';
         let requestUrl = API_CONSTANTS.url + "/forms"
@@ -120,6 +120,7 @@
           data: this.currentForm
         })
           .then(response => {
+            console.log(this.currentForm.input_groups_attributes[0].conditionable_attributes.logic_attributes.conditions_attributes[0].operator);
             // Populate availableValidations JSON if the validations for the given input does not exist
             //console.log(response);
           })
@@ -128,6 +129,8 @@
           });
       },
       updateForm(form) {
+        console.log('UpdateForm in InputGroup', this.form.input_groups_attributes[0].conditionable_attributes);
+
         this.currentForm = form;
       }
     },
@@ -146,10 +149,13 @@
       formTree(val) {
         this.currentFormTree = val;
       },
-      form(val) {
-        console.log(val);
-
-        this.currentForm = val;
+      form: {
+        handler(val) {
+          if (typeof val !== 'undefined') {
+            this.currentForm = val;
+          }
+        },
+        deep: true
       }
     }
   };

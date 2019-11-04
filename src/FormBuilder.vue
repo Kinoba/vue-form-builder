@@ -1,8 +1,8 @@
 <template>
     <div class="section" style="margin: 0 20px;">
         <div class="container">
-            <form-builder-template v-if="type === 'template'" ref="FormBuilderTemplate" :form="form"></form-builder-template>
-            <form-builder-gui v-else-if="type === 'gui'" ref="FormBuilderGui" :form="form"></form-builder-gui>
+            <form-builder-template v-if="type === 'template'" ref="FormBuilderTemplate" :form="currentForm"></form-builder-template>
+            <form-builder-gui v-else-if="type === 'gui'" ref="FormBuilderGui" :form="currentForm"></form-builder-gui>
             <div v-else>
                 <p>Type not found, did you enter correct type <b>(template, gui)</b>?</p>
             </div>
@@ -38,6 +38,14 @@
             FormBuilderTemplate,
             FormBuilderGui
         },
+        data: () => ({
+          currentForm: {
+            uuid: Math.random(),
+            title: '',
+            input_groups_attributes: [],
+            layout: ""
+          }
+        }),
         model: {
             prop: 'value',
             event: 'change'
@@ -48,33 +56,12 @@
                 default: "template"
             },
             form: {
-                type: Object,
-                default:() => ({
-                    uuid: Math.random(),
-                    title: '',
-                    input_groups: [],
-                    layout: ""
-                })
+                type: Object
             },
             value: null,
             options: {
                 type: Object,
                 default: () => ({})
-            }
-        },
-        watch: {
-            form: {
-                handler(val) {
-                    if (this.type === 'template') {
-                        this.$emit('change', val);
-                    } else {
-                        this.debounceGetFormGUIValue();
-                    }
-                },
-                deep: true
-            },
-            value(val) {
-                this.setValue(val);
             }
         },
         methods: {
@@ -161,6 +148,29 @@
         },
         mounted() {
             this.setValue(this.value);
+        },
+        watch: {
+            form: {
+                handler(val) {
+                  console.log('coucou', this.form.id);
+
+                  if (typeof val !== 'undefined') {
+                    console.log('FormBuilder form watcher');
+
+                    this.currentForm = val;
+                  }
+
+                    if (this.type === 'template') {
+                        this.$emit('change', val);
+                    } else {
+                        this.debounceGetFormGUIValue();
+                    }
+                },
+                deep: true
+            },
+            value(val) {
+                this.setValue(val);
+            }
         }
     }
 </script>
