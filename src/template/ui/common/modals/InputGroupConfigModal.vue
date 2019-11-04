@@ -106,8 +106,6 @@
         this.closeModal();
       },
       saveForm() {
-        console.log(this.currentForm.input_groups_attributes[0].conditionable_attributes.logic_attributes.conditions_attributes[0].operator);
-
         let requestMethod = 'post';
         let requestUrl = API_CONSTANTS.url + "/forms"
         if(this.currentForm.id) {
@@ -120,7 +118,6 @@
           data: this.currentForm
         })
           .then(response => {
-            console.log(this.currentForm.input_groups_attributes[0].conditionable_attributes.logic_attributes.conditions_attributes[0].operator);
             // Populate availableValidations JSON if the validations for the given input does not exist
             //console.log(response);
           })

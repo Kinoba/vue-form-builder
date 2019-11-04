@@ -1,178 +1,189 @@
 <template>
-    <div class="section" style="margin: 0 20px;">
-        <div class="container">
-            <form-builder-template v-if="type === 'template'" ref="FormBuilderTemplate" :form="currentForm"></form-builder-template>
-            <form-builder-gui v-else-if="type === 'gui'" ref="FormBuilderGui" :form="currentForm"></form-builder-gui>
-            <div v-else>
-                <p>Type not found, did you enter correct type <b>(template, gui)</b>?</p>
-            </div>
-        </div>
+  <div class="section" style="margin: 0 20px;">
+    <div class="container">
+      <form-builder-template
+        v-if="type === 'template'"
+        ref="FormBuilderTemplate"
+        :form="currentForm"
+      ></form-builder-template>
+      <form-builder-gui v-else-if="type === 'gui'" ref="FormBuilderGui" :form="currentForm"></form-builder-gui>
+      <div v-else>
+        <p>
+          Type not found, did you enter correct type
+          <b>(template, gui)</b>?
+        </p>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-    // load js
-    if (require) {
-        require('sethFormBuilder/config/loader');
-    }
+  // load js
+  if (require) {
+    require("sethFormBuilder/config/loader");
+  }
 
-    // load necessary
-    import {Hooks as GUI_Hooks} from './gui/components/hook_lists';
-    import {Hooks as Template_Hooks} from './template/components/hook_lists';
-    import {FormHandler} from "sethFormBuilder/gui/handler/form_handler";
-    import {SethPhatToaster} from "sethFormBuilder/config/toaster";
+  // load necessary
+  import { Hooks as GUI_Hooks } from "./gui/components/hook_lists";
+  import { Hooks as Template_Hooks } from "./template/components/hook_lists";
+  import { FormHandler } from "sethFormBuilder/gui/handler/form_handler";
+  import { SethPhatToaster } from "sethFormBuilder/config/toaster";
 
-    window.SethPhatToaster = SethPhatToaster;
+  window.SethPhatToaster = SethPhatToaster;
 
-    // import
-    import FormBuilderTemplate from './template/FormBuilderTemplate';
-    import FormBuilderGui from './gui/FormBuilderGui';
+  // import
+  import FormBuilderTemplate from "./template/FormBuilderTemplate";
+  import FormBuilderGui from "./gui/FormBuilderGui";
 
-    // special hook
-    import {ValidateSettingHandler} from "sethFormBuilder/template/handler/validate_setting_handler";
-    import {INPUT_TYPES} from "sethFormBuilder/config/input_constant";
+  // special hook
+  import { ValidateSettingHandler } from "sethFormBuilder/template/handler/validate_setting_handler";
+  import { INPUT_TYPES } from "sethFormBuilder/config/input_constant";
 
-    export default {
-        name: "FormBuilder",
-        components: {
-            FormBuilderTemplate,
-            FormBuilderGui
-        },
-        data: () => ({
-          currentForm: {
-            uuid: Math.random(),
-            title: '',
-            input_groups_attributes: [],
-            layout: ""
+  export default {
+    name: "FormBuilder",
+    components: {
+      FormBuilderTemplate,
+      FormBuilderGui
+    },
+    data: () => ({
+      currentForm: {
+        uuid: Math.random(),
+        title: "",
+        input_groups_attributes: [],
+        layout: ""
+      }
+    }),
+    model: {
+      prop: "value",
+      event: "change"
+    },
+    props: {
+      type: {
+        type: String,
+        default: "template"
+      },
+      form: {
+        type: Object,
+        default: () => ({
+          uuid: Math.random(),
+          title: "",
+          input_groups_attributes: [],
+          layout: ""
+        })
+      },
+      value: null,
+      options: {
+        type: Object,
+        default: () => ({})
+      }
+    },
+    methods: {
+      getValue() {
+        if (this.type === "template") {
+          return this.$refs.FormBuilderTemplate.getValue();
+        } else {
+          if (!_.accessStr(this, "$refs.FormBuilderGui")) {
+            return;
           }
-        }),
-        model: {
-            prop: 'value',
-            event: 'change'
-        },
-        props: {
-            type: {
-                type: String,
-                default: "template"
-            },
-            form: {
-                type: Object
-            },
-            value: null,
-            options: {
-                type: Object,
-                default: () => ({})
-            }
-        },
-        methods: {
-            getValue() {
-                if (this.type === 'template') {
-                    return this.$refs.FormBuilderTemplate.getValue();
-                } else {
-                    if (!_.accessStr(this, '$refs.FormBuilderGui')) {
-                        return;
-                    }
 
-                    return this.$refs.FormBuilderGui.getValue();
-                }
-            },
-            setValue(values) {
-                if (_.isEmpty(values)) {
-                    return;
-                }
-
-                // set values for specific type
-                if (this.type === 'template') {
-                    _.deepExtend(this.form, FormHandler.recorrectStructure(values));
-                    // this.$refs.FormBuilderTemplate.setValue(values);
-                } else {
-                    this.$refs.FormBuilderGui.setValue(values);
-                }
-            },
-            validate(showError = true) {
-                if (this.type !== 'gui') {
-                    return;
-                }
-
-                var hasError = FormHandler.validate(this.form);
-                if (showError && hasError) {
-                    SethPhatToaster.error("There are errors on the page. Please rectify the errors so the action can be completed.");
-                }
-
-                // true => no error | false => errors
-                return !hasError;
-            },
-            clearError() {
-                FormHandler.clearErrorField();
-            }
-        },
-        created() {
-            let self = this;
-            this.debounceGetFormGUIValue = _.debounce(() => {
-                if (typeof self === "undefined" || typeof self.getValue === "undefined") {
-                    return;
-                }
-
-                self.$emit('change', self.getValue());
-            }, 500);
-
-            // Register for hook
-            if (this.type === 'template') {
-                if(_.has(this.options, 'hooks')) {
-                    Template_Hooks.register(this.options.hooks);
-                }
-
-                // add special hooks for template
-                ValidateSettingHandler.init(Template_Hooks);
-            } else {
-                if(_.has(this.options, 'hooks')) {
-                    GUI_Hooks.register(this.options.hooks);
-                }
-
-                // Re-correct data for GUI
-                _.deepExtend(this.form, FormHandler.recorrectStructure(this.form));
-            }
-
-            // extends for controls
-            if (_.has(this.options, 'moreControls')) {
-                _.each(this.options.moreControls, (item, key) => {
-                    // won't add existed
-                    if (INPUT_TYPES[key]) {
-                        console.error("EXISTED CONTROL KEY: " + key);
-                        return;
-                    }
-
-                    INPUT_TYPES[key] = item;
-                });
-            }
-        },
-        mounted() {
-            this.setValue(this.value);
-        },
-        watch: {
-            form: {
-                handler(val) {
-                  console.log('coucou', this.form.id);
-
-                  if (typeof val !== 'undefined') {
-                    console.log('FormBuilder form watcher');
-
-                    this.currentForm = val;
-                  }
-
-                    if (this.type === 'template') {
-                        this.$emit('change', val);
-                    } else {
-                        this.debounceGetFormGUIValue();
-                    }
-                },
-                deep: true
-            },
-            value(val) {
-                this.setValue(val);
-            }
+          return this.$refs.FormBuilderGui.getValue();
         }
+      },
+      setValue(values) {
+        if (_.isEmpty(values)) {
+          return;
+        }
+
+        // set values for specific type
+        if (this.type === "template") {
+          _.deepExtend(this.form, FormHandler.recorrectStructure(values));
+          // this.$refs.FormBuilderTemplate.setValue(values);
+        } else {
+          this.$refs.FormBuilderGui.setValue(values);
+        }
+      },
+      validate(showError = true) {
+        if (this.type !== "gui") {
+          return;
+        }
+
+        var hasError = FormHandler.validate(this.form);
+        if (showError && hasError) {
+          SethPhatToaster.error(
+            "There are errors on the page. Please rectify the errors so the action can be completed."
+          );
+        }
+
+        // true => no error | false => errors
+        return !hasError;
+      },
+      clearError() {
+        FormHandler.clearErrorField();
+      }
+    },
+    created() {
+      let self = this;
+      this.debounceGetFormGUIValue = _.debounce(() => {
+        if (typeof self === "undefined" || typeof self.getValue === "undefined") {
+          return;
+        }
+
+        self.$emit("change", self.getValue());
+      }, 500);
+
+      // Register for hook
+      if (this.type === "template") {
+        if (_.has(this.options, "hooks")) {
+          Template_Hooks.register(this.options.hooks);
+        }
+
+        // add special hooks for template
+        ValidateSettingHandler.init(Template_Hooks);
+      } else {
+        if (_.has(this.options, "hooks")) {
+          GUI_Hooks.register(this.options.hooks);
+        }
+
+        // Re-correct data for GUI
+        _.deepExtend(this.form, FormHandler.recorrectStructure(this.form));
+      }
+
+      // extends for controls
+      if (_.has(this.options, "moreControls")) {
+        _.each(this.options.moreControls, (item, key) => {
+          // won't add existed
+          if (INPUT_TYPES[key]) {
+            console.error("EXISTED CONTROL KEY: " + key);
+            return;
+          }
+
+          INPUT_TYPES[key] = item;
+        });
+      }
+    },
+    mounted() {
+      this.setValue(this.value);
+    },
+    watch: {
+      form: {
+        handler(val) {
+          if (typeof val !== "undefined") {
+            this.currentForm = val;
+          }
+
+          if (this.type === "template") {
+            this.$emit("change", val);
+          } else {
+            this.debounceGetFormGUIValue();
+          }
+        },
+        deep: true
+      },
+      value(val) {
+        this.setValue(val);
+      }
     }
+  };
 </script>
 
 <style scoped>

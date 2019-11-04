@@ -63,7 +63,7 @@
             currentForm: {
               uuid: Math.random(),
               title: '',
-              input_groups: [],
+              input_groups_attributes: [],
               layout: ""
             }
         }),
@@ -211,9 +211,6 @@
                   }).catch(error => {
                     console.log(error);
                 });
-
-                console.log(('TREEVIEW'));
-
               }
             }
         },
@@ -244,8 +241,6 @@
             form: {
                 handler(val) {
                   if (typeof val !== 'undefined') {
-                    console.log('cioucuou3', val.id);
-
                     if (this.form.id) {
                       this.getFormAsTreeView();
                     }

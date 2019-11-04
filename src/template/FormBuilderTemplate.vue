@@ -1,86 +1,85 @@
 <template>
-    <div class="columns" style="margin: 0 20px;">
-        <div class="column is-9">
-            <form-title-component v-model="currentForm.title"></form-title-component>
-            <input-group-component :form="currentForm" ref="InputGroupComponent"></input-group-component>
-        </div>
-        <div class="column is-3">
-            <sidebar-component></sidebar-component>
-        </div>
-
-        <!-- <preview-component ref="PreviewComponent" :form="form"></preview-component> -->
+  <div class="columns" style="margin: 0 20px;">
+    <div class="column is-9">
+      <form-title-component v-model="currentForm.title"></form-title-component>
+      <input-group-component :form="currentForm" ref="InputGroupComponent"></input-group-component>
     </div>
+    <div class="column is-3">
+      <sidebar-component></sidebar-component>
+    </div>
+
+    <!-- <preview-component ref="PreviewComponent" :form="form"></preview-component> -->
+  </div>
 </template>
 
 <script>
-    import InputGroupComponent from "./ui/InputGroupComponent";
-    import FormTitleComponent from "./ui/FormTitleComponent";
-    import { dom } from '@fortawesome/fontawesome-svg-core'
-    import SidebarComponent from "./ui/SidebarComponent";
-    import PreviewComponent from "./ui/PreviewComponent";
-    dom.watch();
+  import InputGroupComponent from "./ui/InputGroupComponent";
+  import FormTitleComponent from "./ui/FormTitleComponent";
+  import { dom } from "@fortawesome/fontawesome-svg-core";
+  import SidebarComponent from "./ui/SidebarComponent";
+  import PreviewComponent from "./ui/PreviewComponent";
+  dom.watch();
 
-    var default_form_value = () => ({
+  var default_form_value = () => ({
+    uuid: Math.random(),
+    title: '',
+    input_groups: [],
+    layout: ''
+  });
+
+  export default {
+    name: 'form-builder-template',
+    components: {
+      PreviewComponent,
+      SidebarComponent,
+      InputGroupComponent,
+      FormTitleComponent
+    },
+    props: {
+      form: {
+        type: Object,
+        default: () => ({
+          uuid: Math.random(),
+          title: "",
+          input_groups_attributes: [],
+          layout: ""
+        })
+      }
+    },
+    data: () => ({
+      currentForm: {
         uuid: Math.random(),
-        title: '',
-        input_groups: [],
+        title: "",
+        input_groups_attributes: [],
         layout: ""
-    });
-
-    export default {
-        name: "form-builder-template",
-        components: {
-            PreviewComponent,
-            SidebarComponent,
-            InputGroupComponent,
-            FormTitleComponent
-        },
-        props: {
-            form: {
-                type: Object,
-                default:() => ({
-                    uuid: Math.random(),
-                    title: '',
-                    input_groups: [],
-                    layout: ""
-                })
-            }
-        },
-        data: () => (
-          {
-            currentForm: {
-              uuid: Math.random(),
-              title: '',
-              input_groups_attributes: [],
-              layout: ""
+      }
+    }),
+    methods: {
+      getValue() {
+        return this.form;
+      },
+      setValue(val) {
+        this.form = val;
+      },
+      preview() {
+        this.$refs.PreviewComponent.openModal(this.form);
+      }
+    },
+    created() {
+      // console.log(this.currentForm);
+    },
+    watch: {
+      form: {
+        handler(val) {
+          if (typeof val !== 'undefined' && Object.keys(val).length > 0) {
+            this.currentForm = val;
           }
-        }),
-        methods: {
-            getValue() {
-                return this.form;
-            },
-            setValue(val) {
-                this.form = val;
-            },
-            preview() {
-                this.$refs.PreviewComponent.openModal(this.form);
-            }
         },
-        watch: {
-            form: {
-                handler(val) {
-                  if (typeof val !== 'undefined') {
-                    console.log('coucou2', val);
-
-                    this.currentForm = val;
-                  }
-                },
-                deep: true
-            },
-        }
+        deep: true
+      }
     }
+  };
 </script>
 
 <style scoped>
-
 </style>

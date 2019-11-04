@@ -11,8 +11,8 @@
       </pre>
       <div class="control">
         <treeselect
-          placeholder="Sélectionnez les elements pour créer vos conditions"
-          noChildrenText="Aucun input présent dans ce groupe"
+          placeholder="Select any element to create conditions"
+          noChildrenText="No input in this group"
           :multiple="true"
           :clearable="false"
           :options="formTree.children"
@@ -168,8 +168,6 @@
           this.selectedTreeItems.push(item);
         }
 
-        console.log(item);
-
         this.getAvailableValidationsFromServer(item.input_type);
         this.addConditionToConditionable(item);
       },
@@ -284,15 +282,13 @@
         // if (!this.selectItemInTree.includes(item)) {
         //   this.selectedTreeItems.push(item);
         // }
-        console.log('ADD VALIDATION');
-
         this.addConditionToConditionable(item, false);
       },
       isInputGroupModal() {
         return typeof this.inputGroupIndex !== 'undefined' && this.inputGroupIndex !== null;
       },
       isInputModal() {
-        return this.inputGroupIndex !== null && this.rowIndex !== null && this.inputIndex !== null;
+        return typeof this.inputGroupIndex !== 'undefined' && this.inputGroupIndex !== null && typeof this.rowIndex !== 'undefined' && this.rowIndex !== null && typeof this.inputIndex !== 'undefined' && this.inputIndex !== null;
       },
       // initialiseConditionableFromServer() {
       //   // if (Object.keys(this.currentConditionable).length === 0 && typeof this.currentConditionable.id !== 'undefined') {
@@ -317,9 +313,9 @@
       //   }
       // },
       selectTreeViewItemsBasedOnFormData() {
-        console.log(this.currentConditionable.conditionable_attributes.id);
-
-        if (this.currentConditionable && this.currentConditionable.conditionable_attributes.logic_attributes) {
+        if (this.currentConditionable
+            && this.currentConditionable.conditionable_attributes.logic_attributes
+            && this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes) {
           this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.forEach(condition => {
 
             let treeItem = {
@@ -358,7 +354,6 @@
       },
       updateInputConditionableFromFormData () {
         console.info('I\'m an Input modal');
-        console.log(this.currentForm.input_groups_attributes);
 
         this.currentConditionable = this.currentForm.input_groups_attributes[this.inputGroupIndex].rows_attributes[this.rowIndex].inputs_attributes[this.inputIndex];
       },
@@ -368,7 +363,7 @@
         } else if (this.isInputGroupModal()) {
           this.currentForm.input_groups_attributes[this.inputGroupIndex] = this.currentConditionable;
         } else {
-          console.error('Don\'t know how to save formData');
+          console.warn('Don\'t know how to save formData');
         }
 
         this.propagateNewFormToBaseParent();
@@ -426,28 +421,34 @@
             this.selectTreeViewItemsBasedOnFormData();
           }
         },
-        deep: true
+        deep: true,
+        immediate: true
       },
       inputGroupIndex(val) {
         console.info('InputGroupIndex: ' + val);
 
-        this.inputGroupIndex = val;
+        // this.inputGroupIndex = val;
         this.updateConditionableFromFormData();
         this.selectTreeViewItemsBasedOnFormData();
       },
       rowIndex(val) {
         console.info('RowIndex: ' + val);
 
-        this.rowIndex = val;
+        // this.rowIndex = val;
         this.updateConditionableFromFormData();
         this.selectTreeViewItemsBasedOnFormData();
       },
-      inputIndex(val) {
-        console.info('InputIndex: ' + val);
+      inputIndex: {
+        handler(val) {
+          if (typeof val !== 'undefined' && Object.keys(this.currentForm).length > 0) {
+            console.info('InputIndex: ' + val, this.currentForm);
 
-        this.inputIndex = val;
-        this.updateConditionableFromFormData();
-        this.selectTreeViewItemsBasedOnFormData();
+            // this.inputIndex = val;
+            this.updateConditionableFromFormData();
+            this.selectTreeViewItemsBasedOnFormData();
+          }
+        },
+        immediate: true
       },
       formTree(val) {
         this.formTree = val;
