@@ -132,7 +132,7 @@
           },
           updateForm(form) {
             this.currentForm = form;
-          }
+          },
         },
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
@@ -145,8 +145,11 @@
               if(this.input) this.oldInputOrder = val.order;
             }
           },
-          formTree(val) {
-            this.formTree = val;
+          formTree: {
+            handler(val) {
+              this.formTree = val;
+            },
+            deep: true
           },
           form: {
             handler(val) {

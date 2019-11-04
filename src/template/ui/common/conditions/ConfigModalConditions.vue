@@ -101,6 +101,7 @@
           id: node.uuid,
           label: node.label,
           children: node.children,
+          isDisabled: node.is_disabled
         }
       },
       index: null,
@@ -455,8 +456,11 @@
         },
         immediate: true
       },
-      formTree(val) {
-        this.formTree = val;
+      formTree: {
+        handler(val) {
+          this.formTree = val;
+        },
+        deep: true
       }
     }
   };

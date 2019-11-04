@@ -130,9 +130,6 @@
             inputGroup.children.push(treeChild);
           }
         })
-
-        console.log(treeChild.uuid);
-
       },
       traverseInput() {
         let self = this;
@@ -159,7 +156,7 @@
       // input
       openInputConfig(secIndex) {
         var inputInfo = this.row.inputs_attributes[secIndex];
-        console.log(this.$refs.inputConfigModal.index);
+        this.disableSelfInputAsOptionInTreeview(inputInfo);
 
         this.$refs.inputConfigModal.openModal(inputInfo, secIndex);
       },
@@ -188,6 +185,16 @@
           .catch(error => {
             console.log(error);
           });
+      },
+      // User should not be able to add a condition on a field on itself
+      disableSelfInputAsOptionInTreeview(inputInfo) {
+        this.formTree.children.forEach((inputGroup, inputGroupIndex) => {
+          if (inputGroup.uuid === this.parentInputGroup.uuid) {
+            inputGroup.children.forEach((input, inputIndex) => {
+              this.formTree.children[inputGroupIndex].children[inputIndex].is_disabled = input.uuid === inputInfo.uuid;
+            })
+          }
+        })
       }
     },
     created() {
