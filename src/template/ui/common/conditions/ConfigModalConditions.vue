@@ -164,6 +164,7 @@
         }
       },
       selectItemInTree(item, addConditionToLogic=true) {
+        // Checks if the conditionable isn't already added to the existing conditions
         if (!this.selectedTreeItems.some(e => e.uuid === item.uuid)) {
           this.selectedTreeItems.push(item);
         }
@@ -203,6 +204,7 @@
               this.$forceUpdate();
             })
             .catch(error => {
+              this.$toasted.show( error.response.data.errors, { type: 'error' }).goAway(5000);
               console.log(error);
             });
         }
@@ -235,9 +237,17 @@
       initialiseConditionable() {
         if (!this.currentConditionable.conditionable_attributes) {
           this.currentConditionable.conditionable_attributes = this.conditionableAttributesTemplate;
-
-          this.updateFormData();
         }
+
+        if (!this.currentConditionable.conditionable_attributes.logic_attributes) {
+          this.currentConditionable.conditionable_attributes.logic_attributes = this.conditionableAttributesTemplate.logic_attributes;
+        }
+
+        if (!this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes) {
+          this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes = this.conditionableAttributesTemplate.logic_attributes.conditions_attributes;
+        }
+
+        this.updateFormData();
       },
 
       // Based on a treeItem, adds a new condition to the parent conditionable JSON
@@ -267,7 +277,6 @@
             delete conditionToAddToConditionable.uuid;
 
             this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.push(conditionToAddToConditionable);
-
 
             this.updateFormData();
           }
@@ -318,21 +327,24 @@
             && this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes) {
           this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.forEach(condition => {
 
-            let treeItem = {
-              id: condition.id,
-              conditionable_id: condition.conditionable_id,
-              conditionable_conditionable_id: condition.conditionable_conditionable_id,
-              conditionable_conditionable_type: condition.conditionable_conditionable_type,
-              input_type: condition.input_type,
-              label: condition.label,
-              uuid: condition.conditionable_conditionable_uuid,
-            };
+            if (typeof condition.conditionable_conditionable_uuid !== 'undefined') {
+              let treeItem = {
+                id: condition.id,
+                conditionable_id: condition.conditionable_id,
+                conditionable_conditionable_id: condition.conditionable_conditionable_id,
+                conditionable_conditionable_type: condition.conditionable_conditionable_type,
+                input_type: condition.input_type,
+                label: condition.label,
+                uuid: condition.conditionable_conditionable_uuid,
+              };
+              console.log('coucou', this.value);
 
-            if (!this.value.includes(condition.conditionable_conditionable_uuid)) {
-              this.value.push(condition.conditionable_conditionable_uuid);
+              if (!this.value.includes(condition.conditionable_conditionable_uuid)) {
+                this.value.push(condition.conditionable_conditionable_uuid);
+              }
+
+              this.selectItemInTree(treeItem, false);
             }
-
-            this.selectItemInTree(treeItem, false);
           });
         }
       },
