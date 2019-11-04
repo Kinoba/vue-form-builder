@@ -44,7 +44,6 @@
               </div>
               <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
             </div>
-            {{index}}
             <config-modal-conditions
               :form="currentForm"
               :input-group-index="parentInputGroup.order"

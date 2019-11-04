@@ -2,13 +2,6 @@
   <div>
     <div class="field has-text-left" v-if="formTree.children && formTree.children.length > 0">
       <label class="label">Conditions</label>
-      <pre>{{inputIndex}}</pre>
-      <pre>
-        {{selectedTreeItems}}
-      </pre>
-      <pre>
-        {{currentConditionable}}
-      </pre>
       <div class="control">
         <treeselect
           placeholder="Select any element to create conditions"
