@@ -143,8 +143,11 @@
           this.oldInputGroupOrder = val.order;
         }
       },
-      formTree(val) {
-        this.currentFormTree = val;
+      formTree: {
+        handler(val) {
+          this.currentFormTree = val;
+        },
+        deep: true
       },
       form: {
         handler(val) {

@@ -144,6 +144,8 @@
             },
             configInputGroup(secIndex) {
                 var inputGroupInfo = this.form.input_groups_attributes[secIndex];
+                this.disableSelfInputsAsOptionInTreeview(inputGroupInfo);
+
                 this.$refs.inputGroupConfigModal.openModal(inputGroupInfo, secIndex);
             },
             traverseInputGroup() {
@@ -212,6 +214,14 @@
                     console.log(error);
                 });
               }
+            },
+             // User should not be able to add a condition on an InputGroup on itself
+            disableSelfInputsAsOptionInTreeview(inputGroupInfo) {
+              this.formTree.children.forEach((inputGroup, inputGroupIndex) => {
+                inputGroup.children.forEach((input, inputIndex) => {
+                  this.formTree.children[inputGroupIndex].children[inputIndex].is_disabled = inputGroup.uuid === inputGroupInfo.uuid;
+                })
+              })
             }
         },
         mounted() {
