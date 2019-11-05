@@ -6,6 +6,7 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons/faCheck';
 import {faDatabase} from '@fortawesome/free-solid-svg-icons/faDatabase';
 import {faFile} from '@fortawesome/free-solid-svg-icons/faFile';
 import {faParagraph} from '@fortawesome/free-solid-svg-icons/faParagraph';
+import {faAlignJustify} from '@fortawesome/free-solid-svg-icons/faAlignJustify';
 
 var FORM_CONSTANTS = {};
 var INPUT_CONSTANTS = {};
@@ -102,6 +103,10 @@ FORM_CONSTANTS.Type = {
     },
     textarea: {
         label:"Text Area",
+        icon: faAlignJustify
+    },
+    paragraph: {
+        label: "Paragraph",
         icon: faParagraph
     },
     file: {

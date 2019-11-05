@@ -17,7 +17,7 @@
                 <!-- demo for select -->
                 <select class="form-control" v-if="control.type == 'select'" :name="control.fieldName">
                     <option disabled selected>Options</option>
-                    <option v-for="option in control.dataOptions">{{option.text}}</option>
+                    <option v-for="(option, index) in control.dataOptions" :key="'control_type_' + index">{{option.text}}</option>
                 </select>
 
                 <!-- demo for checkbox -->

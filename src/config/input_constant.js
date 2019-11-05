@@ -7,6 +7,7 @@ import {faCheck} from '@fortawesome/free-solid-svg-icons/faCheck';
 import {faDatabase} from '@fortawesome/free-solid-svg-icons/faDatabase';
 import {faFile} from '@fortawesome/free-solid-svg-icons/faFile';
 import {faParagraph} from '@fortawesome/free-solid-svg-icons/faParagraph';
+import {faAlignJustify} from '@fortawesome/free-solid-svg-icons/faAlignJustify';
 
 // GUI Control
 import GUICheckboxControl from 'sethFormBuilder/gui/ui/controls/CheckboxControl';
@@ -14,6 +15,7 @@ import GUIDatePickerControl from 'sethFormBuilder/gui/ui/controls/DatePickerCont
 import GUINumberControl from 'sethFormBuilder/gui/ui/controls/NumberControl';
 import GUISelectControl from 'sethFormBuilder/gui/ui/controls/SelectControl';
 import GUITextControl from 'sethFormBuilder/gui/ui/controls/TextControl';
+import GUIParagraphControl from 'sethFormBuilder/gui/ui/controls/ParagraphControl';
 import GUITimePickerControl from 'sethFormBuilder/gui/ui/controls/TimePickerControl';
 import GUITextAreaControl from 'sethFormBuilder/gui/ui/controls/TextAreaControl';
 import GUIFileControl from 'sethFormBuilder/gui/ui/controls/FileControl';
@@ -26,6 +28,7 @@ import TEMPLATEDatePickerInput from 'sethFormBuilder/template/ui/common/inputs/D
 import TEMPLATETimePickerInput from 'sethFormBuilder/template/ui/common/inputs/TimePickerInput';
 import TEMPLATESelectInput from 'sethFormBuilder/template/ui/common/inputs/SelectInput';
 import TEMPLATETextAreaInput from 'sethFormBuilder/template/ui/common/inputs/TextAreaInput';
+import TEMPLATEParagraphInput from 'sethFormBuilder/template/ui/common/inputs/ParagraphInput';
 import TEMPLATEFileInput from 'sethFormBuilder/template/ui/common/inputs/FileInput';
 
 // CONFIG CONTROL
@@ -104,11 +107,20 @@ const INPUT_TYPES = {
         }
     },
     textarea: {
-        label:"Text Area",
-        icon: faParagraph,
+        label: 'Text Area',
+        icon: faAlignJustify,
         source: {
             gui: GUITextAreaControl,
             template: TEMPLATETextAreaInput,
+            //config: SIDEBARTextAreaControl
+        }
+    },
+    paragraph: {
+        label: 'Paragraph',
+        icon: faParagraph,
+        source: {
+            gui: GUIParagraphControl,
+            template: TEMPLATEParagraphInput,
             //config: SIDEBARTextAreaControl
         }
     },
