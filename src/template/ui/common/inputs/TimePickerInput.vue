@@ -65,6 +65,9 @@
 </script>
 
 <style scoped>
+.inputItemWrapper {
+  width: 100%;
+}
 .button-bar {
     display: inline-block;
 }

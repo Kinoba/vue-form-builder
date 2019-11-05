@@ -45,6 +45,9 @@
 </script>
 
 <style scoped>
+    .inputItemWrapper {
+      width: 100%;
+    }
     hr {
         margin: 1rem 0;
     }
