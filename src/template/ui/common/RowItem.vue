@@ -31,6 +31,9 @@
           <button class="button is-secondary is-pulled-right" @click="deleteInput(input, index)">
             <font-awesome-icon icon="times" />Delete
           </button>
+          <button class="button is-secondary is-pulled-right" @click="openValidationsModal(index)">
+            <font-awesome-icon icon="check" />Validation
+          </button>
         </div>
       </div>
     </div>
@@ -45,6 +48,12 @@
       :maxOrder="row.inputs_attributes.length"
       @updateInputInfo="updateInputInfo"
     ></input-config-modal>
+
+    <input-validations-modal
+      ref="inputValidationsModal"
+      :form="currentForm"
+      @updateInputInfo="updateInputInfo"
+    ></input-validations-modal>
   </div>
 </template>
 
@@ -64,11 +73,12 @@
   import { Hooks } from "sethFormBuilder/template/components/hook_lists";
   import { InputHandler } from "sethFormBuilder/template/handler/input_handler";
   import InputConfigModal from "./modals/InputConfigModal";
+  import InputValidationsModal from "./modals/InputValidationsModal";
 
   import uuidv4 from 'uuid/v4';
 
   export default {
-    components: { FontAwesomeIcon, InputConfigModal },
+    components: { FontAwesomeIcon, InputConfigModal, InputValidationsModal },
     name: "row-item",
     props: {
       row: {
@@ -177,6 +187,11 @@
         this.disableSelfInputAsOptionInTreeview(inputInfo);
 
         this.$refs.inputConfigModal.openModal(inputInfo, secIndex);
+      },
+
+      openValidationsModal(secIndex) {
+        var inputInfo = this.row.inputs_attributes[secIndex];
+        this.$refs.inputValidationsModal.openModal(inputInfo, secIndex);
       },
 
       updateInputOrder(inputInfo, index, newOrder) {
