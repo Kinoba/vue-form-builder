@@ -126,7 +126,7 @@
         };
 
         this.formTree.children.forEach((inputGroup) => {
-          if (inputGroup.id === this.parentInputGroup.id) {
+          if (inputGroup.uuid === this.parentInputGroup.uuid) {
             inputGroup.children.push(treeChild);
           }
         })

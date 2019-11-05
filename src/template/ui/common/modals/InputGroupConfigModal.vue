@@ -47,7 +47,11 @@
             class="help is-danger"
           >You are trying to reorder the input group to an unknow position.</p>
         </div>
-        <config-modal-conditions :form="currentForm" :input-group-index="index" :form-tree="formTree"></config-modal-conditions>
+        <config-modal-conditions
+          :form="currentForm"
+          :input-group-index="index"
+          :form-tree="formTree">
+        </config-modal-conditions>
       </section>
       <footer class="modal-card-foot has-text-right" v-if="inputGroup !== null">
         <button
@@ -145,7 +149,7 @@
       },
       formTree: {
         handler(val) {
-          this.currentFormTree = val;
+          this.formTree = val;
         },
         deep: true
       },

@@ -331,7 +331,6 @@
                 label: condition.label,
                 uuid: condition.conditionable_conditionable_uuid,
               };
-              console.log('coucou', this.value);
 
               if (!this.value.includes(condition.conditionable_conditionable_uuid)) {
                 this.value.push(condition.conditionable_conditionable_uuid);

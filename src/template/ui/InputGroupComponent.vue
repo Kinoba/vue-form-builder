@@ -47,6 +47,8 @@
     import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import { Hooks } from 'sethFormBuilder/template/components/hook_lists';
 
+  import uuidv4 from 'uuid/v4';
+
     export default {
         components: {InputGroupConfigModal, RowComponent, FontAwesomeIcon},
         name: "input-group-component",
@@ -60,6 +62,7 @@
             formTree: {
               children: []
             },
+            formTreeInitialized: false,
             currentForm: {
               uuid: Math.random(),
               title: '',
@@ -70,10 +73,13 @@
         methods: {
             addInputGroupToConditionTree(info) {
                 let treeChild = {
-                  children: [],
+                  id: null,
+                  conditionable_id: null,
+                  conditionable_type: 'FormEngine::InputGroup',
                   label: info.label,
                   input_type: 'input_group',
-                  uuid: _.uniqueId()
+                  uuid: uuidv4(),
+                  children: []
                 };
 
                 this.formTree.children.push(treeChild);
@@ -210,6 +216,7 @@
                   .get(`${API_CONSTANTS.url}/forms/${this.form.id}?view=tree_view`)
                   .then(response => {
                     this.formTree = response.data;
+                    this.formTreeInitialized = true;
                   }).catch(error => {
                     console.log(error);
                 });
@@ -251,7 +258,7 @@
             form: {
                 handler(val) {
                   if (typeof val !== 'undefined') {
-                    if (this.form.id) {
+                    if (this.form.id && !this.formTreeInitialized) {
                       this.getFormAsTreeView();
                     }
 
