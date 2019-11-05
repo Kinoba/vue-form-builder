@@ -1,5 +1,5 @@
 <template>
-  <div id="inputGroupConfigModal" class="modal">
+  <div id="inputGroupConfigModal" class="modal" tabindex="0" @keydown.esc="closeModal">
     <div class="modal-background"></div>
     <div class="modal-card" v-if="inputGroup !== null">
       <header class="modal-card-head">
@@ -124,13 +124,24 @@
           .then(response => {
             // Populate availableValidations JSON if the validations for the given input does not exist
             //console.log(response);
+            this.propagateNewFormToBaseParent();
           })
           .catch(error => {
+            this.$toasted.show( error.response.data.errors, { type: 'error' }).goAway(10000);
             console.log(error);
           });
       },
       updateForm(form) {
         this.currentForm = form;
+      },
+      propagateNewFormToBaseParent() {
+        this.$emit('updateForm', this.currentForm);
+        let vm = this.$parent
+
+        while(vm) {
+            vm.$emit('updateForm', this.currentForm)
+            vm = vm.$parent
+        }
       }
     },
     mounted() {
