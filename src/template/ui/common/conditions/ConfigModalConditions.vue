@@ -72,7 +72,7 @@
             />
           </div>
         </div>
-        <div class="has-text-right columns" v-if="index === (selectedTreeItems.length - 1)">
+        <div class="has-text-right columns">
           <div class="column is-12">
             <button
               class="button is-secondary"
