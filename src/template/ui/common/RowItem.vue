@@ -27,6 +27,9 @@
         <button class="button is-secondary" @click="openInputConfig(index)">
           <font-awesome-icon icon="cog" />Configuration
         </button>
+        <button class="button is-secondary" @click="deleteInput(input, index)">
+          <font-awesome-icon icon="times" />Delete
+        </button>
       </div>
     </div>
 
@@ -129,7 +132,20 @@
           if (inputGroup.uuid === this.parentInputGroup.uuid) {
             inputGroup.children.push(treeChild);
           }
-        })
+        });
+      },
+      deleteInput(input, index) {
+        this.row.inputs_attributes.splice(index, 1);
+        this.deleteInputFromConditionTree(index)
+      },
+      deleteInputFromConditionTree(index) {
+        this.formTree.children.forEach((inputGroup) => {
+          if (inputGroup.id === this.parentInputGroup.id) {
+            inputGroup.children.splice(index, 1);
+          }
+        });
+
+        this.$emit("updateFormTree", this.formTree);
       },
       traverseInput() {
         let self = this;
@@ -337,5 +353,9 @@
 .ui-state-highlight {
   height: 1.5em;
   line-height: 1.2em;
+}
+
+.button-bar > svg {
+  margin-right: .5rem;
 }
 </style>

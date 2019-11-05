@@ -8,6 +8,7 @@
       :form="currentForm"
       :parentInputGroup="inputGroup"
       @removeRow="removeRow"
+      @updateFormTree="updateFormTree"
     ></row-item>
   </div>
 </template>
@@ -66,6 +67,9 @@
 
         // final hook
         Hooks.Row.afterRemove.run(rowInfo, this.inputGroup);
+      },
+      updateFormTree(formTree) {
+        this.$emit("updateFormTree", formTree);
       }
     },
     mounted() {

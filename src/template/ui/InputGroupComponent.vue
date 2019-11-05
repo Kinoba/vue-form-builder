@@ -15,7 +15,7 @@
                 </div>
                 <div :id="inputGroup.uuid + '_body'" class="column is-12">
                     <label class="label has-text-left">Inputs</label>
-                    <row-component :form="form" :input-group="inputGroup"></row-component>
+                    <row-component :form="form" :input-group="inputGroup" @updateFormTree="updateFormTree"></row-component>
                     <hr>
                 </div>
             </div>
@@ -229,6 +229,9 @@
                   this.formTree.children[inputGroupIndex].children[inputIndex].is_disabled = inputGroup.uuid === inputGroupInfo.uuid;
                 })
               })
+            },
+            updateFormTree(formTree) {
+              this.formTree = formTree;
             }
         },
         mounted() {

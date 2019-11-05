@@ -130,8 +130,6 @@
           });
       },
       updateForm(form) {
-        console.log('UpdateForm in InputGroup', this.form.input_groups_attributes[0].conditionable_attributes);
-
         this.currentForm = form;
       }
     },
