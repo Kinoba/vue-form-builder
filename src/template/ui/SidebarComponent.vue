@@ -111,8 +111,6 @@
       });
     },
     mounted() {
-      console.log(this.controls);
-
       // insert controls
       $(".list-group-item", $("#sidebarControls")).draggable({
         appendTo: "body",

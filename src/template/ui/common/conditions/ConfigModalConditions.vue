@@ -164,7 +164,7 @@
         }
 
         this.getAvailableValidationsFromServer(item.input_type);
-        this.addConditionToConditionable(item);
+        this.addConditionToConditionable(item, addConditionToLogic);
       },
       deselectItemInTree(item) {
         let deleteIndex = -1;
@@ -255,14 +255,7 @@
           // We need to create a copy of the selectedTreeItem to make sure we don't modify it later
           let conditionToAddToConditionable = JSON.parse(JSON.stringify(selectedTreeItem));
 
-          let conditionPresent = false;
-          this.currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes.forEach((condition) => {
-            if (conditionToAddToConditionable.conditionable_id === condition.conditionable_id && conditionToAddToConditionable.conditionable_type === condition.conditionable_type) {
-              conditionPresent = true;
-            }
-          })
-
-          if (!conditionPresent && addConditionToLogic) {
+          if (addConditionToLogic) {
             // conditionToAddToConditionable.id = conditionToAddToConditionable.backend_id
             delete conditionToAddToConditionable.id;
             delete conditionToAddToConditionable.backend_id;
@@ -282,10 +275,8 @@
       },
       // Adds another validation to an already added conditionable (InputGroup or Input)
       addValidation(item) {
-        // if (!this.selectItemInTree.includes(item)) {
-        //   this.selectedTreeItems.push(item);
-        // }
-        this.addConditionToConditionable(item, false);
+        this.addConditionToConditionable(item, true);
+        this.selectedTreeItems.push(item);
       },
       isInputGroupModal() {
         return typeof this.inputGroupIndex !== 'undefined' && this.inputGroupIndex !== null;
@@ -353,13 +344,9 @@
         this.initialiseConditionable();
       },
       updateInputGroupConditionableFromFormData () {
-        console.info('I\'m an InputGroup modal');
-
         this.currentConditionable = this.currentForm.input_groups_attributes[this.inputGroupIndex];
       },
       updateInputConditionableFromFormData () {
-        console.info('I\'m an Input modal');
-
         this.currentConditionable = this.currentForm.input_groups_attributes[this.inputGroupIndex].rows_attributes[this.rowIndex].inputs_attributes[this.inputIndex];
       },
       updateFormData() {
@@ -430,15 +417,11 @@
         immediate: true
       },
       inputGroupIndex(val) {
-        console.info('InputGroupIndex: ' + val);
-
         // this.inputGroupIndex = val;
         this.updateConditionableFromFormData();
         this.selectTreeViewItemsBasedOnFormData();
       },
       rowIndex(val) {
-        console.info('RowIndex: ' + val);
-
         // this.rowIndex = val;
         this.updateConditionableFromFormData();
         this.selectTreeViewItemsBasedOnFormData();
@@ -446,8 +429,6 @@
       inputIndex: {
         handler(val) {
           if (typeof val !== 'undefined' && Object.keys(this.currentForm).length > 0) {
-            console.info('InputIndex: ' + val, this.currentForm);
-
             // this.inputIndex = val;
             this.updateConditionableFromFormData();
             this.selectTreeViewItemsBasedOnFormData();
