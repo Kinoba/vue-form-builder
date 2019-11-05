@@ -18,18 +18,20 @@
         :edit-label="editLabel"
       ></component>
 
-      <div class="button-bar is-pulled-right is-inline-block">
-        <button class="button is-secondary" @click="editLabel = !editLabel">
-          <font-awesome-icon icon="pen" />
-          <span v-if="!editLabel">Edit label</span>
-          <span v-else>Save label</span>
-        </button>
-        <button class="button is-secondary" @click="openInputConfig(index)">
-          <font-awesome-icon icon="cog" />Configuration
-        </button>
-        <button class="button is-secondary" @click="deleteInput(input, index)">
-          <font-awesome-icon icon="times" />Delete
-        </button>
+      <div class="columns">
+        <div class="is-pulled-right column">
+          <button class="button is-secondary is-pulled-right" @click="editLabel = !editLabel">
+            <font-awesome-icon icon="pen" />
+            <span v-if="!editLabel">Edit label</span>
+            <span v-else>Save label</span>
+          </button>
+          <button class="button is-secondary is-pulled-right" @click="openInputConfig(index)">
+            <font-awesome-icon icon="cog" />Configuration
+          </button>
+          <button class="button is-secondary is-pulled-right" @click="deleteInput(input, index)">
+            <font-awesome-icon icon="times" />Delete
+          </button>
+        </div>
       </div>
     </div>
 
@@ -355,7 +357,9 @@
   line-height: 1.2em;
 }
 
-.button-bar > svg {
-  margin-right: .5rem;
+button.is-secondary {
+    margin-left: .5rem;
 }
+
+button > .svg-inline--fa { margin-right: .5rem }
 </style>
