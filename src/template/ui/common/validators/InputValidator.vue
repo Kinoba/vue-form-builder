@@ -1,48 +1,50 @@
 <template>
     <div>
-      <pre>{{currentConditionable}}</pre>
       <label class="label">
-        Validation
+        Validation <span>for input {{ input.label }}</span>
       </label>
-      <!-- <div class="control columns">
+      <div class="control columns">
         <div class="column is-4">
           <div class="select">
             <select
-              v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].operator"
+              v-model="currentValidation.key"
               @change="updateFormData"
             >
               <option selected :key="'default_' + index">Selectionner</option>
               <option
-                v-for="option in availableValidations[selectedItem.input_type]"
+                v-for="option in availableValidations[input.input_type]"
                 :key="option.key + '_' + index"
               >{{ option.key }}</option>
             </select>
           </div>
         </div>
-        <div class="column is-8" v-if="currentConditionable.conditionable_attributes.logic_attributes && currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index]">
+        <div class="column is-8">
+          <!-- If the input is a text or number -->
           <input
-            v-if="selectedItem.input_type !== 'select' && selectedItem.input_type !== 'checkbox' && selectedItem.input_type !== 'time' && selectedItem.input_type !== 'date'"
+            v-if="input.input_type !== 'select' && input.input_type !== 'checkbox' && input.input_type !== 'time' && input.input_type !== 'date'"
             class="input"
-            :type="selectedItem.input_type"
-            v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].value"
+            :type="input.input_type"
+            v-model="currentValidation.value"
             placeholder="Enter validation value"
           />
+          <!-- If the input is a select or checkbox -->
           <input
-            v-if="selectedItem.input_type === 'select' || selectedItem.input_type === 'checkbox'"
+            v-if="input.input_type === 'select' || input.input_type === 'checkbox'"
             class="input"
             type="text"
-            v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].value"
+            v-model="currentValidation.value"
             placeholder="Enter validation value"
           />
+          <!-- If the input is a date or time -->
           <input
-            v-if="selectedItem.input_type === 'time' || selectedItem.input_type === 'date'"
+            v-if="input.input_type === 'time' || input.input_type === 'date'"
             class="input"
             type="text"
-            v-model="currentConditionable.conditionable_attributes.logic_attributes.conditions_attributes[index].value"
+            v-model="currentValidation.value"
             placeholder="Enter validation value"
           />
         </div>
-      </div> -->
+      </div>
     </div>
 </template>
 
@@ -54,15 +56,19 @@
     export default {
         components: {},
         name: "input-validator",
-        props: ["validation"],
+        props: ["validation", "availableValidations", "input", "index"],
         data: () => ({
-            currentValidation: {}
+            currentValidation: {},
+            selectedValidation: ""
         }),
         methods: {
+          updateFormData() {
 
+          }
         },
         mounted() {
           this.currentValidation = this.validation;
+          console.log(this.currentValidation);
         }
     }
 </script>

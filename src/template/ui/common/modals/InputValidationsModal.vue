@@ -8,11 +8,13 @@
         </header>
         <section class="modal-card-body" v-if="input !== null">
             <!-- Add input validatiors -->
-            <pre>
-              {{input.validations}}
-            </pre>
-            <div class="has-text-right columns" v-for="validation in input.validations">
-              <input-validator class="column" :validation="validation"></input-validator>
+            <div class="has-text-right columns" v-for="(validation, index) in input.validations">
+              <input-validator
+                class="column"
+                :validation="validation"
+                :index="index"
+                :input="input"
+                :available-validations="availableValidations"></input-validator>
             </div>
             <div class="has-text-right columns">
               <div class="column is-12">
@@ -47,12 +49,17 @@
         data: () => ({
           index: null,
           input: null,
-          currentForm: {}
+          currentForm: {},
+          availableValidations: []
         }),
         methods: {
           openModal(inputInfo, index) {
             this.input = _.cloneDeep(inputInfo);
             this.index = _.clone(index);
+
+            if(this.availableValidations.length === 0) {
+              this.getAvailableValidationsFromServer();
+            }
 
             $(INPUT_ID).modal('show');
           },
@@ -97,10 +104,33 @@
             };
             if(this.input.validations === null) { this.input.validations = []; }
             this.input.validations.push(newValidation);
+          },
+          getAvailableValidationsFromServer() {
+            if (!this.availableValidations.hasOwnProperty(this.input.input_type)) {
+              let validationUrl = API_CONSTANTS.url;
+              validationUrl += "/inputs/" + this.input.input_type + "/validations";
+
+              axios({
+                method: "get",
+                url: validationUrl,
+                data: {}
+              })
+                .then(response => {
+                  // Populate availableValidations JSON if the validations for the given input does not exist
+                  this.availableValidations[this.input.input_type] = response.data;
+                })
+                .catch(error => {
+                  if(error.response) {
+                    this.$toasted.show( error.response.data.errors, { type: 'error' }).goAway(5000);
+                  }
+                  console.log(error);
+                });
+            }
           }
         },
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
+
         },
         watch: {
           input(val) {
@@ -112,7 +142,6 @@
             handler(val) {
               if (typeof val !== 'undefined') {
                 this.currentForm = val;
-                console.log(this.currentForm)
               }
             },
             deep: true
