@@ -60,11 +60,7 @@
           return;
         }
 
-        if (this.inputGroup.rows_attributes.length === 1)
-          this.inputGroup.rows_attributes[rowIndex].inputs_attributes = [];
-        //Clear current row from inputs
-        else this.inputGroup.rows_attributes.splice(rowIndex, 1); //Remove row
-
+        this.inputGroup.rows_attributes.splice(rowIndex, 1); //Remove row
         // final hook
         Hooks.Row.afterRemove.run(rowInfo, this.inputGroup);
       },

@@ -14,7 +14,6 @@
                     <button class="button is-secondary is-pulled-right" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add row</button>
                 </div>
                 <div :id="inputGroup.uuid + '_body'" class="column is-12">
-                    <label class="label has-text-left">Inputs</label>
                     <row-component :form="form" :input-group="inputGroup" @updateFormTree="updateFormTree"></row-component>
                     <hr>
                 </div>

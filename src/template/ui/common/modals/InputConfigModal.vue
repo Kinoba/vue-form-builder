@@ -50,7 +50,9 @@
             </div>
             <div class="field paragraph-text has-text-left" v-if="input.input_type === 'paragraph'">
               <label class="label">Display text</label>
+
               <div v-if="input.properties">
+                <pre>{{input.properties}}</pre>
                 <div class="control">
                   <textarea class="textarea" v-model="input.properties.text" placeholder="Enter display text"></textarea>
                 </div>
