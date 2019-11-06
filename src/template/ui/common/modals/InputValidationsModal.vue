@@ -21,7 +21,7 @@
                 :input="input"
                 :available-validations="availableValidations"></input-validator>
             </div>
-            <div class="has-text-right columns" v-if="(index + 1) === input.validations.length">
+            <div class="has-text-right columns" v-if="(index + 1) === input.validations.length && availableValidations.length > 0">
               <div class="column is-12">
                 <button
                   class="button is-secondary"
@@ -75,7 +75,6 @@
           },
           closeModal() {
             //Clear validations if only one empty validation present
-            console.log(this.input)
             if(this.input.validations.length === 1 && this.input.validations[0].key === "" && this.input.validations[0].value === "") {
               this.input.validations = [];
             }

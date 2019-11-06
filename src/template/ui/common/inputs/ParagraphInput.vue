@@ -7,16 +7,12 @@
             v-if="input.label"
             :class="{'label' : true, 'is-inline-block': true ,'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}"
           >{{input.label}}</label>
-          <label
-            v-else
-            :class="{'label' : true, 'is-inline-block': true, 'bold': input.labelBold, 'italic': input.labelItalic, 'underline': input.labelUnderline}"
-          >Text input</label>
         </div>
         <div v-else class="control">
           <input type="text" class="input" v-model="input.label" />
         </div>
-        <div class="control">
-          <p>{{input.value}}</p>
+        <div class="control" v-if="input.properties && input.properties.text">
+          <p>{{input.properties.text}}</p>
         </div>
       </div>
     </div>

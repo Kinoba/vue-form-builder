@@ -48,6 +48,14 @@
                 <font-awesome-icon icon="plus" />Add choice
               </button>
             </div>
+            <div class="field paragraph-text has-text-left" v-if="input.input_type === 'paragraph'">
+              <label class="label">Display text</label>
+              <div v-if="input.properties">
+                <div class="control">
+                  <textarea class="textarea" v-model="input.properties.text" placeholder="Enter display text"></textarea>
+                </div>
+              </div>
+            </div>
             <div class="field has-text-left">
               <config-modal-conditions
                 :form="currentForm"
@@ -91,6 +99,11 @@
           openModal(inputInfo, index) {
             this.input = _.cloneDeep(inputInfo);
             this.index = _.clone(index);
+
+            //Initialise input paragraph text property
+            if(this.input && this.input.properties && this.input.input_type === 'paragraph') {
+              this.input.properties["text"] = "";
+            }
 
             $(INPUT_ID).modal('show');
           },

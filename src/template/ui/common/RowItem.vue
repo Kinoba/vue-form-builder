@@ -31,7 +31,7 @@
           <button class="button is-secondary is-pulled-right" @click="deleteInput(input, index)">
             <font-awesome-icon icon="times" />Delete
           </button>
-          <button class="button is-secondary is-pulled-right" @click="openValidationsModal(index)">
+          <button v-if="input.input_type !== 'paragraph'" class="button is-secondary is-pulled-right" @click="openValidationsModal(index)">
             <font-awesome-icon icon="check" />Validation
           </button>
         </div>
@@ -187,7 +187,7 @@
       openInputConfig(secIndex) {
         var inputInfo = this.row.inputs_attributes[secIndex];
         this.disableSelfInputAsOptionInTreeview(inputInfo);
-
+        console.log(this.$refs.inputConfigModal)
         this.$refs.inputConfigModal.openModal(inputInfo, secIndex);
       },
 
