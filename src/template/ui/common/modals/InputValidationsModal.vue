@@ -1,5 +1,5 @@
 <template>
-    <div id="inputValidationsModal" class="modal">
+    <div id="inputValidationsModal" class="modal" tabindex="0" @keydown.esc="closeModal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -13,13 +13,14 @@
                 Validation <span v-if="input.label && input.label !== ''">for input {{ input.label }}</span>
               </label>
             </div>
-            <div class="has-text-right columns" v-for="(validation, index) in input.validations">
+            <div class="has-text-right columns" v-for="(validation, index) in input.validations" :key="'input_validation_' + index">
               <input-validator
                 class="column"
                 :validation="validation"
                 :index="index"
                 :input="input"
-                :available-validations="availableValidations"></input-validator>
+                :available-validations="availableValidations">
+              </input-validator>
             </div>
             <div class="has-text-right columns" v-if="(index + 1) === input.validations.length && availableValidations.length > 0">
               <div class="column is-12">

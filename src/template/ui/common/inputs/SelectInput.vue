@@ -14,10 +14,10 @@
                     <input type="text" class="input" v-model="input.label">
                 </div>
               <div class="control">
-                  <div v-if="input.input_type == 'select'" class="select" >
+                  <div v-if="input.properties && input.input_type === 'select'" class="select" >
                       <select :name="input.fieldName">
                           <option disabled selected>Select options</option>
-                          <option v-for="option in input.properties.options">{{ option.value }}</option>
+                          <option v-for="(option, index) in input.properties.options" :key="'select_option_' + index">{{ option.value }}</option>
                       </select>
                  </div>
               </div>

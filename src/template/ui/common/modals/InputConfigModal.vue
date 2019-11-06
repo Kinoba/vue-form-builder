@@ -28,7 +28,7 @@
             </div>
             <div class="field checkbox-choices has-text-left" v-if="input.input_type === 'checkbox'">
               <label class="label">Checkbox choices</label>
-              <div v-if="input.properties.options">
+              <div v-if="input.properties !== null && input.properties.options">
                 <div class="control" v-for="(option, index) in input.properties.options" :key="`checkbox_options_${index}`">
                   <input class="input" type="text" v-model="option.label" placeholder="Enter checkbox choice">
                 </div>
@@ -39,7 +39,7 @@
             </div>
             <div class="field select-choices has-text-left" v-if="input.input_type === 'select'">
               <label class="label">Select choices</label>
-              <div v-if="input.properties.options">
+              <div v-if="input.properties !== null && input.properties.options">
                 <div class="control" v-for="(option, index) in input.properties.options" :key="`select_options_${index}`">
                   <input class="input" type="text" v-model="option.value" placeholder="Enter select choice">
                 </div>
@@ -50,9 +50,7 @@
             </div>
             <div class="field paragraph-text has-text-left" v-if="input.input_type === 'paragraph'">
               <label class="label">Display text</label>
-
-              <div v-if="input.properties">
-                <pre>{{input.properties}}</pre>
+              <div v-if="input.properties && input.properties !== null">
                 <div class="control">
                   <textarea class="textarea" v-model="input.properties.text" placeholder="Enter display text"></textarea>
                 </div>
@@ -100,11 +98,14 @@
         methods: {
           openModal(inputInfo, index) {
             this.input = _.cloneDeep(inputInfo);
+
             this.index = _.clone(index);
 
+            this.initializeInputProperties();
+
             //Initialise input paragraph text property
-            if(this.input && this.input.properties && this.input.input_type === 'paragraph') {
-              this.input.properties["text"] = "";
+            if (this.input && this.input.input_type === 'paragraph' && this.input.properties.text === null) {
+              this.$set(this.input.properties, 'text', '');
             }
 
             $(INPUT_ID).modal('show');
@@ -122,18 +123,28 @@
           },
           addChoice() {
               let newChoice= {};
-              if(!this.input.properties.options || this.input.properties.options === null) {
-                this.input.properties["options"] = [];
-              }
 
               if(this.input.input_type === 'checkbox') {
-                  newChoice = {"label": "", value: "false"};
+                this.initializeInputPropertiesOptions();
+                newChoice = {"label": "", value: "false"};
               } else if (this.input.input_type === 'select') {
+                this.initializeInputPropertiesOptions();
                 newChoice = {"key": "key_" + this.input.properties.options.length, value: ""};
               }
 
               this.input.properties.options.push(newChoice);
               this.$forceUpdate();
+          },
+          initializeInputProperties() {
+            if (!this.input.properties || this.input.properties === null) {
+              this.input.properties = {};
+            }
+          },
+          initializeInputPropertiesOptions() {
+            if (!this.input.properties.options || this.input.properties.options === null) {
+              // Dynamic reactive property
+              this.$set(this.input.properties, 'options', []);
+            }
           },
           saveForm() {
             let requestMethod = 'post';
