@@ -44,7 +44,7 @@
 
     export default {
         name: "InputValidationsModal",
-        props:['updateInputInfo', 'form'],
+        props:['updateInputInfo', 'form', 'parentInputGroup', 'rowIndex'],
         components: { InputValidator },
         data: () => ({
           index: null,
@@ -57,19 +57,25 @@
             this.input = _.cloneDeep(inputInfo);
             this.index = _.clone(index);
 
-            if(this.availableValidations.length === 0) {
-              this.getAvailableValidationsFromServer();
+            this.getAvailableValidationsFromServer();
+
+            if(this.input.validations === null || this.input.validations.length === 0) {
+              this.addValidation();
             }
 
             $(INPUT_ID).modal('show');
           },
           closeModal() {
+            //Clear validations if only one empty validation present
+            console.log(this.input)
+            if(this.input.validations.length === 1 && this.input.validations[0].key === "" && this.input.validations[0].value === "") {
+              this.input.validations = [];
+            }
             $(INPUT_ID).modal('hide');
           },
           save() {
               let reOrder = false;
-              if(Object.keys(this.currentForm).length > 0) { this.saveForm(); }
-              this.input = this.currentForm.input_groups_attributes[this.parentInputGroup.order].rows_attributes[this.rowIndex].inputs_attributes[this.index];
+              this.saveForm();
               this.$emit('updateInputInfo', this.input, this.index, reOrder, this.input.order);
               this.closeModal();
           },
@@ -106,31 +112,28 @@
             this.input.validations.push(newValidation);
           },
           getAvailableValidationsFromServer() {
-            if (!this.availableValidations.hasOwnProperty(this.input.input_type)) {
-              let validationUrl = API_CONSTANTS.url;
-              validationUrl += "/inputs/" + this.input.input_type + "/validations";
+            let validationUrl = API_CONSTANTS.url;
+            validationUrl += "/inputs/" + this.input.input_type + "/validations";
 
-              axios({
-                method: "get",
-                url: validationUrl,
-                data: {}
+            axios({
+              method: "get",
+              url: validationUrl,
+              data: {}
+            })
+              .then(response => {
+                // Populate availableValidations JSON if the validations for the given input does not exist
+                this.availableValidations = response.data;
               })
-                .then(response => {
-                  // Populate availableValidations JSON if the validations for the given input does not exist
-                  this.availableValidations[this.input.input_type] = response.data;
-                })
-                .catch(error => {
-                  if(error.response) {
-                    this.$toasted.show( error.response.data.errors, { type: 'error' }).goAway(5000);
-                  }
-                  console.log(error);
-                });
-            }
+              .catch(error => {
+                if(error.response) {
+                  this.$toasted.show( error.response.data.errors, { type: 'error' }).goAway(5000);
+                }
+                console.log(error);
+              });
           }
         },
         mounted() {
             $("[data-toggle='tooltip']").tooltip();
-
         },
         watch: {
           input(val) {

@@ -1,18 +1,15 @@
 <template>
     <div>
       <label class="label">
-        Validation <span>for input {{ input.label }}</span>
+        Validation <span v-if="input.label && input.label !== ''">for input {{ input.label }}</span>
       </label>
       <div class="control columns">
         <div class="column is-4">
           <div class="select">
-            <select
-              v-model="currentValidation.key"
-              @change="updateFormData"
-            >
+            <select v-model="currentValidation.key">
               <option selected :key="'default_' + index">Selectionner</option>
               <option
-                v-for="option in availableValidations[input.input_type]"
+                v-for="option in availableValidations"
                 :key="option.key + '_' + index"
               >{{ option.key }}</option>
             </select>
@@ -58,17 +55,13 @@
         name: "input-validator",
         props: ["validation", "availableValidations", "input", "index"],
         data: () => ({
-            currentValidation: {},
-            selectedValidation: ""
+            currentValidation: {}
         }),
         methods: {
-          updateFormData() {
 
-          }
         },
         mounted() {
           this.currentValidation = this.validation;
-          console.log(this.currentValidation);
         }
     }
 </script>

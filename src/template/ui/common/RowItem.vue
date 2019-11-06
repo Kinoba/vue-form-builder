@@ -52,6 +52,8 @@
     <input-validations-modal
       ref="inputValidationsModal"
       :form="currentForm"
+      :parentInputGroup="parentInputGroup"
+      :row-index="rowIndex"
       @updateInputInfo="updateInputInfo"
     ></input-validations-modal>
   </div>
@@ -206,6 +208,17 @@
         _.deepExtend(this.row.inputs_attributes[index], inputInfo);
 
         if (reOrder) this.updateInputOrder(inputInfo, index, newOrder);
+
+        this.propagateNewFormToBaseParent();
+      },
+      propagateNewFormToBaseParent() {
+        this.$emit('updateForm', this.currentForm);
+        let vm = this.$parent
+
+        while(vm) {
+            vm.$emit('updateForm', this.currentForm)
+            vm = vm.$parent
+        }
       },
       getFormAsTreeView() {
         // Get tree data to display the form tree in config modals
