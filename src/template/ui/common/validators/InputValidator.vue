@@ -1,8 +1,5 @@
 <template>
     <div>
-      <label class="label">
-        Validation <span v-if="input.label && input.label !== ''">for input {{ input.label }}</span>
-      </label>
       <div class="control columns">
         <div class="column is-4">
           <div class="select">

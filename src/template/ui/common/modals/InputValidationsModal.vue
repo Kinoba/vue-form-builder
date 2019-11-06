@@ -8,6 +8,11 @@
         </header>
         <section class="modal-card-body" v-if="input !== null">
             <!-- Add input validatiors -->
+            <div class="columns has-text-left">
+              <label class="label column">
+                Validation <span v-if="input.label && input.label !== ''">for input {{ input.label }}</span>
+              </label>
+            </div>
             <div class="has-text-right columns" v-for="(validation, index) in input.validations">
               <input-validator
                 class="column"
@@ -16,12 +21,14 @@
                 :input="input"
                 :available-validations="availableValidations"></input-validator>
             </div>
-            <div class="has-text-right columns">
+            <div class="has-text-right columns" v-if="(index + 1) === input.validations.length">
               <div class="column is-12">
                 <button
                   class="button is-secondary"
                   @click="addValidation()"
-                >Add validation</button>
+                >
+                  <font-awesome-icon icon="plus" />Add validation
+              </button>
               </div>
             </div>
         </section>
@@ -37,6 +44,7 @@
     import axios from 'axios';
     import { API_CONSTANTS } from "sethFormBuilder/config/constants";;
     import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
     import InputValidator from "../validators/InputValidator";
 
@@ -45,7 +53,7 @@
     export default {
         name: "InputValidationsModal",
         props:['updateInputInfo', 'form', 'parentInputGroup', 'rowIndex'],
-        components: { InputValidator },
+        components: { InputValidator, FontAwesomeIcon },
         data: () => ({
           index: null,
           input: null,
@@ -160,4 +168,6 @@
     .select-choices > button {
         margin-top: 10px;
     }
+
+    button > .svg-inline--fa { margin-right: .5rem }
 </style>

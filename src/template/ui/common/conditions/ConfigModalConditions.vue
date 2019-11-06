@@ -77,7 +77,9 @@
             <button
               class="button is-secondary"
               @click="addValidation(selectedItem)"
-            >Add validation</button>
+            >
+              <font-awesome-icon icon="plus" />Add validation
+            </button>
           </div>
         </div>
       </div>
@@ -90,11 +92,12 @@
   import axios from "axios";
   import { API_CONSTANTS } from "sethFormBuilder/config/constants";
   import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+  import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
   export default {
     name: "ConfigModalConditions",
     props: ["updateForm", "form", "formTree", "inputGroupIndex", "rowIndex", "inputIndex"],
-    components: { Treeselect },
+    components: { Treeselect, FontAwesomeIcon },
     data: () => ({
       normalizer(node) {
         return {
@@ -456,4 +459,6 @@
     display: inline-block;
     height: 150px;
   }
+
+  button > .svg-inline--fa { margin-right: .5rem }
 </style>
