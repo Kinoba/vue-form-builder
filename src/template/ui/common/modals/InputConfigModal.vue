@@ -33,7 +33,9 @@
                   <input class="input" type="text" v-model="option.label" placeholder="Enter checkbox choice">
                 </div>
               </div>
-              <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
+              <button class="button link is-pulled-right" @click="addChoice()">
+                <font-awesome-icon icon="plus" />Add choice
+              </button>
             </div>
             <div class="field select-choices has-text-left" v-if="input.input_type === 'select'">
               <label class="label">Select choices</label>
@@ -42,16 +44,20 @@
                   <input class="input" type="text" v-model="option.value" placeholder="Enter select choice">
                 </div>
               </div>
-              <button class="button link is-pulled-right" @click="addChoice()">Add choice</button>
+              <button class="button link is-pulled-right" @click="addChoice()">
+                <font-awesome-icon icon="plus" />Add choice
+              </button>
             </div>
-            <config-modal-conditions
-              :form="currentForm"
-              :input-group-index="parentInputGroup.order"
-              :row-index="rowIndex"
-              :input-index="index"
-              :form-tree="formTree"
-              @updateForm="updateForm">
-            </config-modal-conditions>
+            <div class="field has-text-left">
+              <config-modal-conditions
+                :form="currentForm"
+                :input-group-index="parentInputGroup.order"
+                :row-index="rowIndex"
+                :input-index="index"
+                :form-tree="formTree"
+                @updateForm="updateForm">
+              </config-modal-conditions>
+            </div>
         </section>
         <footer class="modal-card-foot has-text-right" v-if="input !== null">
           <button class="button is-success" :disabled="(input.order >= maxOrder) || (input.order < 0)" @click="save">Save</button>
@@ -63,6 +69,7 @@
 
 <script>
     import axios from 'axios';
+    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
     import { API_CONSTANTS } from "sethFormBuilder/config/constants";;
     import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
@@ -73,7 +80,7 @@
     export default {
         name: "InputConfigModal",
         props:['updateInputInfo', 'maxOrder', 'formTree', 'parentInputGroup', 'form', 'rowIndex'],
-        components: { ConfigModalConditions },
+        components: { ConfigModalConditions, FontAwesomeIcon },
         data: () => ({
           index: null,
           input: null,
@@ -93,25 +100,31 @@
           save() {
               let reOrder = false;
               if(Object.keys(this.currentForm).length > 0) { this.saveForm(); }
-              console.log(this.currentForm.input_groups_attributes[this.parentInputGroup.order]);
-
-              this.input = this.currentForm.input_groups_attributes[this.parentInputGroup.order].rows_attributes[this.rowIndex].inputs_attributes[this.index];
+              //this.input = this.currentForm.input_groups_attributes[this.parentInputGroup.order].rows_attributes[this.rowIndex].inputs_attributes[this.index];
               if(this.oldInputOrder !== this.input.order) reOrder = true;
               this.$emit('updateInputInfo', this.input, this.index, reOrder, this.input.order);
               this.closeModal();
           },
           addChoice() {
               let newChoice= {};
+              if(!this.input.properties.options || this.input.properties.options === null) {
+                this.input.properties["options"] = [];
+              }
+
               if(this.input.input_type === 'checkbox') {
                   newChoice = {"label": "", value: "false"};
               } else if (this.input.input_type === 'select') {
-                  newChoice = {"key": "key_" + this.input.properties.options.length + 1, value: ""};
+                newChoice = {"key": "key_" + this.input.properties.options.length, value: ""};
               }
+
               this.input.properties.options.push(newChoice);
+              this.$forceUpdate();
           },
           saveForm() {
             let requestMethod = 'post';
             let requestUrl = API_CONSTANTS.url + "/forms"
+            this.currentForm.input_groups_attributes[this.parentInputGroup.order].rows_attributes[this.rowIndex].inputs_attributes[this.index] = this.input;
+
             if(this.currentForm.id) {
               requestMethod = 'put';
               requestUrl += '/' + this.currentForm.id;
@@ -174,6 +187,10 @@
 </script>
 
 <style scoped>
+    .checkbox-choices,
+    .select-choices {
+      min-height: 5rem;
+    }
     .checkbox-choices > .control,
     .select-choices > .control,
     .checkbox-choices > button,
@@ -190,4 +207,6 @@
         display: inline-block;
         height: 150px;
     }
+
+    button > .svg-inline--fa { margin-right: .5rem }
 </style>
