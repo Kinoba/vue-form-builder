@@ -19,20 +19,20 @@
       ></component>
 
       <div class="columns">
-        <div class="is-pulled-right column">
-          <button class="button is-secondary is-pulled-right" @click="editLabel = !editLabel">
+        <div class="column has-text-right">
+          <button v-if="input.input_type !== 'paragraph'" class="button is-secondary" @click="openValidationsModal(index)">
+            <font-awesome-icon icon="check" />Validation
+          </button>
+          <button class="button is-secondary" @click="deleteInput(input, index)">
+            <font-awesome-icon icon="times" />Delete
+          </button>
+          <button class="button is-secondary" @click="openInputConfig(index)">
+            <font-awesome-icon icon="cog" />Configuration
+          </button>
+          <button class="button is-secondary" @click="editLabel = !editLabel">
             <font-awesome-icon icon="pen" />
             <span v-if="!editLabel">Edit label</span>
             <span v-else>Save label</span>
-          </button>
-          <button class="button is-secondary is-pulled-right" @click="openInputConfig(index)">
-            <font-awesome-icon icon="cog" />Configuration
-          </button>
-          <button class="button is-secondary is-pulled-right" @click="deleteInput(input, index)">
-            <font-awesome-icon icon="times" />Delete
-          </button>
-          <button v-if="input.input_type !== 'paragraph'" class="button is-secondary is-pulled-right" @click="openValidationsModal(index)">
-            <font-awesome-icon icon="check" />Validation
           </button>
         </div>
       </div>

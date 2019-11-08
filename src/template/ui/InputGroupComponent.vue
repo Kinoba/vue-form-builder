@@ -8,10 +8,10 @@
                         <input type="text" class="input" placeholder="Enter input group label" v-model="inputGroup.label" @blur="updateInputGroupFromConditionTree(inputGroup, index)">
                     </div>
                 </div>
-                <div class="column is-12 input-group-button-bar has-text-left">
-                    <button class="button is-secondary is-pulled-right" @click="configInputGroup(index)"><font-awesome-icon icon="cog"/> Input group configuration</button>
-                    <button class="button is-secondary is-pulled-right" @click="delInputGroup(index)"><font-awesome-icon icon="times"/> Delete input group</button>
-                    <button class="button is-secondary is-pulled-right" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add row</button>
+                <div class="column is-12 input-group-button-bar has-text-right">
+                    <button class="button is-secondary" @click="addRow(index)"><font-awesome-icon icon="plus"/> Add row</button>
+                    <button class="button is-secondary" @click="delInputGroup(index)"><font-awesome-icon icon="times"/> Delete input group</button>
+                    <button class="button is-secondary" @click="configInputGroup(index)"><font-awesome-icon icon="cog"/> Input group configuration</button>
                 </div>
                 <div :id="inputGroup.uuid + '_body'" class="column is-12">
                     <row-component :form="form" :input-group="inputGroup" @updateFormTree="updateFormTree"></row-component>
@@ -22,7 +22,7 @@
 
         <div class="columns">
             <div class="column is-12">
-                <button class="button is-primary is-pulled-right" @click="addInputGroup">Add Input Group</button>
+                <button class="button is-primary has-text-right" @click="addInputGroup">Add Input Group</button>
             </div>
         </div>
 

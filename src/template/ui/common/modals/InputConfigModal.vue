@@ -33,7 +33,7 @@
                   <input class="input" type="text" v-model="option.label" placeholder="Enter checkbox choice">
                 </div>
               </div>
-              <button class="button link is-pulled-right" @click="addChoice()">
+              <button class="button link has-text-right" @click="addChoice()">
                 <font-awesome-icon icon="plus" />Add choice
               </button>
             </div>
@@ -44,7 +44,7 @@
                   <input class="input" type="text" v-model="option.value" placeholder="Enter select choice">
                 </div>
               </div>
-              <button class="button link is-pulled-right" @click="addChoice()">
+              <button class="button has-text-right" @click="addChoice()">
                 <font-awesome-icon icon="plus" />Add choice
               </button>
             </div>
