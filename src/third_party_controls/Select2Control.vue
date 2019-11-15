@@ -27,7 +27,7 @@
             },
             options: {
                 type: Array,
-                default: []
+                default: () => []
             },
             disabled: {
                 type: Boolean,
